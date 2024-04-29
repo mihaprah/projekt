@@ -64,6 +64,16 @@ Za delo je vsak član skupine uporabljal svoj "Sprint board", kjer so bili zapis
 </p>
 
 ### Zasnova podatkovne strukture
+Za shranjevanje podatkov smo uporabili MongoDB, kjer smo uporabljali različne kolekcije. Struktura temelji na skupini kontaktov, ki smo jo imenovali "Tenant". Ko uporabnik ustvari novo skupino, se usvarijo 3 kolekcije:
+- Tenant main -> kolekcija, ki beleži vse aktivne kontakte znotraj ene skupine
+- Tenant deleted -> kolekcija, ki beleži vse izbrisane kontakte znotraj ene skupine
+- Tenant activity -> kolekcija, ki beleži vse aktivnosti, ki jih izvede uporabnik znotraj eneke skupine, kot so recimo ustvarjanje, posodabljanje ali brisanje kontaktov. Ta kolekcija nam omogoča usvarjanje revizijske sledi.
+
+Posamezen kontakt ima kot privzeto nastavljena atributa ime in priimek, ostale atribute lahko poljubno dodaja uporabnik, kot pare ključ in vredost.
+
+Obstaja tudi glavna kolekcija "Tenants", kjer so zabeleženi dodatni podatki o vsaki kolekciji, kot so njeno celo ime, opis, barva in pa ime uporabnika, ki jo je usvaril.
+
+V bazi imamo tudi kolekcijo "Users", kjer so zabeleženi osnovni podatki o uporabniku, ki je prijavljen v sistem in lahko ustvarja svoje kolekcije.
 <p align="center">
   <img width="902" alt="SCM Data structure" src="https://github.com/mihaprah/projekt/assets/116807398/11934d1c-2c87-4a70-a180-aa62b83f3224">
 </p>
