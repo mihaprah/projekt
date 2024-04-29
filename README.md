@@ -74,6 +74,8 @@ Posamezen kontakt ima kot privzeto nastavljena atributa ime in priimek, ostale a
 Obstaja tudi glavna kolekcija "Tenants", kjer so zabeleženi dodatni podatki o vsaki kolekciji, kot so njeno celo ime, opis, barva in pa ime uporabnika, ki jo je usvaril.
 
 V bazi imamo tudi kolekcijo "Users", kjer so zabeleženi osnovni podatki o uporabniku, ki je prijavljen v sistem in lahko ustvarja svoje kolekcije.
+
+Spodaj je skica, ki prikazuje strukturo naše podatkovne baze.
 <p align="center">
   <img width="902" alt="SCM Data structure" src="https://github.com/mihaprah/projekt/assets/116807398/11934d1c-2c87-4a70-a180-aa62b83f3224">
 </p>
