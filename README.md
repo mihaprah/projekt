@@ -1,5 +1,9 @@
 # Simple Contact Manager - MMA
 
+<p align="center">
+  <img alt="SCM Logo" src="https://github.com/mihaprah/projekt/assets/116807398/1d171956-57b7-49b9-93d9-3525148c70d7" >
+</p>
+
 SCM oziroma Simple Contact Manager, je spletna aplikacija namenjena upravljanju s kontakti. Njegova glavna prednost pred ostalimi CRM (Customer Relations Manager) programi, je njegova preposta uporaba, saj je namenjen izključno delu s kontakti.
 Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplikacije in dokumentacija za aplikacijo SCM.
 ### Člani ekipe MMA
@@ -35,6 +39,9 @@ Zaledje aplikacije smo izdelali v programskem jeziku [Java](https://www.java.com
 Spletno aplikacijo smo idelali s pomočjo programske knjižnice [React](https://react.dev) v programskem jeziku [Typescript](https://www.typescriptlang.org).
 
 ### Zasnova podatkovne strukture
+<p align="center">
+  <img width="902" alt="SCM Data structure" src="https://github.com/mihaprah/projekt/assets/116807398/11934d1c-2c87-4a70-a180-aa62b83f3224">
+</p>
 
 ### Wireframe aplikacije (prototip izgleda)
 S pomočjo orodja [Figma](https://www.figma.com), ki omogoča enostavno in hitro izdelavo vizualnih prototipov, smo izdelali prototip, kako bi naj aplikacija izgledala. Prototip nam je nato služil, kot navodilo za izgradnjo spletne aplikacije v nadaljevanju projekta.
