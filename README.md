@@ -38,6 +38,31 @@ Zaledje aplikacije smo izdelali v programskem jeziku [Java](https://www.java.com
 #### Frontend (pročelje)
 Spletno aplikacijo smo idelali s pomočjo programske knjižnice [React](https://react.dev) v programskem jeziku [Typescript](https://www.typescriptlang.org).
 
+### Organizacija in način dela
+#### Komunikacija
+Vsa komunikacija znotraj projekta je bila speljana preko [Discord](https://discord.com) strežnika, razen komuniciranje s profersorjem, ki je bilo preko maila. Naredili smo ločene kanale za posamezne dele projekta. Tako smo uspeli ločit komunikacijo, da smo lahko reševali probleme ločeno in se zadeve niso izgubile oziroma se niso problemi spregledali. Prav tako smo preko Discord strežnika izvedli vse skupinske sestanke in vso delo na daljavo, kjer smo si pomagali s funkcijo deljenja zaslona.
+<p align="center">
+  <img width="309" alt="discord-photo" src="https://github.com/mihaprah/projekt/assets/116807398/48f1979e-aaf7-4581-89ef-e99392d073d9">
+</p>
+
+#### Vodenje in deljenje dela
+Za vodenja dela na projektu smo izbrali principe metode [SCRUM](https://www.scrum.org/resources/what-scrum-module), ki temelji na delu v sprintih. Vsak sprint je trajal 2 tedna in v njem smo opravili delo, ki smo si ga zastavili za ta sprint. Celoten projekt je bil sestavljen iz 5ih sprintov, pri čemer se je prvi začel 01.04.2024 in zadji 27.05.2024. Projekt je tako trajal **od 01.04.2024 do 03.06.2024**. Pred začetkom novega sprinta, smo ustvarili nova opravila, tako imenovane taske (ang. Task), ki jih moramo v naslednjem sprintu narediti. Za beleženje dela in pisanje novih opravil smo uporabili program [Notion](https://www.notion.so/Opis-8b1b88ecec974c03add9e5615c7a1f16), ki nam je omogočal pregled dela in uporabo scrum tabel za lepšo preglednost. Vsak task je imel naslednje atribute:
+
+<p align="center">
+  <img width="430" alt="task-example" src="https://github.com/mihaprah/projekt/assets/116807398/d2f0b728-0fd1-432e-a094-ef09c9df7327">
+</p>
+Task je nato šel v skupino vseh taskov imenovano "Backlog", kjer so bili vidno vsi taski na projektu in pa število ur dela, ki jih potrebujemo za končanje vseh taskov. Tako smo lahko vodili napredek na projektu in videli ali smo s delom na tekočem ali v zaostanku.
+
+<p align="center">
+  <img width="1272" alt="tasks-backlog" src="https://github.com/mihaprah/projekt/assets/116807398/08ec3001-ed98-42be-a5b0-2c65a20e12d0">
+</p>
+
+Za delo je vsak član skupine uporabljal svoj "Sprint board", kjer so bili zapisani vsi taski za vsakega posameznika, ki jih mora opraviti v trenutnem sprintu. Če katerega od taskov, ni uspel narediti, se je ta premaknil v naslednji sprint.
+
+<p align="center">
+  <img width="858" alt="sprint-board" src="https://github.com/mihaprah/projekt/assets/116807398/c4815865-cd86-444e-a97d-bd2c5d540920">
+</p>
+
 ### Zasnova podatkovne strukture
 <p align="center">
   <img width="902" alt="SCM Data structure" src="https://github.com/mihaprah/projekt/assets/116807398/11934d1c-2c87-4a70-a180-aa62b83f3224">
