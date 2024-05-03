@@ -79,10 +79,40 @@ Kolekcija "Predefined searches", je namenjena shranjevanju iskalnih podatkov pos
 
 Spodaj je skica, ki prikazuje strukturo naše podatkovne baze.
 <p align="center">
-  <img width="689" alt="data-structure" src="https://github.com/mihaprah/projekt/assets/116807398/532870c2-c7a2-46c7-a1e4-190587b7af38">
+  <img width="700" alt="data-strucute" src="https://github.com/mihaprah/projekt/assets/116807398/32533fd8-028f-4af9-98d5-d07653454180">
 </p>
 
 ### Wireframe aplikacije (prototip izgleda)
 S pomočjo orodja [Figma](https://www.figma.com), ki omogoča enostavno in hitro izdelavo vizualnih prototipov, smo izdelali prototip, kako bi naj aplikacija izgledala. Prototip nam je nato služil, kot navodilo za izgradnjo spletne aplikacije v nadaljevanju projekta.
+
+<p align="center">
+  <img alt="dashboard" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/52fce584-1c14-4b32-81b3-1ceb4bac6364">
+  <br/>
+  Nadzorna plošča, kjer so vidni vsi "Tenanti", ki jih je uporabnik naredil.
+</p>
+<p align="center">
+  <img alt="tenant-list-view" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/b49dc710-3633-4574-a081-7016e831e872">
+  <br/>
+  <img alt="tenant-grid-view" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/5fb5b106-8748-420f-929e-d29d10fe90d0">
+  <br/>
+  Pregled vseh kontaktov za enega "Tenanta". Pogled je nastavljen na <b>seznam</b> ali na <b>mrežo</b>.
+</p>
+<p align="center">
+  <img alt="kontakt" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/08aecbb0-0e32-4643-8590-816009e9fa72">
+  <br/>
+  Pregled posameznega kontakta.
+</p>
+<p align="center">
+  <img alt="add-tenant" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/5cbe449f-70b3-4968-aff2-fd731f7d9dc6">
+  <br/>
+  <img alt="add-tenant" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/5ed4fdde-bf47-4ee3-adc7-0da143588f87">
+  <br/>
+  Dodajanje novega <b>"Tenanta"</b> in novega <b>kontakta</b> znotraj posameznega "Tenanta".
+</p>
+<p align="center">
+  <img alt="kontakt" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/695547c5-0494-4e8e-a45e-ef9e48f3c201">
+  <br/>
+  Pregled že v naprej shranjenih nastavitev za iskanje specifičnih kontaktov znotraj določenega "Tenanta".
+</p>
 
 ## Navodila za namestitev
