@@ -24,5 +24,6 @@ public class PredefinedSearch {
     private String onTenant;
     private String title;
     private String filter;
+    private SortOrientation sortOrientation;
 
 }
