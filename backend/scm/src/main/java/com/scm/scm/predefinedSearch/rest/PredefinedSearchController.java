@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/predefinedSearches")
+@RequestMapping("/predefined_searches")
 public class PredefinedSearchController {
 
     @Autowired
@@ -21,8 +21,8 @@ public class PredefinedSearchController {
         return ResponseEntity.ok(predefinedSearches);
     }
 
-    @GetMapping("/{predefinedSearch_id}")
-    public ResponseEntity<PredefinedSearch> getPredefinedSearch(@PathVariable("predefinedSearch_id") String predefinedSearchId) {
+    @GetMapping("/{predefined_search_id}")
+    public ResponseEntity<PredefinedSearch> getPredefinedSearch(@PathVariable("predefined_search_id") String predefinedSearchId) {
         PredefinedSearch predefinedSearch = predefinedSearchServices.getPredefinedSearchById(predefinedSearchId);
         return ResponseEntity.ok(predefinedSearch);
     }
@@ -39,8 +39,8 @@ public class PredefinedSearchController {
         return ResponseEntity.ok(updatedPredefinedSearch);
     }
 
-    @DeleteMapping("/{predefinedSearch_id}")
-    public ResponseEntity<String> deletePredefinedSearch(@PathVariable("predefinedSearch_id") String predefinedSearchId) {
+    @DeleteMapping("/{predefined_search_id}")
+    public ResponseEntity<String> deletePredefinedSearch(@PathVariable("predefined_search_id") String predefinedSearchId) {
         return ResponseEntity.ok(predefinedSearchServices.deletePredefinedSearch(predefinedSearchId));
     }
 

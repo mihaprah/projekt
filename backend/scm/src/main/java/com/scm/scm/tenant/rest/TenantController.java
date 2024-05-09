@@ -41,7 +41,7 @@ public class TenantController {
 
     @PutMapping("/deactivate/{tenant_id}")
     public ResponseEntity<String> deactivateTenant(@PathVariable("tenant_id") String tenantId) {
-        return tenantServices.deactivateTenant(tenantId);
+        return ResponseEntity.ok(tenantServices.deactivateTenant(tenantId));
     }
 
     @PutMapping("/tags/add/{tenant_id}")

@@ -2,10 +2,10 @@ package com.scm.scm.tenant.services;
 
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.exceptions.ExceptionCause;
+import com.scm.scm.support.mongoTemplate.MongoTemplateService;
 import com.scm.scm.tenant.dao.TenantRepository;
 import com.scm.scm.tenant.vao.Tenant;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +17,7 @@ import java.util.Objects;
 public class TenantServices {
 
     private TenantRepository tenantRepository;
+    private MongoTemplateService mongoTemplateService;
 
     public Tenant addTenant(Tenant tenant) {
         if (tenantRepository.existsById(tenant.getId())) {
@@ -27,6 +28,9 @@ public class TenantServices {
             } else {
                 tenant.setId(tenant.generateId(tenant.getTitle()));
                 tenant.setTenantUniqueName(tenant.generateTenantUniqueName(tenant.getTitle()));
+                if (!mongoTemplateService.createNewTenantCollections(tenant.getTenantUniqueName())) {
+                    throw new CustomHttpException("Failed to create tenant collections", 500, ExceptionCause.SERVER_ERROR);
+                }
                 tenantRepository.save(tenant);
                 return tenant;
             }
@@ -54,15 +58,14 @@ public class TenantServices {
         return oldTenant;
     }
 
-    public ResponseEntity<String> deactivateTenant(String id) {
+    public String deactivateTenant(String id) {
         Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR));
-
         if (tenant != null) {
             tenant.setActive(false);
             tenantRepository.save(tenant);
-            return ResponseEntity.ok("Tenant successfully deactivated");
+            return "Tenant successfully deactivated";
         } else {
-            return ResponseEntity.notFound().build();
+            throw new CustomHttpException("Tenant is null", 500, ExceptionCause.SERVER_ERROR);
         }
     }
 
