@@ -6,10 +6,11 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 
 @Data
 @AllArgsConstructor
-public class Events {
+public class Event {
 
     @Id
     private String id;
@@ -21,8 +22,9 @@ public class Events {
     private String currentState;
     private LocalDateTime eventTime;
 
-
-
-
+    public String generateId() {
+        final Random random = new Random();
+        return System.nanoTime() + "-" + random.nextInt(10_000);
+    }
 
 }

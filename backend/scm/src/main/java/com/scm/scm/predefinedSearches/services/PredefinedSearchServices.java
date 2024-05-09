@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -14,8 +15,17 @@ public class PredefinedSearchServices {
     private PredefinedSearchRepository predefinedSearchRepository;
 
     public PredefinedSearch addPredefinedSearch(PredefinedSearch predefinedSearch) {
-            predefinedSearchRepository.save(predefinedSearch);
-            return predefinedSearch;
+        if (predefinedSearchRepository.existsById(predefinedSearch.getSearchBy())){
+            throw new RuntimeException("Predefined search already exists");
+        } else {
+            if (Objects.equals(predefinedSearch.getTitle(), "")) {
+                throw new RuntimeException("Predefined search title is empty");
+            } else {
+                predefinedSearch.setId(predefinedSearch.generateId(predefinedSearch.getTitle()));
+                predefinedSearchRepository.save(predefinedSearch);
+                return predefinedSearch;
+            }
+        }
     }
 
     public List<PredefinedSearch> getAllPredefinedSearches() {

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -16,8 +17,18 @@ public class TenantServices {
     private TenantRepository tenantRepository;
 
     public Tenant addTenant(Tenant tenant) {
-        tenantRepository.save(tenant);
-        return tenant;
+        if (tenantRepository.existsById(tenant.getId())) {
+            throw new RuntimeException("Tenant already exists");
+        } else {
+            if (Objects.equals(tenant.getTitle(), "")) {
+                throw new RuntimeException("Title must be provided");
+            } else {
+                tenant.setId(tenant.generateId(tenant.getTitle()));
+                tenant.setTenantUniqueName(tenant.generateTenantUniqueName(tenant.getTitle()));
+                tenantRepository.save(tenant);
+                return tenant;
+            }
+        }
     }
 
     public List<Tenant> getAllTenants() {

@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Random;
+
 @Data
 @Document(collection = "predefinedSearches")
 public class PredefinedSearch {
@@ -13,8 +15,6 @@ public class PredefinedSearch {
         this.user = user;
         this.onTenant = onTenant;
     }
-
-    public enum SortOrientation { ASC, DESC }
 
     @Id
     private String id;
@@ -26,4 +26,9 @@ public class PredefinedSearch {
     private String filter;
     private SortOrientation sortOrientation;
 
+    public String generateId(String searchTitle) {
+        final Random random = new Random();
+        String sanitizedTitle = searchTitle.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+        return sanitizedTitle + "-" + System.nanoTime() + "-" + random.nextInt(10_000);
+    }
 }
