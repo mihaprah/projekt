@@ -1,7 +1,7 @@
-package com.scm.scm.predefinedSearches.rest;
+package com.scm.scm.predefinedSearch.rest;
 
-import com.scm.scm.predefinedSearches.services.PredefinedSearchServices;
-import com.scm.scm.predefinedSearches.vao.PredefinedSearch;
+import com.scm.scm.predefinedSearch.services.PredefinedSearchServices;
+import com.scm.scm.predefinedSearch.vao.PredefinedSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

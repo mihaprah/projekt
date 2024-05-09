@@ -1,6 +1,6 @@
-package com.scm.scm.predefinedSearches.dao;
+package com.scm.scm.predefinedSearch.dao;
 
-import com.scm.scm.predefinedSearches.vao.PredefinedSearch;
+import com.scm.scm.predefinedSearch.vao.PredefinedSearch;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

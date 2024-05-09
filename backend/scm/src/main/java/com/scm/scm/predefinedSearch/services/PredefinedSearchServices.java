@@ -1,7 +1,7 @@
-package com.scm.scm.predefinedSearches.services;
+package com.scm.scm.predefinedSearch.services;
 
-import com.scm.scm.predefinedSearches.dao.PredefinedSearchRepository;
-import com.scm.scm.predefinedSearches.vao.PredefinedSearch;
+import com.scm.scm.predefinedSearch.dao.PredefinedSearchRepository;
+import com.scm.scm.predefinedSearch.vao.PredefinedSearch;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

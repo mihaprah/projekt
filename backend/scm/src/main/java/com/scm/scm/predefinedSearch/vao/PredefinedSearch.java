@@ -1,4 +1,4 @@
-package com.scm.scm.predefinedSearches.vao;
+package com.scm.scm.predefinedSearch.vao;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -10,10 +10,14 @@ import java.util.Random;
 @Document(collection = "predefinedSearches")
 public class PredefinedSearch {
 
-    public PredefinedSearch (String searchQuery, String user, String onTenant) {
+    public PredefinedSearch (String searchQuery, String searchBy, String user, String onTenant, String title, String filter, SortOrientation sortOrientation) {
         this.searchQuery = searchQuery;
+        this.searchBy = searchBy;
         this.user = user;
         this.onTenant = onTenant;
+        this.title = title;
+        this.filter = filter;
+        this.sortOrientation = sortOrientation;
     }
 
     @Id
