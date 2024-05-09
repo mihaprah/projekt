@@ -3,6 +3,8 @@ package com.scm.scm.events.services;
 
 import com.scm.scm.events.vao.Event;
 import com.scm.scm.events.vao.EventState;
+import com.scm.scm.support.exceptions.CustomHttpException;
+import com.scm.scm.support.exceptions.ExceptionCause;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +19,19 @@ public class EventsServices {
         event.setId(event.generateId());
         event.setEventTime(LocalDateTime.now());
         if (Objects.equals(event.getPropKey(), "")) {
-            throw new IllegalArgumentException("Event propKey is empty");
+            throw new CustomHttpException("Event propKey is empty", 400, ExceptionCause.USER_ERROR);
         }
         if (Objects.equals(event.getCurrentState(), "")) {
-            throw new IllegalArgumentException("Event propKey is empty");
+            throw new CustomHttpException("Event current state is empty", 400, ExceptionCause.USER_ERROR);
         }
         if (Objects.equals(event.getUser(), "")) {
-            throw new IllegalArgumentException("Event user is empty");
+            throw new CustomHttpException("Event user is empty", 400, ExceptionCause.USER_ERROR);
         }
         if (Objects.equals(event.getContact(), "")) {
-            throw new IllegalArgumentException("Event contact is empty");
+            throw new CustomHttpException("Event contact is empty", 400, ExceptionCause.USER_ERROR);
         }
         if (!checkEnum(event.getEventState())){
-            throw new IllegalArgumentException("Event state is not valid");
+            throw new CustomHttpException("Event state is not valid", 400, ExceptionCause.USER_ERROR);
         }
         return event;
     }
