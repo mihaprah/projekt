@@ -46,22 +46,22 @@ public class TenantController {
 
     @PutMapping("/tags/add/{tenant_id}")
     public ResponseEntity<String> addTag(@PathVariable("tenant_id") String tenantId, @RequestBody List<String> tags) {
-        return tenantServices.addTags(tenantId, tags);
+        return ResponseEntity.ok(tenantServices.addTags(tenantId, tags));
     }
 
     @PutMapping("/tags/remove/{tenant_id}")
     public ResponseEntity<String> removeTag(@PathVariable("tenant_id") String tenantId, @RequestBody List<String> tags) {
-        return tenantServices.removeTags(tenantId, tags);
+        return ResponseEntity.ok(tenantServices.removeTags(tenantId, tags));
     }
 
     @PutMapping("/users/add/{tenant_id}")
     public ResponseEntity<String> addUsers(@PathVariable("tenant_id") String tenantId, @RequestBody List<String> users) {
-        return tenantServices.addUsers(tenantId, users);
+        return ResponseEntity.ok(tenantServices.addUsers(tenantId, users));
     }
 
     @PutMapping("/users/remove/{tenant_id}")
     public ResponseEntity<String> removeUsers(@PathVariable("tenant_id") String tenantId, @RequestBody List<String> users) {
-        return tenantServices.removeUsers(tenantId, users);
+        return ResponseEntity.ok(tenantServices.removeUsers(tenantId, users));
     }
 
 

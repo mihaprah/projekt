@@ -66,7 +66,7 @@ public class TenantServices {
         }
     }
 
-    public ResponseEntity<String> addTags(String id, List<String> tags) {
+    public String addTags(String id, List<String> tags) {
         Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR));
         if (tenant != null) {
             Map<String, Integer> oldTags = tenant.getContactTags();
@@ -79,13 +79,13 @@ public class TenantServices {
             }
             tenant.setContactTags(oldTags);
             tenantRepository.save(tenant);
-            return ResponseEntity.ok("Tenant successfully added tags");
+            return "Tenant successfully added tags";
         } else {
-            return ResponseEntity.notFound().build();
+            throw new CustomHttpException("Tenant is null", 500, ExceptionCause.SERVER_ERROR);
         }
     }
 
-    public ResponseEntity<String> removeTags(String id, List<String> tags) {
+    public String removeTags(String id, List<String> tags) {
         Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR));
         if (tenant != null) {
             Map<String, Integer> oldTags = tenant.getContactTags();
@@ -97,14 +97,14 @@ public class TenantServices {
             }
             tenant.setContactTags(oldTags);
             tenantRepository.save(tenant);
-            return ResponseEntity.ok("Tenant successfully removed tags");
+            return "Tenant successfully removed tags";
         } else {
-            return ResponseEntity.notFound().build();
+            throw new CustomHttpException("Tenant is null", 500, ExceptionCause.SERVER_ERROR);
         }
     }
 
-    public ResponseEntity<String> addUsers(String id, List<String> users) {
-        Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR));
+    public String addUsers(String id, List<String> users) {
+        Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException("Tenant not found", 404, ExceptionCause.SERVER_ERROR));
         if (tenant != null) {
             List<String> oldUsers = tenant.getUsers();
             for (String user : users) {
@@ -114,13 +114,13 @@ public class TenantServices {
             }
             tenant.setUsers(oldUsers);
             tenantRepository.save(tenant);
-            return ResponseEntity.ok("Tenant successfully added users");
+            return "Tenant successfully added users";
         } else {
-            return ResponseEntity.notFound().build();
+            throw new CustomHttpException("Tenant is null", 500, ExceptionCause.SERVER_ERROR);
         }
     }
 
-    public ResponseEntity<String> removeUsers(String id, List<String> users) {
+    public String removeUsers(String id, List<String> users) {
         Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR));
         if (tenant != null) {
             List<String> oldUsers = tenant.getUsers();
@@ -129,9 +129,9 @@ public class TenantServices {
                     oldUsers.remove(user);
                 }
             }
-            return ResponseEntity.ok("Tenant successfully removed users");
+            return "Tenant successfully removed users";
         } else {
-            return ResponseEntity.notFound().build();
+            throw new CustomHttpException("Tenant is null", 500, ExceptionCause.SERVER_ERROR);
         }
     }
 }
