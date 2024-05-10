@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 @AllArgsConstructor
@@ -21,6 +22,7 @@ public class ContactServices {
 
     private MongoTemplateService mongoTemplateService;
     private TenantServices tenantServices;
+    private static final Logger log = Logger.getLogger(ContactServices.class.toString());
 
     public Contact findOneContact(String tenantUniqueName, String contactId) {
         if (contactId.isEmpty() || tenantUniqueName.isEmpty()) {
@@ -33,6 +35,7 @@ public class ContactServices {
         if (contact == null) {
             throw new CustomHttpException("Contact not found", 404, ExceptionCause.USER_ERROR);
         }
+        log.info("Contact found with id: " + contactId);
         return contact;
     }
 
@@ -43,6 +46,7 @@ public class ContactServices {
         if (!mongoTemplateService.collectionExists(tenantUniqueName + "_main")) {
             throw new CustomHttpException("Collection does not exist", 500, ExceptionCause.SERVER_ERROR);
         }
+        log.info("All contacts found for tenant: " + tenantUniqueName);
         return mongoTemplate.findAll(Contact.class, tenantUniqueName + "_main");
     }
 
@@ -66,6 +70,8 @@ public class ContactServices {
         contact.setAttributesToString(contact.contactAttributesToString());
         mongoTemplate.save(contact, contact.getTenantUniqueName() + "_main");
         tenantServices.addTags(contact.getTenantUniqueName(), contact.getTags());
+
+        log.info("Contact created with id: " + contact.getId() + " for tenant: " + contact.getTenantUniqueName());
         return "Contact created successfully to " + contact.getTenantUniqueName() + "_main collection";
     }
 
@@ -89,6 +95,7 @@ public class ContactServices {
             existingContact.setAttributesToString(existingContact.contactAttributesToString());
 
             mongoTemplate.save(existingContact, existingContact.getTenantUniqueName());
+            log.info("Contact updated with id: " + contact.getId() + " for tenant: " + contact.getTenantUniqueName());
             return existingContact;
         } else {
             throw new CustomHttpException("Contact does not exist", 500, ExceptionCause.SERVER_ERROR);
@@ -107,7 +114,9 @@ public class ContactServices {
             throw new CustomHttpException("Contact not found", 404, ExceptionCause.USER_ERROR);
         }
         mongoTemplate.remove(contact, tenantUniqueName + "_main");
+        log.info("Contact deleted with id: " + contactId + " for tenant: " + tenantUniqueName);
         mongoTemplate.save(contact, tenantUniqueName + "_deleted");
+        log.info("Contact saved to " + tenantUniqueName + "_deleted collection");
         return "Contact deleted successfully from " + tenantUniqueName + "_main collection";
     }
 }

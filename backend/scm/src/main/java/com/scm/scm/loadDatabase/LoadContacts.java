@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.logging.Logger;
 
 @Service
 public class LoadContacts {
+
+    private static final Logger log = Logger.getLogger(LoadContacts.class.toString());
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -78,13 +81,13 @@ public class LoadContacts {
         mongoTemplate.save(contact2, contact2.getTenantUniqueName() + "_main");
         mongoTemplate.save(contact3, contact3.getTenantUniqueName() + "_main");
         mongoTemplate.save(contact4, contact4.getTenantUniqueName() + "_main");
-        System.out.println("Loaded test Contacts into the database.");
+        log.info("Loaded test Contacts into the database.");
 
         tenantServices.addTags(contact1.getTenantUniqueName(), contact1.getTags());
         tenantServices.addTags(contact2.getTenantUniqueName(), contact2.getTags());
         tenantServices.addTags(contact3.getTenantUniqueName(), contact3.getTags());
         tenantServices.addTags(contact4.getTenantUniqueName(), contact4.getTags());
-        System.out.println("Added tags from Contacts to tenants into the database.");
+        log.info("Added tags from Contacts to tenants into the database.");
     }
 
     private List<String> selectRandomTags(List<String> tags, int count) {

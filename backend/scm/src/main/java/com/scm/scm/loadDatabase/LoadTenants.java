@@ -9,9 +9,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 @Service
 public class LoadTenants {
+
+    private static final Logger log = Logger.getLogger(LoadTenants.class.toString());
 
     @Autowired
     private TenantRepository tenantRepository;
@@ -25,7 +28,7 @@ public class LoadTenants {
     public String[] createTenants() {
 
         mongoTemplate.getDb().drop();
-        System.out.println("Old database dropped.");
+        log.info("Old database dropped.");
 
         Tenant tenant1 = new Tenant(null, "Acme Corporation", "", "A global leader in anvil production.", "Blue", true, Arrays.asList("user1@example.com", "user2@example.com"), new HashMap<>());
         tenant1.setTenantUniqueName(tenant1.generateTenantUniqueName(tenant1.getTitle()));
@@ -37,11 +40,11 @@ public class LoadTenants {
 
         Tenant savedTenant1 = tenantRepository.save(tenant1);
         Tenant savedTenant2 = tenantRepository.save(tenant2);
-        System.out.println("Loaded test Tenants into the database.");
+        log.info("Loaded test Tenants into the database.");
 
         mongoTemplateService.createNewTenantCollections(savedTenant1.getTenantUniqueName());
         mongoTemplateService.createNewTenantCollections(savedTenant2.getTenantUniqueName());
-        System.out.println("Created Tenants main, deleted, activity collection in the database.");
+        log.info("Created Tenants main, deleted, activity collection in the database.");
 
         return new String[]{savedTenant1.getTenantUniqueName(), savedTenant2.getTenantUniqueName()};
     }

@@ -10,10 +10,13 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 @Service
 @AllArgsConstructor
 public class EventsServices {
+
+    private static final Logger log = Logger.getLogger(EventsServices.class.toString());
 
     public Event addEvent (Event event){
         event.setId(event.generateId());
@@ -33,6 +36,7 @@ public class EventsServices {
         if (!checkEnum(event.getEventState())){
             throw new CustomHttpException("Event state is not valid", 400, ExceptionCause.USER_ERROR);
         }
+        log.info("Event created with id: " + event.getId());
         return event;
     }
 

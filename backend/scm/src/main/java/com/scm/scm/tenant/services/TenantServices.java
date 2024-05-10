@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 @Service
 @AllArgsConstructor
@@ -18,6 +19,7 @@ public class TenantServices {
 
     private TenantRepository tenantRepository;
     private MongoTemplateService mongoTemplateService;
+    private static final Logger log = Logger.getLogger(TenantServices.class.toString());
 
     public Tenant addTenant(Tenant tenant) {
         if (tenantRepository.existsById(tenant.getId())) {
@@ -32,17 +34,21 @@ public class TenantServices {
                     throw new CustomHttpException("Failed to create tenant collections", 500, ExceptionCause.SERVER_ERROR);
                 }
                 tenantRepository.save(tenant);
+                log.info("Tenant created with id: " + tenant.getId());
                 return tenant;
             }
         }
     }
 
     public List<Tenant> getAllTenants() {
+        log.info("All tenants found");
         return tenantRepository.findAll();
     }
 
     public Tenant getTenantById(String id) {
-        return tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR));
+        Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR));
+        log.info("Tenant found with id: " + id);
+        return tenant;
     }
 
     public Tenant updateTenant(Tenant tenant) {
@@ -55,6 +61,7 @@ public class TenantServices {
         } else {
             throw new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR);
         }
+        log.info("Tenant updated with id: " + tenant.getId());
         return oldTenant;
     }
 
@@ -63,6 +70,7 @@ public class TenantServices {
         if (tenant != null) {
             tenant.setActive(false);
             tenantRepository.save(tenant);
+            log.info("Tenant deactivated with id: " + id);
             return "Tenant successfully deactivated";
         } else {
             throw new CustomHttpException("Tenant is null", 500, ExceptionCause.SERVER_ERROR);
@@ -82,6 +90,7 @@ public class TenantServices {
             }
             tenant.setContactTags(oldTags);
             tenantRepository.save(tenant);
+            log.info("Tags added to tenant: " + tenantUniqueName);
             return "Tenant successfully added tags";
         } else {
             throw new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR);
@@ -100,6 +109,7 @@ public class TenantServices {
             }
             tenant.setContactTags(oldTags);
             tenantRepository.save(tenant);
+            log.info("Tags removed from tenant: " + tenantUniqueName);
             return "Tenant successfully removed tags";
         } else {
             throw new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR);
@@ -117,6 +127,7 @@ public class TenantServices {
             }
             tenant.setUsers(oldUsers);
             tenantRepository.save(tenant);
+            log.info("Users added to tenant: " + id);
             return "Tenant successfully added users";
         } else {
             throw new CustomHttpException("Tenant is null", 500, ExceptionCause.SERVER_ERROR);
@@ -132,6 +143,7 @@ public class TenantServices {
                     oldUsers.remove(user);
                 }
             }
+            log.info("Users removed from tenant: " + id);
             return "Tenant successfully removed users";
         } else {
             throw new CustomHttpException("Tenant is null", 500, ExceptionCause.SERVER_ERROR);
