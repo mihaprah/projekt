@@ -69,8 +69,8 @@ public class TenantServices {
         }
     }
 
-    public String addTags(String id, List<String> tags) {
-        Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR));
+    public String addTags(String tenantUniqueName, List<String> tags) {
+        Tenant tenant = tenantRepository.findByTenantUniqueName(tenantUniqueName);
         if (tenant != null) {
             Map<String, Integer> oldTags = tenant.getContactTags();
             for (String tag : tags) {
@@ -84,12 +84,12 @@ public class TenantServices {
             tenantRepository.save(tenant);
             return "Tenant successfully added tags";
         } else {
-            throw new CustomHttpException("Tenant is null", 500, ExceptionCause.SERVER_ERROR);
+            throw new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR);
         }
     }
 
-    public String removeTags(String id, List<String> tags) {
-        Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR));
+    public String removeTags(String tenantUniqueName, List<String> tags) {
+        Tenant tenant = tenantRepository.findByTenantUniqueName(tenantUniqueName);
         if (tenant != null) {
             Map<String, Integer> oldTags = tenant.getContactTags();
             for (String tag : tags) {
@@ -102,7 +102,7 @@ public class TenantServices {
             tenantRepository.save(tenant);
             return "Tenant successfully removed tags";
         } else {
-            throw new CustomHttpException("Tenant is null", 500, ExceptionCause.SERVER_ERROR);
+            throw new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR);
         }
     }
 

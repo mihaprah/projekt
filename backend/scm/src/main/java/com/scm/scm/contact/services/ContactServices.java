@@ -4,6 +4,7 @@ import com.scm.scm.contact.vao.Contact;
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.exceptions.ExceptionCause;
 import com.scm.scm.support.mongoTemplate.MongoTemplateService;
+import com.scm.scm.tenant.services.TenantServices;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -18,6 +19,7 @@ public class ContactServices {
     @Autowired
     private MongoTemplate mongoTemplate;
     private MongoTemplateService mongoTemplateService;
+    private TenantServices tenantServices;
 
     public Contact findOneContact(String tenantUniqueName, String contactId) {
         if (contactId.isEmpty() || tenantUniqueName.isEmpty()) {
@@ -62,6 +64,7 @@ public class ContactServices {
         contact.setId(contact.generateId(contact.getTitle()));
         contact.setAttributesToString(contact.contactAttributesToString());
         mongoTemplate.save(contact, contact.getTenantUniqueName() + "_main");
+        tenantServices.addTags(contact.getTenantUniqueName(), contact.getTags());
         return "Contact created successfully to " + contact.getTenantUniqueName() + "_main collection";
     }
 }
