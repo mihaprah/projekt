@@ -33,26 +33,27 @@ public class ContactController {
 
     @PostMapping
     public ResponseEntity<String> addContact(@RequestBody Contact contact) {
-        contact.setId(StringEscapeUtils.escapeHtml4(contact.getId()));
-        contact.setTitle(StringEscapeUtils.escapeHtml4(contact.getTitle()));
-        contact.setUser(StringEscapeUtils.escapeHtml4(contact.getUser()));
-        contact.setTenantUniqueName(StringEscapeUtils.escapeHtml4(contact.getTenantUniqueName()));
-        contact.setComments(StringEscapeUtils.escapeHtml4(contact.getComments()));
-        contact.setAttributesToString(StringEscapeUtils.escapeHtml4(contact.getAttributesToString()));
+        Contact cleanContact = new Contact();
+        cleanContact.setId(StringEscapeUtils.escapeHtml4(contact.getId()));
+        cleanContact.setTitle(StringEscapeUtils.escapeHtml4(contact.getTitle()));
+        cleanContact.setUser(StringEscapeUtils.escapeHtml4(contact.getUser()));
+        cleanContact.setTenantUniqueName(StringEscapeUtils.escapeHtml4(contact.getTenantUniqueName()));
+        cleanContact.setComments(StringEscapeUtils.escapeHtml4(contact.getComments()));
+        cleanContact.setAttributesToString(StringEscapeUtils.escapeHtml4(contact.getAttributesToString()));
 
         List<String> sanitizedTags = new ArrayList<>();
         for (String tag : contact.getTags()) {
             sanitizedTags.add(StringEscapeUtils.escapeHtml4(tag));
         }
-        contact.setTags(sanitizedTags);
+        cleanContact.setTags(sanitizedTags);
 
         Map<String, String> sanitizedProps = new HashMap<>();
         for (Map.Entry<String, String> entry : contact.getProps().entrySet()) {
             sanitizedProps.put(StringEscapeUtils.escapeHtml4(entry.getKey()), StringEscapeUtils.escapeHtml4(entry.getValue()));
         }
-        contact.setProps(sanitizedProps);
+        cleanContact.setProps(sanitizedProps);
 
-        return ResponseEntity.ok(contactServices.createContact(contact));
+        return ResponseEntity.ok(contactServices.createContact(cleanContact));
     }
 
     @PutMapping

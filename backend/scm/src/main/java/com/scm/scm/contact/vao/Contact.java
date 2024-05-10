@@ -2,6 +2,7 @@ package com.scm.scm.contact.vao;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.Random;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class Contact {
     @Id
