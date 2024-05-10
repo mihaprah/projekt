@@ -32,4 +32,14 @@ public class ContactController {
         return ResponseEntity.ok(contactServices.createContact(contact));
     }
 
+    @PutMapping
+    public ResponseEntity<Contact> updateContact(@RequestBody Contact contact){
+        return ResponseEntity.ok(contactServices.updateContact(contact));
+    }
+
+    @DeleteMapping("/{contact_id}/{tenant_unique_name}")
+    public ResponseEntity<String> deleteContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName) {
+        return ResponseEntity.ok(contactServices.deleteContact(tenantUniqueName, id));
+    }
+
 }

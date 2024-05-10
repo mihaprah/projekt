@@ -19,7 +19,6 @@ public class LoadContacts {
     private TenantServices tenantServices;
 
     public void createContacts(String[] tenantUniqueNames) {
-        mongoTemplate.dropCollection(Contact.class);
 
         List<String> allTags = new ArrayList<>();
         allTags.add("New");
