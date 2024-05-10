@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.scm.scm.tenant.vao.Tenant;
 import com.scm.scm.tenant.dao.TenantRepository;
+import org.springframework.context.annotation.Profile;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ public class LoadTenants {
     private TenantRepository tenantRepository;
 
     @Bean
+    @Profile("dev")
     CommandLineRunner initDatabase() {
         return args -> {
 
