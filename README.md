@@ -12,19 +12,20 @@ Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplik
 - [Anže Golob](https://github.com/anzo26)
 
 ## Kazalo vsebine
-1. [Predstavitev](#predstavitev)
-    - [Podroben opis projekta](#podproben-opis)
-2. Dokumentacija
-    - Funkcionalnosti
-    - Tehnološki nabor
-    - Organizacija in način dela
-    - Zasnova podatkovne strukture
-    - Wireframe aplikacije (prototip izgleda)
-    - Testiranje
+1. [Predstavitev projekt](#1-predstavitev-projekta)
+    - [Podroben opis projekta](#podroben-opis-projekta)
+2. [Dokumentacija](#2-dokumentacija)
+    - [Funkcionalnosti](#funkcionalnosti)
+    - [Tehnološki nabor](#tehnološki-nabor)
+    - [Organizacija in način dela](#organizacija-in-način-dela)
+    - [Zasnova podatkovne strukture](#zasnova-podatkovne-strukture)
+    - [Wireframe aplikacije (prototip izgleda)](#wireframe-aplikacije-prototip-izgleda)
+    - [Testiranje](#testiranje)
+    - [Optimizacija kode](#optimizacija-kode)
 3. [Navodila za namestitev](#3-navodila-za-namestitev)
 
-## <a id="predstavitev"></a> 1. Predstavitev
-### <a id="podproben-opis"></a> Podroben opis projekta
+## 1. Predstavitev projekta
+### Podroben opis projekta
 Načrtovati, nadgraditi, implementirati in namestiti bo potrebno sistem, ki bo uporabnikom omogočal vodenje kontaktov na nekem projektu ali v nekem podjetju. Skupino kontaktov lahko uporabniki kreirajo sami, kontakti naj bodo vidni le znotraj te skupine; poskrbeti bo torej treba za izolacijo podatkov med različnimi uporabniki in njihovimi projekti.
 Podatki o uporabnikih naj bodo do določene mere predefinirani, omogočeno pa naj bo tudi poljubno definiranje kontaktov v smislu kluč-vrednost. Pričakuje se označevanje kontaktov s poljubnimi značkami, ki bodo služile kot kategorije kontaktov. Voditi bo potrebno tudi vse spremembe kontaktov (revizijska sled) in jih tudi primerno verzionirati. Pričakuje se tudi določene napredne funkcionalnosti, kot npr. iskanje podvojenih kontaktov, njihovo združevanje ipd.
 Dostop do zalednega sistema naj bo mogoč preko ustrezno zavarovanega REST vmesnika.
@@ -126,6 +127,49 @@ S pomočjo orodja [Figma](https://www.figma.com), ki omogoča enostavno in hitro
   <img alt="kontakt" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/695547c5-0494-4e8e-a45e-ef9e48f3c201">
   <br/>
   Pregled že v naprej shranjenih nastavitev za iskanje specifičnih kontaktov znotraj določenega "Tenanta".
+</p>
+
+### Testiranje
+Za testiranje smo poskrbeli s sprotnim pisanjem unit testov. Teste smo napisali za sledeče entitete:
+- Events
+- PredefinedSearches
+- Tenants
+- Contacts
+
+Unit teste smo pisali tudi za vse Service razrede:
+- EventsServices
+- PredefinedSearchesServices
+- TenantsServices
+- ContactServices
+
+To nam je omogočalo, da smo z uporabo **GitHub Actions** naredili Workflow, ki nam je pognal vse teste, ki smo jih imeli v projektu z vsakim commitom na repozitorij. S tem smo lahko videli ali je nova koda, ki smo jo naložili na repozitorij pokvarila, katerega izmed testov in tako na napako tudi ustrezno reagirali s popravkom nove kode.
+
+Ob pisanju REST vmesnika (Controller razredov) smo tudi testirali vse **API končne točke**, da smo preverili ali še vedno delujejo pravilno. Torej ali sprejmejo in vrnejo podatke, kot jih morajo in hkrati kako reagirajo ob prejemu napačnih podatkov. Za to smo si pomagali z orodjem [Swagger](https://swagger.io), ki nam je omogočalo pregled vseh API točk in podatkov s katerimi te delujejo. Swagger smo vključili v projekt, ta je bil pognan na portu *localhost:8080/swagger-ui/index.html*.
+<p align="center">
+  <img alt="swagger-api" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/a1983b6e-c604-4745-95c8-826ea1b2605f">
+  <br/>
+  Pregled APIja s orodjem Swagger
+</p>
+
+Orodje nam je omogočalo tudi pregled vseh shem, ki se uporabljajo v API klicih.
+
+<p align="center">
+  <img alt="swagger-sheme" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/ae72425e-5976-4813-aaac-d4de057d352a">
+  <br/>
+  Pregled shem, ki jih uporablja API s orodjem Swagger
+</p>
+
+### Optimizacija kode
+Za optimizacijo kode in pregled kode, smo uporabili orodje [SonarCloud](), ki nam je omogočalo, da smo v **GitHub Actions** Workflow vključili neprestan pregled kode. Repotizorij smo povezali s SonrCloudom in tako dobili dostop do nadzorne plošče projekta. Na njej smo lahko gledali kakša je koda glede na:
+- Vzdrževanost
+- Zanesljivost
+- Varnost
+
+Če smo opazili velika odstopanje, ali pa je padel **Quality Gate**, smo kodo nemudoma popravili po pravilih in s predlogi orodja SonarCloud. To nam je omogočalo, da se problemi s kodo niso sropnjevali, saj smo jih rešili pravočasno.
+<p align="center">
+  <img alt="sonarcloud-dashborad" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/d98155bc-dbc0-4a8a-942b-a2df574b499a">
+  <br/>
+  Pregled nadzorne plošče v orodju SonarCloud
 </p>
 
 ## 3. Navodila za namestitev 
