@@ -37,6 +37,9 @@ public class PredefinedSearch {
 
     public String generateId(String searchTitle) {
         final Random random = new Random();
+        if (searchTitle == null || searchTitle.isEmpty()) {
+            return "-empty-" + System.nanoTime() + "-" + random.nextInt(10_000);
+        }
         String sanitizedTitle = searchTitle.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
         return sanitizedTitle + "-" + System.nanoTime() + "-" + random.nextInt(10_000);
     }
