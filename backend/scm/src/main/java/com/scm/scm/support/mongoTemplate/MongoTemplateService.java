@@ -15,9 +15,9 @@ public class MongoTemplateService {
 
     public boolean createNewTenantCollections(String tenantUniqueName) {
         try {
-            mongoTemplate.createCollection(tenantUniqueName + "_main");
-            mongoTemplate.createCollection(tenantUniqueName + "_deleted");
-            mongoTemplate.createCollection(tenantUniqueName + "_activity");
+            mongoTemplate.createCollection(tenantUniqueName + CollectionType.MAIN.getCollectionType());
+            mongoTemplate.createCollection(tenantUniqueName + CollectionType.DELETED.getCollectionType());
+            mongoTemplate.createCollection(tenantUniqueName + CollectionType.ACTIVITY.getCollectionType());
         } catch (Exception e) {
             return false;
         }

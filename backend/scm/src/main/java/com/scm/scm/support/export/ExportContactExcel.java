@@ -11,9 +11,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class ExportContactExcel {
+
+    private static final Logger log = Logger.getLogger(ExportContactExcel.class.toString());
 
     @Autowired
     private ContactServices contactServices;
@@ -39,8 +42,10 @@ public class ExportContactExcel {
                 writer.append(contact.getAttributesToString()).append("\n");
             }
 
+            log.info("Contacts exported successfully");
+
         } catch (IOException e) {
-            e.printStackTrace();
+            log.severe("Error exporting contacts: " + e.getMessage());
         }
     }
 }

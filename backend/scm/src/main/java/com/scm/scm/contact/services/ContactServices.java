@@ -6,6 +6,7 @@ import com.scm.scm.events.vao.Event;
 import com.scm.scm.events.vao.EventState;
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.exceptions.ExceptionCause;
+import com.scm.scm.support.mongoTemplate.CollectionType;
 import com.scm.scm.support.mongoTemplate.MongoTemplateService;
 import com.scm.scm.tenant.services.TenantServices;
 import lombok.AllArgsConstructor;
@@ -33,10 +34,10 @@ public class ContactServices {
         if (contactId.isEmpty() || tenantUniqueName.isEmpty()) {
             throw new CustomHttpException("ContactId or uniqueTenantName is empty", 400, ExceptionCause.USER_ERROR);
         }
-        if (!mongoTemplateService.collectionExists(tenantUniqueName + "_main")) {
+        if (!mongoTemplateService.collectionExists(tenantUniqueName + CollectionType.MAIN.getCollectionType())) {
             throw new CustomHttpException("Collection does not exist", 500, ExceptionCause.SERVER_ERROR);
         }
-        Contact contact = mongoTemplate.findById(contactId, Contact.class, tenantUniqueName + "_main");
+        Contact contact = mongoTemplate.findById(contactId, Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType());
         if (contact == null) {
             throw new CustomHttpException("Contact not found", 404, ExceptionCause.USER_ERROR);
         }
@@ -48,11 +49,11 @@ public class ContactServices {
         if (tenantUniqueName.isEmpty()) {
             throw new CustomHttpException("TenantUniqueName is empty", 400, ExceptionCause.USER_ERROR);
         }
-        if (!mongoTemplateService.collectionExists(tenantUniqueName + "_main")) {
+        if (!mongoTemplateService.collectionExists(tenantUniqueName + CollectionType.MAIN.getCollectionType())) {
             throw new CustomHttpException("Collection does not exist", 500, ExceptionCause.SERVER_ERROR);
         }
         log.info("All contacts found for tenant: " + tenantUniqueName);
-        return mongoTemplate.findAll(Contact.class, tenantUniqueName + "_main");
+        return mongoTemplate.findAll(Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType());
     }
 
     public String createContact(Contact contact) {
@@ -60,12 +61,12 @@ public class ContactServices {
             throw new CustomHttpException("TenantUniqueName is empty", 400, ExceptionCause.USER_ERROR);
         }
         if (!contact.getId().isEmpty()) {
-            Contact existingContact = mongoTemplate.findById(contact.getId(), Contact.class, contact.getTenantUniqueName() + "_main");
+            Contact existingContact = mongoTemplate.findById(contact.getId(), Contact.class, contact.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
             if (existingContact != null) {
                 throw new CustomHttpException("Contact already exists", 400, ExceptionCause.USER_ERROR);
             }
         }
-        if (!mongoTemplateService.collectionExists(contact.getTenantUniqueName() + "_main")) {
+        if (!mongoTemplateService.collectionExists(contact.getTenantUniqueName() + CollectionType.MAIN.getCollectionType())) {
             throw new CustomHttpException("Collection does not exist", 500, ExceptionCause.SERVER_ERROR);
         }
         if (contact.getTitle().isEmpty()) {
@@ -73,7 +74,7 @@ public class ContactServices {
         }
         contact.setId(contact.generateId(contact.getTitle()));
         contact.setAttributesToString(contact.contactAttributesToString());
-        mongoTemplate.save(contact, contact.getTenantUniqueName() + "_main");
+        mongoTemplate.save(contact, contact.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
         tenantServices.addTags(contact.getTenantUniqueName(), contact.getTags());
 
         Event event = new Event(contact.getUser(), contact.getId(), EventState.CREATED);
@@ -91,11 +92,11 @@ public class ContactServices {
         if (contact.getId().isEmpty()) {
             throw new CustomHttpException("Contact id is empty", 400, ExceptionCause.USER_ERROR);
         }
-        if (!mongoTemplateService.collectionExists(contact.getTenantUniqueName() + "_main")) {
+        if (!mongoTemplateService.collectionExists(contact.getTenantUniqueName() + CollectionType.MAIN.getCollectionType())) {
             throw new CustomHttpException("Collection does not exist", 500, ExceptionCause.SERVER_ERROR);
         }
 
-        Contact existingContact = mongoTemplate.findById(contact.getId(), Contact.class, contact.getTenantUniqueName() + "_main");
+        Contact existingContact = mongoTemplate.findById(contact.getId(), Contact.class, contact.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
         if (existingContact != null) {
             if(!existingContact.getTitle().equals(contact.getTitle())){
                 Event event = new Event();
@@ -129,16 +130,16 @@ public class ContactServices {
         if (contactId.isEmpty() || tenantUniqueName.isEmpty()) {
             throw new CustomHttpException("ContactId or uniqueTenantName is empty", 400, ExceptionCause.USER_ERROR);
         }
-        if (!mongoTemplateService.collectionExists(tenantUniqueName + "_main") || !mongoTemplateService.collectionExists(tenantUniqueName + "_deleted")) {
+        if (!mongoTemplateService.collectionExists(tenantUniqueName + CollectionType.MAIN.getCollectionType()) || !mongoTemplateService.collectionExists(tenantUniqueName + "_deleted")) {
             throw new CustomHttpException("Collection does not exist", 500, ExceptionCause.SERVER_ERROR);
         }
-        Contact contact = mongoTemplate.findById(contactId, Contact.class, tenantUniqueName + "_main");
+        Contact contact = mongoTemplate.findById(contactId, Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType());
         if (contact == null) {
             throw new CustomHttpException("Contact not found", 404, ExceptionCause.USER_ERROR);
         }
-        mongoTemplate.remove(contact, tenantUniqueName + "_main");
+        mongoTemplate.remove(contact, tenantUniqueName + CollectionType.MAIN.getCollectionType());
         log.info("Contact deleted with id: " + contactId + " for tenant: " + tenantUniqueName);
-        mongoTemplate.save(contact, tenantUniqueName + "_deleted");
+        mongoTemplate.save(contact, tenantUniqueName + CollectionType.DELETED.getCollectionType());
         log.info("Contact saved to " + tenantUniqueName + "_deleted collection");
 
         Event event = new Event(contact.getUser(), contact.getId(), EventState.DELETED);

@@ -1,6 +1,7 @@
 package com.scm.scm.loadDatabase;
 
 import com.scm.scm.contact.vao.Contact;
+import com.scm.scm.support.mongoTemplate.CollectionType;
 import com.scm.scm.tenant.services.TenantServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -77,10 +78,10 @@ public class LoadContacts {
         contact4.setId(contact4.generateId(contact4.getTitle()));
         contact4.setAttributesToString(contact4.contactAttributesToString());
 
-        mongoTemplate.save(contact1, contact1.getTenantUniqueName() + "_main");
-        mongoTemplate.save(contact2, contact2.getTenantUniqueName() + "_main");
-        mongoTemplate.save(contact3, contact3.getTenantUniqueName() + "_main");
-        mongoTemplate.save(contact4, contact4.getTenantUniqueName() + "_main");
+        mongoTemplate.save(contact1, contact1.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
+        mongoTemplate.save(contact2, contact2.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
+        mongoTemplate.save(contact3, contact3.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
+        mongoTemplate.save(contact4, contact4.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
         log.info("Loaded test Contacts into the database.");
 
         tenantServices.addTags(contact1.getTenantUniqueName(), contact1.getTags());
