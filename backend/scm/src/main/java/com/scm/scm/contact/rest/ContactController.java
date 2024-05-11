@@ -2,8 +2,12 @@ package com.scm.scm.contact.rest;
 
 import com.scm.scm.contact.services.ContactServices;
 import com.scm.scm.contact.vao.Contact;
+import com.scm.scm.support.export.ExportContactExcel;
+import com.scm.scm.support.export.ExportContactRequest;
+import com.scm.scm.support.security.UserAccessService;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +22,12 @@ public class ContactController {
 
     @Autowired
     private ContactServices contactServices;
+
+    @Autowired
+    private ExportContactExcel exportContactExcel;
+
+    @Autowired
+    private UserAccessService userAccessService;
 
     @GetMapping("/{contact_id}/{tenant_unique_name}")
     public ResponseEntity<Contact> getContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName) {
@@ -67,5 +77,21 @@ public class ContactController {
         String cleanTenantUniqueName = StringEscapeUtils.escapeHtml4(tenantUniqueName);
 
         return ResponseEntity.ok(contactServices.deleteContact(cleanTenantUniqueName, cleanId));
+    }
+
+    @PostMapping("/export")
+    public ResponseEntity<String> exportContacts(@RequestBody ExportContactRequest request) {
+        String user = StringEscapeUtils.escapeHtml4(request.getUser());
+        String tenantUniqueName = StringEscapeUtils.escapeHtml4(request.getTenantUniqueName());
+        try {
+            if(userAccessService.hasAccessToTenant(user, tenantUniqueName)) {
+                exportContactExcel.exportContacts(tenantUniqueName);
+                return ResponseEntity.ok("Contacts exported successfully for tenant: " + tenantUniqueName);
+            } else {
+                return ResponseEntity.ok("Contacts NOT exported.");
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }
