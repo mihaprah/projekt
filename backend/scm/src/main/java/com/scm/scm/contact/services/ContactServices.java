@@ -144,6 +144,8 @@ public class ContactServices {
         Event event = new Event(contact.getUser(), contact.getId(), EventState.DELETED);
         eventsServices.addEvent(event, contact.getTenantUniqueName());
 
+        tenantServices.removeTags(tenantUniqueName, contact.getTags());
+
         return "Contact deleted successfully from " + tenantUniqueName + "_main collection";
     }
 
@@ -199,6 +201,8 @@ public class ContactServices {
                 event.setPrevState("");
                 event.setCurrentState(tag);
                 eventsServices.addEvent(event, existingContact.getTenantUniqueName());
+
+                tenantServices.addTags(contact.getTenantUniqueName(), contact.getTags());
             }
         }
         for ( String existingTag : existingTags){
@@ -208,6 +212,8 @@ public class ContactServices {
                 event.setPrevState(existingTag);
                 event.setCurrentState("");
                 eventsServices.addEvent(event, existingContact.getTenantUniqueName());
+
+                tenantServices.removeTags(contact.getTenantUniqueName(), contact.getTags());
             }
         }
     }
