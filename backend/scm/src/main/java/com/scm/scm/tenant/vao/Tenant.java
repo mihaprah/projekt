@@ -1,6 +1,7 @@
 package com.scm.scm.tenant.vao;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -13,6 +14,7 @@ import java.util.Random;
 
 @Data
 @AllArgsConstructor
+@Builder
 @Document(collection = "all-tenants")
 public class Tenant {
     @Id
@@ -21,7 +23,7 @@ public class Tenant {
     private String tenantUniqueName;
     private String description;
     private String colorCode;
-    private boolean active = true;
+    private boolean active;
     private List<String> users;
     private Map<String, Integer> contactTags;
 

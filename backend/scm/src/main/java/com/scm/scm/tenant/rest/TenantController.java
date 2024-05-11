@@ -1,6 +1,6 @@
 package com.scm.scm.tenant.rest;
 
-import com.scm.scm.tenant.vao.Tenant;
+import com.scm.scm.tenant.dto.TenantDTO;
 import com.scm.scm.tenant.services.TenantServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,26 +16,26 @@ public class TenantController {
     private TenantServices tenantServices;
 
     @GetMapping
-    public ResponseEntity<List<Tenant>> getTenants() {
-        List<Tenant> tenants = tenantServices.getAllTenants();
+    public ResponseEntity<List<TenantDTO>> getTenants() {
+        List<TenantDTO> tenants = tenantServices.getAllTenants();
         return ResponseEntity.ok(tenants);
     }
 
     @GetMapping("/{tenant_id}")
-    public ResponseEntity<Tenant> getTenant(@PathVariable("tenant_id") String tenantId) {
-        Tenant tenant = tenantServices.getTenantById(tenantId);
+    public ResponseEntity<TenantDTO> getTenant(@PathVariable("tenant_id") String tenantId) {
+        TenantDTO tenant = tenantServices.getTenantById(tenantId);
         return ResponseEntity.ok(tenant);
     }
 
     @PostMapping
-    public ResponseEntity<Tenant> createTenant(@RequestBody Tenant tenant) {
-        Tenant createdTenant = tenantServices.addTenant(tenant);
+    public ResponseEntity<TenantDTO> createTenant(@RequestBody TenantDTO tenantDTO) {
+        TenantDTO createdTenant = tenantServices.addTenant(tenantDTO);
         return ResponseEntity.ok(createdTenant);
     }
 
     @PutMapping
-    public ResponseEntity<Tenant> updateTenant(@RequestBody Tenant tenant) {
-        Tenant updatedTenant = tenantServices.updateTenant(tenant);
+    public ResponseEntity<TenantDTO> updateTenant(@RequestBody TenantDTO tenantDTO) {
+        TenantDTO updatedTenant = tenantServices.updateTenant(tenantDTO);
         return ResponseEntity.ok(updatedTenant);
     }
 
@@ -63,6 +63,4 @@ public class TenantController {
     public ResponseEntity<String> removeUsers(@PathVariable("tenant_id") String tenantId, @RequestBody List<String> users) {
         return ResponseEntity.ok(tenantServices.removeUsers(tenantId, users));
     }
-
-
 }
