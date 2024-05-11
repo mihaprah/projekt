@@ -83,8 +83,9 @@ public class ContactController {
     public ResponseEntity<String> exportContacts(@RequestBody ExportContactRequest request) {
         String user = StringEscapeUtils.escapeHtml4(request.getUser());
         String tenantUniqueName = StringEscapeUtils.escapeHtml4(request.getTenantUniqueName());
+        String tenantId = StringEscapeUtils.escapeHtml4(request.getTenantId());
         try {
-            if(userAccessService.hasAccessToTenant(user, tenantUniqueName)) {
+            if(userAccessService.hasAccessToTenant(user, tenantId)) {
                 exportContactExcel.exportContacts(tenantUniqueName);
                 return ResponseEntity.ok("Contacts exported successfully for tenant: " + tenantUniqueName);
             } else {

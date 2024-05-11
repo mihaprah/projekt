@@ -6,4 +6,5 @@ import lombok.Data;
 public class ExportContactRequest {
     private String user;
     private String tenantUniqueName;
+    private String tenantId;
 }

@@ -16,14 +16,14 @@ public class UserAccessService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserAccessService.class);
 
-    public boolean hasAccessToTenant(String username, String tenantUniqueName) {
-        if (username == null || username.isEmpty() || tenantUniqueName == null || tenantUniqueName.isEmpty()) {
-            logger.error("Username or TenantUniqueName is null or empty. Username: {}, TenantUniqueName: {}", username, tenantUniqueName);
-            throw new IllegalArgumentException("Username or TenantUniqueName should not be null or empty");
+    public boolean hasAccessToTenant(String username, String tenantId) {
+        if (username.isEmpty() || tenantId.isEmpty()) {
+            logger.error("Username or TenantId is empty. Username: {}, TenantId: {}", username, tenantId);
+            throw new IllegalArgumentException("Username or TenantId should not be empty");
         }
-        Tenant tenant = repo.findByTenantUniqueName(tenantUniqueName);
+        Tenant tenant = repo.findById(tenantId).orElse(null);
         if (tenant == null) {
-            logger.error("Tenant not found with tenantUniqueName: {}", tenantUniqueName);
+            logger.error("Tenant not found with id: {}", tenantId);
             throw new IllegalArgumentException("Tenant not found");
         }
         return tenant.getUsers().contains(username);
