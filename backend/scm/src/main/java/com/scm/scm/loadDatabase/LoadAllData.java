@@ -15,12 +15,16 @@ public class LoadAllData {
     @Autowired
     private LoadContacts loadContacts;
 
+    @Autowired
+    private LoadPredefinedSearches loadPredefinedSearches;
+
     @Bean
     @Profile("dev")
     CommandLineRunner initDatabase() {
         return args -> {
             String[] tenantUniqueNames = loadTenants.createTenants();
             loadContacts.createContacts(tenantUniqueNames);
+            loadPredefinedSearches.createPredefinedSearches();
         };
     }
 }
