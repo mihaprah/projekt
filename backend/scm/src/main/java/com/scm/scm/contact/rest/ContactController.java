@@ -29,20 +29,32 @@ public class ContactController {
     @Autowired
     private UserAccessService userAccessService;
 
-    @GetMapping("/{contact_id}/{tenant_unique_name}")
-    public ResponseEntity<Contact> getContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName) {
+    @GetMapping("/{contact_id}/{tenant_unique_name}/{user_token}")
+    public ResponseEntity<Contact> getContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName, @PathVariable(name = "user_token") String userToken) {
+        boolean check = userAccessService.hasAccessToContact(userToken, tenantUniqueName);
+        if (!check) {
+            return ResponseEntity.status(403).build();
+        }
         Contact contact = contactServices.findOneContact(tenantUniqueName, id);
         return ResponseEntity.ok(contact);
     }
 
-    @GetMapping("/{tenant_unique_name}")
-    public ResponseEntity<List<Contact>> getContacts(@PathVariable(name = "tenant_unique_name") String tenantUniqueName) {
+    @GetMapping("/{tenant_unique_name}/{user_token}")
+    public ResponseEntity<List<Contact>> getContacts(@PathVariable(name = "tenant_unique_name") String tenantUniqueName, @PathVariable(name = "user_token") String userToken) {
+        boolean check = userAccessService.hasAccessToContact(userToken, tenantUniqueName);
+        if (!check) {
+            return ResponseEntity.status(403).build();
+        }
         List<Contact> contacts = contactServices.findAllContacts(tenantUniqueName);
         return ResponseEntity.ok(contacts);
     }
 
-    @PostMapping
-    public ResponseEntity<String> addContact(@RequestBody Contact contact) {
+    @PostMapping("/{user_token}")
+    public ResponseEntity<String> addContact(@PathVariable("user_token") String userToken, @RequestBody Contact contact) {
+        boolean check = userAccessService.hasAccessToContact(userToken, contact.getTenantUniqueName());
+        if (!check) {
+            return ResponseEntity.status(403).build();
+        }
         Contact cleanContact = new Contact();
         cleanContact.setId(StringEscapeUtils.escapeHtml4(contact.getId()));
         cleanContact.setTitle(StringEscapeUtils.escapeHtml4(contact.getTitle()));
@@ -66,13 +78,21 @@ public class ContactController {
         return ResponseEntity.ok(contactServices.createContact(cleanContact));
     }
 
-    @PutMapping
-    public ResponseEntity<Contact> updateContact(@RequestBody Contact contact) {
+    @PutMapping("/{user_token}")
+    public ResponseEntity<Contact> updateContact(@PathVariable("user_token") String userToken, @RequestBody Contact contact) {
+        boolean check = userAccessService.hasAccessToContact(userToken, contact.getTenantUniqueName());
+        if (!check) {
+            return ResponseEntity.status(403).build();
+        }
         return ResponseEntity.ok(contactServices.updateContact(contact));
     }
 
-    @DeleteMapping("/{contact_id}/{tenant_unique_name}")
-    public ResponseEntity<String> deleteContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName) {
+    @DeleteMapping("/{contact_id}/{tenant_unique_name}/{user_token}")
+    public ResponseEntity<String> deleteContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName, @PathVariable(name = "user_token") String userToken) {
+        boolean check = userAccessService.hasAccessToContact(userToken, tenantUniqueName);
+        if (!check) {
+            return ResponseEntity.status(403).build();
+        }
         String cleanId = StringEscapeUtils.escapeHtml4(id);
         String cleanTenantUniqueName = StringEscapeUtils.escapeHtml4(tenantUniqueName);
 

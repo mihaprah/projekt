@@ -1,6 +1,5 @@
 package com.scm.scm.support.security;
 
-import com.scm.scm.contact.vao.Contact;
 import com.scm.scm.tenant.dao.TenantRepository;
 import com.scm.scm.tenant.vao.Tenant;
 
@@ -30,14 +29,14 @@ public class UserAccessService {
         return tenant.getUsers().contains(username);
     }
 
-    public boolean hasAccessToContact(String username, Contact contact) {
-        if (username.isEmpty() || contact == null) {
-            log.severe("Checking user access: Username is empty or Contact is null. Username: " + username + ", Contact: " + contact);
+    public boolean hasAccessToContact(String username, String tenantUniqueName) {
+        if (username.isEmpty() || tenantUniqueName.isEmpty()) {
+            log.severe("Checking user access: Username is empty or Contact is null. Username: " + username + ", TenantUniqueName: " + tenantUniqueName);
             throw new IllegalArgumentException("Username or Contact should not be null or empty");
         }
-        Tenant tenant = repo.findByTenantUniqueName(contact.getTenantUniqueName());
+        Tenant tenant = repo.findByTenantUniqueName(tenantUniqueName);
         if (tenant == null) {
-            log.severe("Checking user access: Tenant not found with unique name: " + contact.getTenantUniqueName());
+            log.severe("Checking user access: Tenant not found with unique name: " + tenantUniqueName);
             throw new IllegalArgumentException("Tenant not found");
         }
         return tenant.getUsers().contains(username);
