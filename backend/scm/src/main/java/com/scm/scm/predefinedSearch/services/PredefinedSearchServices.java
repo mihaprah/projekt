@@ -47,17 +47,13 @@ public class PredefinedSearchServices {
 
     public PredefinedSearchDTO addPredefinedSearch(PredefinedSearchDTO predefinedSearchDTO) {
         PredefinedSearch predefinedSearch = convertToEntity(predefinedSearchDTO);
-        if (predefinedSearchRepository.existsById(predefinedSearch.getId())){
-            throw new CustomHttpException("PredefinedSearch with this id already exists", 400, ExceptionCause.USER_ERROR);
+        if (Objects.equals(predefinedSearch.getTitle(), "")) {
+            throw new CustomHttpException("PredefinedSearch title is empty", 400, ExceptionCause.USER_ERROR);
         } else {
-            if (Objects.equals(predefinedSearch.getTitle(), "")) {
-                throw new CustomHttpException("PredefinedSearch title is empty", 400, ExceptionCause.USER_ERROR);
-            } else {
-                predefinedSearch.setId(predefinedSearch.generateId(predefinedSearch.getTitle()));
-                predefinedSearchRepository.save(predefinedSearch);
-                log.info("PredefinedSearch created with id: " + predefinedSearch.getId());
-                return convertToDTO(predefinedSearch);
-            }
+            predefinedSearch.setId(predefinedSearch.generateId(predefinedSearch.getTitle()));
+            predefinedSearchRepository.save(predefinedSearch);
+            log.info("PredefinedSearch created with id: " + predefinedSearch.getId());
+            return convertToDTO(predefinedSearch);
         }
     }
 
@@ -102,7 +98,7 @@ public class PredefinedSearchServices {
     }
 
     public List<PredefinedSearchDTO> getPredefinedSearchByUser(String user) {
-        if (user == null || user.isEmpty()){
+        if (user == null || user.isEmpty()) {
             throw new CustomHttpException("User is empty", 400, ExceptionCause.USER_ERROR);
         } else {
             log.info("PredefinedSearch found by user: " + user);
@@ -112,7 +108,7 @@ public class PredefinedSearchServices {
     }
 
     public List<PredefinedSearchDTO> getPredefinedSearchByTenant(String tenant) {
-        if (tenant == null || tenant.isEmpty()){
+        if (tenant == null || tenant.isEmpty()) {
             throw new CustomHttpException("Tenant is empty", 400, ExceptionCause.USER_ERROR);
         } else {
             log.info("PredefinedSearch found by tenant: " + tenant);
