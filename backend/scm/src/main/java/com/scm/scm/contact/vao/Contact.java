@@ -6,10 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 @Data
 @NoArgsConstructor
@@ -27,8 +27,9 @@ public class Contact {
     private Map<String, String> props;
     private String attributesToString;
 
+    private static final SecureRandom random = new SecureRandom();
+
     public String generateId(String contactTitle) {
-        final Random random = new Random();
         String sanitizedTitle = contactTitle.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
         return sanitizedTitle + "-" + System.nanoTime() + "-" + random.nextInt(10_000);
     }
