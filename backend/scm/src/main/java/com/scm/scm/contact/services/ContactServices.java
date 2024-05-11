@@ -1,5 +1,6 @@
 package com.scm.scm.contact.services;
 
+import com.scm.scm.contact.dto.ContactDTO;
 import com.scm.scm.contact.vao.Contact;
 import com.scm.scm.events.services.EventsServices;
 import com.scm.scm.events.vao.Event;
@@ -14,9 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -30,7 +35,35 @@ public class ContactServices {
     private EventsServices eventsServices;
     private static final Logger log = Logger.getLogger(ContactServices.class.toString());
 
-    public Contact findOneContact(String tenantUniqueName, String contactId) {
+    private ContactDTO convertToDTO(Contact contact) {
+        return ContactDTO.builder()
+                .id(contact.getId())
+                .title(contact.getTitle())
+                .user(contact.getUser())
+                .tenantUniqueName(contact.getTenantUniqueName())
+                .comments(contact.getComments())
+                .createdAt(contact.getCreatedAt().toString())
+                .tags(String.join(",", contact.getTags()))
+                .props(contact.getProps().toString())
+                .attributesToString(contact.getAttributesToString())
+                .build();
+    }
+
+    private Contact convertToEntity(ContactDTO contactDTO) {
+        return new Contact(
+                contactDTO.getId(),
+                contactDTO.getTitle(),
+                contactDTO.getUser(),
+                contactDTO.getTenantUniqueName(),
+                contactDTO.getComments(),
+                LocalDateTime.parse(contactDTO.getCreatedAt()),
+                Arrays.asList(contactDTO.getTags().split(",")),
+                new HashMap<>(),
+                contactDTO.getAttributesToString()
+        );
+    }
+
+    public ContactDTO findOneContact(String tenantUniqueName, String contactId) {
         if (contactId.isEmpty() || tenantUniqueName.isEmpty()) {
             throw new CustomHttpException("ContactId or uniqueTenantName is empty", 400, ExceptionCause.USER_ERROR);
         }
@@ -42,10 +75,10 @@ public class ContactServices {
             throw new CustomHttpException("Contact not found", 404, ExceptionCause.USER_ERROR);
         }
         log.info("Contact found with id: " + contactId);
-        return contact;
+        return convertToDTO(contact);
     }
 
-    public List<Contact> findAllContacts(String tenantUniqueName) {
+    public List<ContactDTO> findAllContacts(String tenantUniqueName) {
         if (tenantUniqueName.isEmpty()) {
             throw new CustomHttpException("TenantUniqueName is empty", 400, ExceptionCause.USER_ERROR);
         }
@@ -53,10 +86,12 @@ public class ContactServices {
             throw new CustomHttpException("Collection does not exist", 500, ExceptionCause.SERVER_ERROR);
         }
         log.info("All contacts found for tenant: " + tenantUniqueName);
-        return mongoTemplate.findAll(Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType());
+        List<Contact> contacts = mongoTemplate.findAll(Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType());
+        return contacts.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    public String createContact(Contact contact) {
+    public String createContact(ContactDTO contactDTO) {
+        Contact contact = convertToEntity(contactDTO);
         if (contact.getTenantUniqueName().isEmpty()) {
             throw new CustomHttpException("TenantUniqueName is empty", 400, ExceptionCause.USER_ERROR);
         }
@@ -80,12 +115,12 @@ public class ContactServices {
         Event event = new Event(contact.getUser(), contact.getId(), EventState.CREATED);
         eventsServices.addEvent(event, contact.getTenantUniqueName());
 
-
         log.info("Contact created with id: " + contact.getId() + " for tenant: " + contact.getTenantUniqueName());
         return "Contact created successfully to " + contact.getTenantUniqueName() + "_main collection";
     }
 
-    public Contact updateContact(Contact contact) {
+    public ContactDTO updateContact(ContactDTO contactDTO) {
+        Contact contact = convertToEntity(contactDTO);
         if (contact.getTenantUniqueName().isEmpty()) {
             throw new CustomHttpException("TenantUniqueName is empty", 400, ExceptionCause.USER_ERROR);
         }
@@ -120,7 +155,7 @@ public class ContactServices {
 
             mongoTemplate.save(existingContact, existingContact.getTenantUniqueName());
             log.info("Contact updated with id: " + contact.getId() + " for tenant: " + contact.getTenantUniqueName());
-            return existingContact;
+            return convertToDTO(existingContact);
         } else {
             throw new CustomHttpException("Contact does not exist", 500, ExceptionCause.SERVER_ERROR);
         }
@@ -219,4 +254,3 @@ public class ContactServices {
         }
     }
 }
-

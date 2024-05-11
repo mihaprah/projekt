@@ -1,7 +1,7 @@
 package com.scm.scm.contact.rest;
 
+import com.scm.scm.contact.dto.ContactDTO;
 import com.scm.scm.contact.services.ContactServices;
-import com.scm.scm.contact.vao.Contact;
 import com.scm.scm.support.export.ExportContactExcel;
 import com.scm.scm.support.export.ExportContactRequest;
 import com.scm.scm.support.security.UserAccessService;
@@ -11,10 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/contacts")
@@ -30,61 +27,41 @@ public class ContactController {
     private UserAccessService userAccessService;
 
     @GetMapping("/{contact_id}/{tenant_unique_name}/{user_token}")
-    public ResponseEntity<Contact> getContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName, @PathVariable(name = "user_token") String userToken) {
+    public ResponseEntity<ContactDTO> getContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName, @PathVariable(name = "user_token") String userToken) {
         boolean check = userAccessService.hasAccessToContact(userToken, tenantUniqueName);
         if (!check) {
             return ResponseEntity.status(403).build();
         }
-        Contact contact = contactServices.findOneContact(tenantUniqueName, id);
-        return ResponseEntity.ok(contact);
+        ContactDTO contactDTO = contactServices.findOneContact(tenantUniqueName, id);
+        return ResponseEntity.ok(contactDTO);
     }
 
     @GetMapping("/{tenant_unique_name}/{user_token}")
-    public ResponseEntity<List<Contact>> getContacts(@PathVariable(name = "tenant_unique_name") String tenantUniqueName, @PathVariable(name = "user_token") String userToken) {
+    public ResponseEntity<List<ContactDTO>> getContacts(@PathVariable(name = "tenant_unique_name") String tenantUniqueName, @PathVariable(name = "user_token") String userToken) {
         boolean check = userAccessService.hasAccessToContact(userToken, tenantUniqueName);
         if (!check) {
             return ResponseEntity.status(403).build();
         }
-        List<Contact> contacts = contactServices.findAllContacts(tenantUniqueName);
+        List<ContactDTO> contacts = contactServices.findAllContacts(tenantUniqueName);
         return ResponseEntity.ok(contacts);
     }
 
     @PostMapping("/{user_token}")
-    public ResponseEntity<String> addContact(@PathVariable("user_token") String userToken, @RequestBody Contact contact) {
-        boolean check = userAccessService.hasAccessToContact(userToken, contact.getTenantUniqueName());
+    public ResponseEntity<String> addContact(@PathVariable("user_token") String userToken, @RequestBody ContactDTO contactDTO) {
+        boolean check = userAccessService.hasAccessToContact(userToken, contactDTO.getTenantUniqueName());
         if (!check) {
             return ResponseEntity.status(403).build();
         }
-        Contact cleanContact = new Contact();
-        cleanContact.setId(StringEscapeUtils.escapeHtml4(contact.getId()));
-        cleanContact.setTitle(StringEscapeUtils.escapeHtml4(contact.getTitle()));
-        cleanContact.setUser(StringEscapeUtils.escapeHtml4(contact.getUser()));
-        cleanContact.setTenantUniqueName(StringEscapeUtils.escapeHtml4(contact.getTenantUniqueName()));
-        cleanContact.setComments(StringEscapeUtils.escapeHtml4(contact.getComments()));
-        cleanContact.setAttributesToString(StringEscapeUtils.escapeHtml4(contact.getAttributesToString()));
-
-        List<String> sanitizedTags = new ArrayList<>();
-        for (String tag : contact.getTags()) {
-            sanitizedTags.add(StringEscapeUtils.escapeHtml4(tag));
-        }
-        cleanContact.setTags(sanitizedTags);
-
-        Map<String, String> sanitizedProps = new HashMap<>();
-        for (Map.Entry<String, String> entry : contact.getProps().entrySet()) {
-            sanitizedProps.put(StringEscapeUtils.escapeHtml4(entry.getKey()), StringEscapeUtils.escapeHtml4(entry.getValue()));
-        }
-        cleanContact.setProps(sanitizedProps);
-
-        return ResponseEntity.ok(contactServices.createContact(cleanContact));
+        return ResponseEntity.ok(contactServices.createContact(contactDTO));
     }
 
     @PutMapping("/{user_token}")
-    public ResponseEntity<Contact> updateContact(@PathVariable("user_token") String userToken, @RequestBody Contact contact) {
-        boolean check = userAccessService.hasAccessToContact(userToken, contact.getTenantUniqueName());
+    public ResponseEntity<ContactDTO> updateContact(@PathVariable("user_token") String userToken, @RequestBody ContactDTO contactDTO) {
+        boolean check = userAccessService.hasAccessToContact(userToken, contactDTO.getTenantUniqueName());
         if (!check) {
             return ResponseEntity.status(403).build();
         }
-        return ResponseEntity.ok(contactServices.updateContact(contact));
+        return ResponseEntity.ok(contactServices.updateContact(contactDTO));
     }
 
     @DeleteMapping("/{contact_id}/{tenant_unique_name}/{user_token}")
