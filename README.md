@@ -11,16 +11,29 @@ Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplik
 - [Matija Krsnik](https://github.com/Matija334)
 - [Anže Golob](https://github.com/anzo26)
 
-## Dokumentacija
-V dokumentaciji projekta je predstavljen celoten proces dela od začetka do konca. Prav tako so predstavljena vsa orodja in programska oprema, ki je bila tekom razvoja aplikacije uporabljena.
+## Kazalo vsebine
+1. [Predstavitev](#predstavitev)
+    - [Podroben opis projekta](#podproben-opis)
+2. Dokumentacija
+    - Funkcionalnosti
+    - Tehnološki nabor
+    - Organizacija in način dela
+    - Zasnova podatkovne strukture
+    - Wireframe aplikacije (prototip izgleda)
+    - Testiranje
+3. [Navodila za namestitev](#3-navodila-za-namestitev)
 
-### Podroben opis projekta
+## <a id="predstavitev"></a> 1. Predstavitev
+### <a id="podproben-opis"></a> Podroben opis projekta
 Načrtovati, nadgraditi, implementirati in namestiti bo potrebno sistem, ki bo uporabnikom omogočal vodenje kontaktov na nekem projektu ali v nekem podjetju. Skupino kontaktov lahko uporabniki kreirajo sami, kontakti naj bodo vidni le znotraj te skupine; poskrbeti bo torej treba za izolacijo podatkov med različnimi uporabniki in njihovimi projekti.
 Podatki o uporabnikih naj bodo do določene mere predefinirani, omogočeno pa naj bo tudi poljubno definiranje kontaktov v smislu kluč-vrednost. Pričakuje se označevanje kontaktov s poljubnimi značkami, ki bodo služile kot kategorije kontaktov. Voditi bo potrebno tudi vse spremembe kontaktov (revizijska sled) in jih tudi primerno verzionirati. Pričakuje se tudi določene napredne funkcionalnosti, kot npr. iskanje podvojenih kontaktov, njihovo združevanje ipd.
 Dostop do zalednega sistema naj bo mogoč preko ustrezno zavarovanega REST vmesnika.
 Uporabniški vmesnik naj nudi prijazen pregled, iskanje, filtriranje ter izvoz označenih kontaktov v
 format MS Excel. Konkurenčna prednost izdelka prek konkurenčnimi CRM sistemi bo torej ravno
 enostavnost uporabe.
+
+## 2. Dokumentacija
+V dokumentaciji projekta je predstavljen celoten proces dela od začetka do konca. Prav tako so predstavljena vsa orodja in programska oprema, ki je bila tekom razvoja aplikacije uporabljena.
 
 ### Funkcionalnosti
 - Ustvarjanje skupin kontaktov
@@ -115,4 +128,4 @@ S pomočjo orodja [Figma](https://www.figma.com), ki omogoča enostavno in hitro
   Pregled že v naprej shranjenih nastavitev za iskanje specifičnih kontaktov znotraj določenega "Tenanta".
 </p>
 
-## Navodila za namestitev
+## 3. Navodila za namestitev 
