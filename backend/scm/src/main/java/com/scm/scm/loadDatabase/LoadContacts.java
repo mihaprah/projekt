@@ -1,6 +1,8 @@
 package com.scm.scm.loadDatabase;
 
 import com.scm.scm.contact.vao.Contact;
+import com.scm.scm.events.vao.Event;
+import com.scm.scm.events.vao.EventState;
 import com.scm.scm.support.mongoTemplate.CollectionType;
 import com.scm.scm.tenant.services.TenantServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class LoadContacts {
 
     @Autowired
     private TenantServices tenantServices;
+
+    @Autowired
+    private LoadEvents loadEvents;
 
     private static final SecureRandom random = new SecureRandom();
 
@@ -85,9 +90,52 @@ public class LoadContacts {
         contact4.setAttributesToString(contact4.contactAttributesToString());
 
         mongoTemplate.save(contact1, contact1.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
+        Event event1 = new Event(contact1.getUser(), contact1.getId(), EventState.CREATED);
+        loadEvents.createEvent(event1, contact1.getTenantUniqueName());
+
+        String exTitle = contact1.getTitle();
+        contact1.setTitle("Contact 1.1");
+        Event event1_1 = new Event(contact1.getUser(), contact1.getId(), EventState.UPDATED);
+        event1_1.setPropKey("Title");
+        event1_1.setPrevState(exTitle);
+        event1_1.setCurrentState(contact1.getTitle());
+        loadEvents.createEvent(event1_1, contact1.getTenantUniqueName());
+
         mongoTemplate.save(contact2, contact2.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
+        Event event2 = new Event(contact2.getUser(), contact2.getId(), EventState.CREATED);
+        loadEvents.createEvent(event2, contact2.getTenantUniqueName());
+
+        contact2.getTags().add("NewLoad2");
+        Event event2_1 = new Event(contact2.getUser(), contact2.getId(), EventState.TAG_ADD);
+        event2_1.setPropKey("Tags");
+        event2_1.setCurrentState("NewLoad2");
+        loadEvents.createEvent(event2_1, contact2.getTenantUniqueName());
+
         mongoTemplate.save(contact3, contact3.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
+        Event event3 = new Event(contact3.getUser(), contact3.getId(), EventState.CREATED);
+        loadEvents.createEvent(event3, contact3.getTenantUniqueName());
+
+        String exProp = contact3.getProps().get("Hobby");
+        contact3.getProps().put("Hobby", "Photography, Travel");
+        Event event3_1 = new Event(contact3.getUser(), contact3.getId(), EventState.PROP_ADD);
+        event3_1.setPropKey("Props");
+        event3_1.setPrevState(exProp);
+        event3_1.setCurrentState(contact3.getProps().get("Hobby"));
+        loadEvents.createEvent(event3_1, contact3.getTenantUniqueName());
+
         mongoTemplate.save(contact4, contact4.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
+        Event event4 = new Event(contact4.getUser(), contact4.getId(), EventState.CREATED);
+        loadEvents.createEvent(event4, contact4.getTenantUniqueName());
+
+        Contact contact5 = new Contact("", "Contact 5", "user3@example.com", tenantUniqueNames[1], "", LocalDateTime.now(), tags4, props4, "");
+        contact5.setId(contact5.generateId(contact5.getTitle()));
+        mongoTemplate.save(contact5, contact5.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
+
+        Event event5 = new Event(contact5.getUser(), contact5.getId(), EventState.DELETED);
+        event5.setPrevState(contact5.getId());
+        loadEvents.createEvent(event5, contact5.getTenantUniqueName());
+        mongoTemplate.remove(contact5, contact5.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
+
         log.info("Loaded test Contacts into the database.");
 
         tenantServices.addTags(contact1.getTenantUniqueName(), contact1.getTags());
