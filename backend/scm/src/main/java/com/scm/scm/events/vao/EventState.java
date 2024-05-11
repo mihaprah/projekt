@@ -4,6 +4,10 @@ public enum EventState {
     CREATED,
     UPDATED,
     DELETED,
-    FAILED,
-    CANCELLED
+    TAG_ADD,
+    TAG_REMOVED,
+    PROP_ADD,
+    PROP_REMOVED
+
+
 }

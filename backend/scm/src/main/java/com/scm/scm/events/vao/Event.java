@@ -22,6 +22,18 @@ public class Event {
     private String currentState;
     private LocalDateTime eventTime;
 
+    public Event() {
+    }
+
+    public Event(String user, String contact, EventState eventState) {
+        this.user = user;
+        this.contact = contact;
+        this.eventState = eventState;
+        this.propKey = "";
+        this.prevState = "";
+        this.currentState = "";
+    }
+
     public String generateId() {
         final Random random = new Random();
         return System.nanoTime() + "-" + random.nextInt(10_000);

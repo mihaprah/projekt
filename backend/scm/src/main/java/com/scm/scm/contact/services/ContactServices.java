@@ -1,6 +1,9 @@
 package com.scm.scm.contact.services;
 
 import com.scm.scm.contact.vao.Contact;
+import com.scm.scm.events.services.EventsServices;
+import com.scm.scm.events.vao.Event;
+import com.scm.scm.events.vao.EventState;
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.exceptions.ExceptionCause;
 import com.scm.scm.support.mongoTemplate.MongoTemplateService;
@@ -11,6 +14,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Service
@@ -22,6 +26,7 @@ public class ContactServices {
 
     private MongoTemplateService mongoTemplateService;
     private TenantServices tenantServices;
+    private EventsServices eventsServices;
     private static final Logger log = Logger.getLogger(ContactServices.class.toString());
 
     public Contact findOneContact(String tenantUniqueName, String contactId) {
@@ -71,6 +76,10 @@ public class ContactServices {
         mongoTemplate.save(contact, contact.getTenantUniqueName() + "_main");
         tenantServices.addTags(contact.getTenantUniqueName(), contact.getTags());
 
+        Event event = new Event(contact.getUser(), contact.getId(), EventState.CREATED);
+        eventsServices.addEvent(event, contact.getTenantUniqueName());
+
+
         log.info("Contact created with id: " + contact.getId() + " for tenant: " + contact.getTenantUniqueName());
         return "Contact created successfully to " + contact.getTenantUniqueName() + "_main collection";
     }
@@ -86,11 +95,25 @@ public class ContactServices {
             throw new CustomHttpException("Collection does not exist", 500, ExceptionCause.SERVER_ERROR);
         }
 
-        Contact existingContact = mongoTemplate.findById(contact.getId(), Contact.class, contact.getTenantUniqueName());
+        Contact existingContact = mongoTemplate.findById(contact.getId(), Contact.class, contact.getTenantUniqueName() + "_main");
         if (existingContact != null) {
+            if(!existingContact.getTitle().equals(contact.getTitle())){
+                Event event = new Event();
+                event.setUser(contact.getUser());
+                event.setContact(existingContact.getId());
+                event.setEventState(EventState.UPDATED);
+                event.setPropKey("Title");
+                event.setPrevState(existingContact.getTitle());
+                event.setCurrentState(contact.getTitle());
+                eventsServices.addEvent(event, existingContact.getTenantUniqueName());
+            }
             existingContact.setTitle(contact.getTitle());
             existingContact.setComments(contact.getComments());
+
+            checkTags(existingContact, contact);
             existingContact.setTags(contact.getTags());
+
+            checkProps(existingContact, contact);
             existingContact.setProps(contact.getProps());
             existingContact.setAttributesToString(existingContact.contactAttributesToString());
 
@@ -117,6 +140,76 @@ public class ContactServices {
         log.info("Contact deleted with id: " + contactId + " for tenant: " + tenantUniqueName);
         mongoTemplate.save(contact, tenantUniqueName + "_deleted");
         log.info("Contact saved to " + tenantUniqueName + "_deleted collection");
+
+        Event event = new Event(contact.getUser(), contact.getId(), EventState.DELETED);
+        eventsServices.addEvent(event, contact.getTenantUniqueName());
+
         return "Contact deleted successfully from " + tenantUniqueName + "_main collection";
     }
+
+    private void checkProps (Contact existingContact, Contact contact){
+        Map<String, String> existingProps = existingContact.getProps();
+        Map<String, String> props = contact.getProps();
+
+        Event event = new Event();
+        event.setUser(contact.getUser());
+        event.setContact(existingContact.getId());
+
+        for (String key : props.keySet()){
+            if(existingProps.containsKey(key)){
+                String existingValue = existingProps.get(key);
+                String value = props.get(key);
+                if(!existingValue.equals(value)){
+                    event.setEventState(EventState.UPDATED);
+                    event.setPropKey(key);
+                    event.setPrevState(existingValue);
+                    event.setCurrentState(value);
+                    eventsServices.addEvent(event, existingContact.getTenantUniqueName());
+                }
+            } else {
+                event.setEventState(EventState.PROP_ADD);
+                event.setPropKey(key);
+                event.setPrevState("");
+                event.setCurrentState(props.get(key));
+                eventsServices.addEvent(event, existingContact.getTenantUniqueName());
+            }
+        }
+        for (String key : existingProps.keySet()){
+            if (!props.containsKey(key)){
+                event.setEventState(EventState.PROP_REMOVED);
+                event.setPropKey(key);
+                event.setPrevState(existingProps.get(key));
+                event.setCurrentState("");
+                eventsServices.addEvent(event, existingContact.getTenantUniqueName());
+            }
+        }
+    }
+    private void checkTags (Contact existingContact, Contact contact) {
+        List<String> existingTags = existingContact.getTags();
+        List<String> tags = contact.getTags();
+
+        Event event = new Event();
+        event.setUser(contact.getUser());
+        event.setContact(existingContact.getId());
+
+        for (String tag : tags){
+            if(!existingTags.contains(tag)){
+                event.setEventState(EventState.TAG_ADD);
+                event.setPropKey("TAG");
+                event.setPrevState("");
+                event.setCurrentState(tag);
+                eventsServices.addEvent(event, existingContact.getTenantUniqueName());
+            }
+        }
+        for ( String existingTag : existingTags){
+            if(!tags.contains(existingTag)){
+                event.setEventState(EventState.TAG_REMOVED);
+                event.setPropKey("TAG");
+                event.setPrevState(existingTag);
+                event.setCurrentState("");
+                eventsServices.addEvent(event, existingContact.getTenantUniqueName());
+            }
+        }
+    }
 }
+
