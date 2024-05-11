@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/contacts")
@@ -25,6 +26,8 @@ public class ContactController {
 
     @Autowired
     private UserAccessService userAccessService;
+
+    private static final Logger log = Logger.getLogger(ContactServices.class.toString());
 
     @GetMapping("/{contact_id}/{tenant_unique_name}/{user_token}")
     public ResponseEntity<ContactDTO> getContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName, @PathVariable(name = "user_token") String userToken) {
@@ -77,19 +80,20 @@ public class ContactController {
     }
 
     @PostMapping("/export")
-    public ResponseEntity<String> exportContacts(@RequestBody ExportContactRequest request) {
+    public ResponseEntity<byte[]> exportContacts(@RequestBody ExportContactRequest request) {
         String user = StringEscapeUtils.escapeHtml4(request.getUser());
         String tenantUniqueName = StringEscapeUtils.escapeHtml4(request.getTenantUniqueName());
         String tenantId = StringEscapeUtils.escapeHtml4(request.getTenantId());
         try {
             if(userAccessService.hasAccessToTenant(user, tenantId)) {
                 exportContactExcel.exportContacts(tenantUniqueName);
-                return ResponseEntity.ok("Contacts exported successfully for tenant: " + tenantUniqueName);
+                log.info("Contacts exported successfully for tenant: " + tenantUniqueName);
+                return exportContactExcel.exportContacts(tenantUniqueName);
             } else {
-                return ResponseEntity.ok("Contacts NOT exported.");
+                return ResponseEntity.status(403).build();
             }
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

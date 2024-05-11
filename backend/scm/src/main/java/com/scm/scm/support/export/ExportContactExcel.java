@@ -3,10 +3,13 @@ package com.scm.scm.support.export;
 import com.scm.scm.contact.dto.ContactDTO;
 import com.scm.scm.contact.services.ContactServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,30 +24,34 @@ public class ExportContactExcel {
     @Autowired
     private ContactServices contactServices;
 
-    public void exportContacts(String tenantUniqueName) {
+    public ResponseEntity<byte[]> exportContacts(String tenantUniqueName) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
         String currentDateTime = dateFormat.format(new Date());
 
         List<ContactDTO> contacts = contactServices.findAllContacts(tenantUniqueName);
-        try (FileWriter writer = new FileWriter(tenantUniqueName + "_contacts_" + currentDateTime + ".csv")) {
-            writer.append("Id,Title,User,TenantUniqueName,Comments,CreatedAt,Tags,Props,AttributesToString\n");
 
-            for (ContactDTO contact : contacts) {
-                writer.append(contact.getId()).append(",");
-                writer.append(contact.getTitle()).append(",");
-                writer.append(contact.getUser()).append(",");
-                writer.append(contact.getTenantUniqueName()).append(",");
-                writer.append(contact.getComments()).append(",");
-                writer.append(contact.getCreatedAt()).append(",");
-                writer.append(contact.getTags()).append(",");
-                writer.append(contact.getProps()).append(",");
-                writer.append(contact.getAttributesToString()).append("\n");
-            }
+        StringBuilder builder = new StringBuilder();
+        builder.append("Id,Title,User,TenantUniqueName,Comments,CreatedAt,Tags,Props,AttributesToString\n");
 
-            log.info("Contacts exported successfully");
-
-        } catch (IOException e) {
-            log.severe("Error exporting contacts: " + e.getMessage());
+        for (ContactDTO contact : contacts) {
+            builder.append(contact.getId()).append(",");
+            builder.append(contact.getTitle()).append(",");
+            builder.append(contact.getUser()).append(",");
+            builder.append(contact.getTenantUniqueName()).append(",");
+            builder.append(contact.getComments()).append(",");
+            builder.append(contact.getCreatedAt()).append(",");
+            builder.append(contact.getTags()).append(",");
+            builder.append(contact.getProps()).append(",");
+            builder.append(contact.getAttributesToString()).append("\n");
         }
+
+        byte[] buffer = builder.toString().getBytes(StandardCharsets.UTF_8);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + tenantUniqueName + "_contacts_" + currentDateTime + ".csv");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(buffer);
     }
 }
