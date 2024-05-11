@@ -7,8 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Service
@@ -21,6 +25,8 @@ public class LoadContacts {
 
     @Autowired
     private TenantServices tenantServices;
+
+    private static final SecureRandom random = new SecureRandom();
 
     public void createContacts(String[] tenantUniqueNames) {
 
@@ -97,7 +103,6 @@ public class LoadContacts {
         }
 
         List<String> randomTags = new ArrayList<>();
-        Random random = new Random();
         for (int i = 0; i < count; i++) {
             int randomIndex = random.nextInt(tags.size());
             String randomTag = tags.get(randomIndex);

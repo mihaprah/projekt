@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Random;
 
 @Data
 @AllArgsConstructor
@@ -34,8 +34,8 @@ public class Event {
         this.currentState = "";
     }
 
+    private static final SecureRandom random = new SecureRandom();
     public String generateId() {
-        final Random random = new Random();
         return System.nanoTime() + "-" + random.nextInt(10_000);
     }
 

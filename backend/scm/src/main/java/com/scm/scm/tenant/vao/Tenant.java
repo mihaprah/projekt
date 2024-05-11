@@ -6,11 +6,11 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 @Data
 @AllArgsConstructor
@@ -27,9 +27,10 @@ public class Tenant {
     private List<String> users;
     private Map<String, Integer> contactTags;
 
+    private static final SecureRandom random = new SecureRandom();
+
     public String generateTenantUniqueName(String tenantTitle) {
         LocalDate date = LocalDate.now();
-        final Random random = new Random();
         if (tenantTitle.length() >= 3) {
             String sanitizedTitle = tenantTitle.replaceAll("[^a-zA-Z0-9]", "").toUpperCase();
 
@@ -44,7 +45,6 @@ public class Tenant {
     }
 
     public String generateId(String tenantTitle) {
-        final Random random = new Random();
         String sanitizedTitle = tenantTitle.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
         return sanitizedTitle + "-" + System.nanoTime() + "-" + random.nextInt(10_000);
     }

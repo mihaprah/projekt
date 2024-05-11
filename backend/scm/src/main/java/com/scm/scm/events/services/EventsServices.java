@@ -5,6 +5,7 @@ import com.scm.scm.events.vao.Event;
 import com.scm.scm.events.vao.EventState;
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.exceptions.ExceptionCause;
+import com.scm.scm.support.mongoTemplate.CollectionType;
 import com.scm.scm.support.mongoTemplate.MongoTemplateService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +41,9 @@ public class EventsServices {
         }
         log.info("Event created with id: " + event.getId());
 
-        if (mongoTemplateService.collectionExists(tenantUniqueName + "_activity")) {
-            mongoTemplate.save(event, tenantUniqueName + "_activity");
-            log.info("Event " + event.getId() + " saved in collection " + tenantUniqueName + "_activity");
+        if (mongoTemplateService.collectionExists(tenantUniqueName + CollectionType.ACTIVITY.getCollectionType())) {
+            mongoTemplate.save(event, tenantUniqueName + CollectionType.ACTIVITY.getCollectionType());
+            log.info("Event " + event.getId() + " saved in collection " + tenantUniqueName + CollectionType.ACTIVITY.getCollectionType());
         }
         else {
             throw new CustomHttpException("Collection does not exist", 500, ExceptionCause.SERVER_ERROR);

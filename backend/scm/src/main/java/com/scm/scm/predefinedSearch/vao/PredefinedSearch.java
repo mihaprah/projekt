@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Random;
+import java.security.SecureRandom;
 
 @Data
 @Document(collection = "predefinedSearches")
@@ -35,8 +35,8 @@ public class PredefinedSearch {
     private String filter;
     private SortOrientation sortOrientation;
 
+    private static final SecureRandom random = new SecureRandom();
     public String generateId(String searchTitle) {
-        final Random random = new Random();
         if (searchTitle == null || searchTitle.isEmpty()) {
             return "-empty-" + System.nanoTime() + "-" + random.nextInt(10_000);
         }
