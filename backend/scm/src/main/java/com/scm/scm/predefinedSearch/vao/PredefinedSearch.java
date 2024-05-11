@@ -1,6 +1,9 @@
 package com.scm.scm.predefinedSearch.vao;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,11 +11,13 @@ import java.util.Random;
 
 @Data
 @Document(collection = "predefinedSearches")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PredefinedSearch {
 
-    public PredefinedSearch (String searchQuery, String searchBy, String user, String onTenant, String title, String filter, SortOrientation sortOrientation) {
+    public PredefinedSearch (String searchQuery, String user, String onTenant, String title, String filter, SortOrientation sortOrientation) {
         this.searchQuery = searchQuery;
-        this.searchBy = searchBy;
         this.user = user;
         this.onTenant = onTenant;
         this.title = title;

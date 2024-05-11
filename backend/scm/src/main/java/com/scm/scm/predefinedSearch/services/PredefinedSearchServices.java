@@ -2,6 +2,7 @@ package com.scm.scm.predefinedSearch.services;
 
 import com.scm.scm.events.services.EventsServices;
 import com.scm.scm.predefinedSearch.dao.PredefinedSearchRepository;
+import com.scm.scm.predefinedSearch.dto.PredefinedSearchDTO;
 import com.scm.scm.predefinedSearch.vao.PredefinedSearch;
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.exceptions.ExceptionCause;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -19,8 +21,33 @@ public class PredefinedSearchServices {
     private static final Logger log = Logger.getLogger(EventsServices.class.toString());
     private PredefinedSearchRepository predefinedSearchRepository;
 
-    public PredefinedSearch addPredefinedSearch(PredefinedSearch predefinedSearch) {
-        if (predefinedSearchRepository.existsById(predefinedSearch.getSearchBy())){
+    private PredefinedSearchDTO convertToDTO(PredefinedSearch predefinedSearch) {
+        return PredefinedSearchDTO.builder()
+                .id(predefinedSearch.getId())
+                .searchQuery(predefinedSearch.getSearchQuery())
+                .user(predefinedSearch.getUser())
+                .onTenant(predefinedSearch.getOnTenant())
+                .title(predefinedSearch.getTitle())
+                .filter(predefinedSearch.getFilter())
+                .sortOrientation(predefinedSearch.getSortOrientation())
+                .build();
+    }
+
+    private PredefinedSearch convertToEntity(PredefinedSearchDTO predefinedSearchDTO) {
+        return PredefinedSearch.builder()
+                .id(predefinedSearchDTO.getId())
+                .searchQuery(predefinedSearchDTO.getSearchQuery())
+                .user(predefinedSearchDTO.getUser())
+                .onTenant(predefinedSearchDTO.getOnTenant())
+                .title(predefinedSearchDTO.getTitle())
+                .filter(predefinedSearchDTO.getFilter())
+                .sortOrientation(predefinedSearchDTO.getSortOrientation())
+                .build();
+    }
+
+    public PredefinedSearchDTO addPredefinedSearch(PredefinedSearchDTO predefinedSearchDTO) {
+        PredefinedSearch predefinedSearch = convertToEntity(predefinedSearchDTO);
+        if (predefinedSearchRepository.existsById(predefinedSearch.getId())){
             throw new CustomHttpException("PredefinedSearch with this id already exists", 400, ExceptionCause.USER_ERROR);
         } else {
             if (Objects.equals(predefinedSearch.getTitle(), "")) {
@@ -29,24 +56,26 @@ public class PredefinedSearchServices {
                 predefinedSearch.setId(predefinedSearch.generateId(predefinedSearch.getTitle()));
                 predefinedSearchRepository.save(predefinedSearch);
                 log.info("PredefinedSearch created with id: " + predefinedSearch.getId());
-                return predefinedSearch;
+                return convertToDTO(predefinedSearch);
             }
         }
     }
 
-    public List<PredefinedSearch> getAllPredefinedSearches() {
+    public List<PredefinedSearchDTO> getAllPredefinedSearches() {
+        List<PredefinedSearch> predefinedSearches = predefinedSearchRepository.findAll();
         log.info("All predefined searches found");
-        return predefinedSearchRepository.findAll();
+        return predefinedSearches.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    public PredefinedSearch getPredefinedSearchById(String id) {
+    public PredefinedSearchDTO getPredefinedSearchById(String id) {
         PredefinedSearch predefinedSearch = predefinedSearchRepository.findById(id).orElseThrow(() -> new CustomHttpException("PredefinedSearch not found", 404, ExceptionCause.USER_ERROR));
         log.info("PredefinedSearch found with id: " + id);
-        return predefinedSearch;
+        return convertToDTO(predefinedSearch);
     }
 
-    public PredefinedSearch updatePredefinedSearch(PredefinedSearch predefinedSearch) {
-        PredefinedSearch oldPredefinedSearch = predefinedSearchRepository.findById(predefinedSearch.getId()).orElse(null);
+    public PredefinedSearchDTO updatePredefinedSearch(PredefinedSearchDTO predefinedSearchDTO) {
+        PredefinedSearch predefinedSearch = convertToEntity(predefinedSearchDTO);
+        PredefinedSearch oldPredefinedSearch = predefinedSearchRepository.findById(predefinedSearch.getId()).orElseThrow(() -> new CustomHttpException("PredefinedSearch not found", 404, ExceptionCause.USER_ERROR));
         if (oldPredefinedSearch != null) {
             oldPredefinedSearch.setSearchQuery(predefinedSearch.getSearchQuery());
             oldPredefinedSearch.setSearchBy(predefinedSearch.getSearchBy());
@@ -59,11 +88,11 @@ public class PredefinedSearchServices {
             throw new CustomHttpException("PredefinedSearch not found", 404, ExceptionCause.USER_ERROR);
         }
         log.info("PredefinedSearch updated with id: " + predefinedSearch.getId());
-        return oldPredefinedSearch;
+        return convertToDTO(oldPredefinedSearch);
     }
 
     public String deletePredefinedSearch(String id) {
-        if (predefinedSearchRepository.existsById(id) && !id.isEmpty()) {
+        if (!id.isEmpty() && predefinedSearchRepository.existsById(id)) {
             predefinedSearchRepository.deleteById(id);
             log.info("PredefinedSearch deleted with id: " + id);
             return "PredefinedSearch successfully deleted";
@@ -72,21 +101,23 @@ public class PredefinedSearchServices {
         }
     }
 
-    public List<PredefinedSearch> getPredefinedSearchByUser(String user) {
-        if (!user.isEmpty()){
-            log.info("PredefinedSearch found by user: " + user);
-            return predefinedSearchRepository.findByUser(user);
+    public List<PredefinedSearchDTO> getPredefinedSearchByUser(String user) {
+        if (user == null || user.isEmpty()){
+            throw new CustomHttpException("User is empty", 400, ExceptionCause.USER_ERROR);
         } else {
-            throw new CustomHttpException("PredefinedSearch user is empty", 400, ExceptionCause.USER_ERROR);
+            log.info("PredefinedSearch found by user: " + user);
+            List<PredefinedSearch> predefinedSearches = predefinedSearchRepository.findByUser(user);
+            return predefinedSearches.stream().map(this::convertToDTO).collect(Collectors.toList());
         }
     }
 
-    public List<PredefinedSearch> getPredefinedSearchByTenant(String tenant) {
-        if (!tenant.isEmpty()){
-            log.info("PredefinedSearch found by tenant: " + tenant);
-            return predefinedSearchRepository.findByOnTenant(tenant);
+    public List<PredefinedSearchDTO> getPredefinedSearchByTenant(String tenant) {
+        if (tenant == null || tenant.isEmpty()){
+            throw new CustomHttpException("Tenant is empty", 400, ExceptionCause.USER_ERROR);
         } else {
-            throw new CustomHttpException("PredefinedSearch tenant is empty", 400, ExceptionCause.USER_ERROR);
+            log.info("PredefinedSearch found by tenant: " + tenant);
+            List<PredefinedSearch> predefinedSearches = predefinedSearchRepository.findByOnTenant(tenant);
+            return predefinedSearches.stream().map(this::convertToDTO).collect(Collectors.toList());
         }
     }
 

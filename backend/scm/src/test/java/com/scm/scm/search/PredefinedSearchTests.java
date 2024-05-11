@@ -16,14 +16,13 @@ public class PredefinedSearchTests {
 
     @BeforeEach
     void setUp() {
-        predefinedSearch = new PredefinedSearch("searchQuery", "searchBy", "user", "onTenant", "title", "filter", SortOrientation.ASC);
+        predefinedSearch = new PredefinedSearch("searchQuery", "user", "onTenant", "title", "filter", SortOrientation.ASC);
     }
 
     @Test
     void testConstructor() {
         assertNotNull(predefinedSearch);
         assertEquals("searchQuery", predefinedSearch.getSearchQuery());
-        assertEquals("searchBy", predefinedSearch.getSearchBy());
         assertEquals("user", predefinedSearch.getUser());
         assertEquals("onTenant", predefinedSearch.getOnTenant());
         assertEquals("title", predefinedSearch.getTitle());

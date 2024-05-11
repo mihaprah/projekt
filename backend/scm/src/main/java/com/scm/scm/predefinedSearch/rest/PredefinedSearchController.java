@@ -1,7 +1,7 @@
 package com.scm.scm.predefinedSearch.rest;
 
+import com.scm.scm.predefinedSearch.dto.PredefinedSearchDTO;
 import com.scm.scm.predefinedSearch.services.PredefinedSearchServices;
-import com.scm.scm.predefinedSearch.vao.PredefinedSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,26 +16,26 @@ public class PredefinedSearchController {
     private PredefinedSearchServices predefinedSearchServices;
 
     @GetMapping
-    public ResponseEntity<List<PredefinedSearch>> getPredefinedSearches() {
-        List<PredefinedSearch> predefinedSearches = predefinedSearchServices.getAllPredefinedSearches();
+    public ResponseEntity<List<PredefinedSearchDTO>> getPredefinedSearches() {
+        List<PredefinedSearchDTO> predefinedSearches = predefinedSearchServices.getAllPredefinedSearches();
         return ResponseEntity.ok(predefinedSearches);
     }
 
     @GetMapping("/{predefined_search_id}")
-    public ResponseEntity<PredefinedSearch> getPredefinedSearch(@PathVariable("predefined_search_id") String predefinedSearchId) {
-        PredefinedSearch predefinedSearch = predefinedSearchServices.getPredefinedSearchById(predefinedSearchId);
+    public ResponseEntity<PredefinedSearchDTO> getPredefinedSearch(@PathVariable("predefined_search_id") String predefinedSearchId) {
+        PredefinedSearchDTO predefinedSearch = predefinedSearchServices.getPredefinedSearchById(predefinedSearchId);
         return ResponseEntity.ok(predefinedSearch);
     }
 
     @PostMapping
-    public ResponseEntity<PredefinedSearch> createPredefinedSearch(@RequestBody PredefinedSearch predefinedSearch) {
-        PredefinedSearch createdPredefinedSearch = predefinedSearchServices.addPredefinedSearch(predefinedSearch);
+    public ResponseEntity<PredefinedSearchDTO> createPredefinedSearch(@RequestBody PredefinedSearchDTO predefinedSearchDTO) {
+        PredefinedSearchDTO createdPredefinedSearch = predefinedSearchServices.addPredefinedSearch(predefinedSearchDTO);
         return ResponseEntity.ok(createdPredefinedSearch);
     }
 
     @PutMapping
-    public ResponseEntity<PredefinedSearch> updatePredefinedSearch(@RequestBody PredefinedSearch predefinedSearch) {
-        PredefinedSearch updatedPredefinedSearch = predefinedSearchServices.updatePredefinedSearch(predefinedSearch);
+    public ResponseEntity<PredefinedSearchDTO> updatePredefinedSearch(@RequestBody PredefinedSearchDTO predefinedSearchDTO) {
+        PredefinedSearchDTO updatedPredefinedSearch = predefinedSearchServices.updatePredefinedSearch(predefinedSearchDTO);
         return ResponseEntity.ok(updatedPredefinedSearch);
     }
 
@@ -45,14 +45,14 @@ public class PredefinedSearchController {
     }
 
     @GetMapping("/user/{user}")
-    public ResponseEntity<List<PredefinedSearch>> getPredefinedSearchByUser(@PathVariable("user") String user) {
-        List<PredefinedSearch> predefinedSearches = predefinedSearchServices.getPredefinedSearchByUser(user);
+    public ResponseEntity<List<PredefinedSearchDTO>> getPredefinedSearchByUser(@PathVariable("user") String user) {
+        List<PredefinedSearchDTO> predefinedSearches = predefinedSearchServices.getPredefinedSearchByUser(user);
         return ResponseEntity.ok(predefinedSearches);
     }
 
     @GetMapping("/tenant/{tenant}")
-    public ResponseEntity<List<PredefinedSearch>> getPredefinedSearchByTenant(@PathVariable("tenant") String tenant) {
-        List<PredefinedSearch> predefinedSearches = predefinedSearchServices.getPredefinedSearchByTenant(tenant);
+    public ResponseEntity<List<PredefinedSearchDTO>> getPredefinedSearchByTenant(@PathVariable("tenant") String tenant) {
+        List<PredefinedSearchDTO> predefinedSearches = predefinedSearchServices.getPredefinedSearchByTenant(tenant);
         return ResponseEntity.ok(predefinedSearches);
     }
 
