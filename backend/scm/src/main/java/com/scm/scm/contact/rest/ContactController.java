@@ -84,19 +84,25 @@ public class ContactController {
 
     @PostMapping("/export")
     public ResponseEntity<byte[]> exportContacts(@RequestBody ExportContactRequest request) {
+        if (request == null || request.getUser() == null || request.getTenantUniqueName() == null || request.getTenantId() == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
         String user = StringEscapeUtils.escapeHtml4(request.getUser());
         String tenantUniqueName = StringEscapeUtils.escapeHtml4(request.getTenantUniqueName());
         String tenantId = StringEscapeUtils.escapeHtml4(request.getTenantId());
+
+        if(!userAccessService.hasAccessToTenant(user, tenantId)) {
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
+
         try {
-            if(userAccessService.hasAccessToTenant(user, tenantId)) {
-                exportContactExcel.exportContacts(tenantUniqueName);
-                log.info("Contacts exported successfully for tenant: " + tenantUniqueName);
-                return exportContactExcel.exportContacts(tenantUniqueName);
-            } else {
-                return ResponseEntity.status(403).build();
-            }
+            byte[] exportedContacts = exportContactExcel.exportContacts(tenantUniqueName).getBody();
+            log.info("Contacts exported successfully for tenant: " + tenantUniqueName);
+            return new ResponseEntity<>(exportedContacts, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            log.severe("Error occurred during export: " + e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
