@@ -51,7 +51,8 @@ public class ContactController {
 
     @PostMapping("/{user_token}")
     public ResponseEntity<String> addContact(@PathVariable("user_token") String userToken, @RequestBody ContactDTO contactDTO) {
-        boolean check = userAccessService.hasAccessToContact(userToken, contactDTO.getTenantUniqueName());
+        String sanitizedUserToken = StringEscapeUtils.escapeHtml4(userToken);
+        boolean check = userAccessService.hasAccessToContact(sanitizedUserToken, contactDTO.getTenantUniqueName());
         if (!check) {
             return ResponseEntity.status(403).build();
         }
@@ -60,7 +61,8 @@ public class ContactController {
 
     @PutMapping("/{user_token}")
     public ResponseEntity<ContactDTO> updateContact(@PathVariable("user_token") String userToken, @RequestBody ContactDTO contactDTO) {
-        boolean check = userAccessService.hasAccessToContact(userToken, contactDTO.getTenantUniqueName());
+        String sanitizedUserToken = StringEscapeUtils.escapeHtml4(userToken);
+        boolean check = userAccessService.hasAccessToContact(sanitizedUserToken, contactDTO.getTenantUniqueName());
         if (!check) {
             return ResponseEntity.status(403).build();
         }
@@ -69,7 +71,8 @@ public class ContactController {
 
     @DeleteMapping("/{contact_id}/{tenant_unique_name}/{user_token}")
     public ResponseEntity<String> deleteContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName, @PathVariable(name = "user_token") String userToken) {
-        boolean check = userAccessService.hasAccessToContact(userToken, tenantUniqueName);
+        String sanitizedUserToken = StringEscapeUtils.escapeHtml4(userToken);
+        boolean check = userAccessService.hasAccessToContact(sanitizedUserToken, tenantUniqueName);
         if (!check) {
             return ResponseEntity.status(403).build();
         }
