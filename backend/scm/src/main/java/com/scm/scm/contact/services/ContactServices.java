@@ -11,6 +11,7 @@ import com.scm.scm.support.mongoTemplate.CollectionType;
 import com.scm.scm.support.mongoTemplate.MongoTemplateService;
 import com.scm.scm.tenant.services.TenantServices;
 import lombok.AllArgsConstructor;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
@@ -91,7 +92,18 @@ public class ContactServices {
     }
 
     public String createContact(ContactDTO contactDTO) {
-        Contact contact = convertToEntity(contactDTO);
+        ContactDTO sanitizedContactDTO = new ContactDTO();
+        sanitizedContactDTO.setId(StringEscapeUtils.escapeHtml4(contactDTO.getId()));
+        sanitizedContactDTO.setTitle(StringEscapeUtils.escapeHtml4(contactDTO.getTitle()));
+        sanitizedContactDTO.setUser(StringEscapeUtils.escapeHtml4(contactDTO.getUser()));
+        sanitizedContactDTO.setTenantUniqueName(StringEscapeUtils.escapeHtml4(contactDTO.getTenantUniqueName()));
+        sanitizedContactDTO.setComments(StringEscapeUtils.escapeHtml4(contactDTO.getComments()));
+        sanitizedContactDTO.setCreatedAt(StringEscapeUtils.escapeHtml4(contactDTO.getCreatedAt()));
+        sanitizedContactDTO.setTags(StringEscapeUtils.escapeHtml4(contactDTO.getTags()));
+        sanitizedContactDTO.setProps(StringEscapeUtils.escapeHtml4(contactDTO.getProps()));
+        sanitizedContactDTO.setAttributesToString(StringEscapeUtils.escapeHtml4(contactDTO.getAttributesToString()));
+
+        Contact contact = convertToEntity(sanitizedContactDTO);
         if (contact.getTenantUniqueName().isEmpty()) {
             throw new CustomHttpException("TenantUniqueName is empty", 400, ExceptionCause.USER_ERROR);
         }
