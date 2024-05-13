@@ -64,7 +64,7 @@ public class ContactServicesTests {
     public void init() throws Exception {
         try (AutoCloseable ac = MockitoAnnotations.openMocks(this)) {
             tenantDTO = new TenantDTO("id", "title", "tenantUniqueName", "Short description", "#ff4545", true, new ArrayList<>(users), new HashMap<>(contactTags));
-            contactDTO = new ContactDTO("idTest", "Updated Title", "user1", "tenantUniqueName", "Updated Comments", LocalDateTime.now().toString(), "tags", "props", "attributesToString");
+            contactDTO = new ContactDTO("idTest", "Updated Title", "user1", "tenantUniqueName", "Updated Comments", LocalDateTime.now().toString(),  Arrays.asList("TagTest1", "TagTest2"), new HashMap<>(), "attributesToString");
             contact1 = new Contact("id1", "Title1", "user1", "tenantUniqueName", "Comments1", LocalDateTime.now(), Arrays.asList("Tag1", "Tag2"), new HashMap<>(), "AttributesToString");
             contact2 = new Contact("id2", "Title2", "user2", "tenantUniqueName", "Comments2", LocalDateTime.now(), Arrays.asList("Tag1", "Tag2"), new HashMap<>(), "AttributesToString");
         }
