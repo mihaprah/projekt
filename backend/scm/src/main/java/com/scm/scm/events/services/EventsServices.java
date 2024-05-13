@@ -50,7 +50,7 @@ public class EventsServices {
         }
     }
 
-    private boolean checkEnum(EventState eventState) {
+    public boolean checkEnum(EventState eventState) {
         for (EventState event : EventState.values()) {
             if (event == eventState) {
                 return true;
