@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -35,6 +34,7 @@ public class ContactServices {
     private MongoTemplateService mongoTemplateService;
     private TenantServices tenantServices;
     private EventsServices eventsServices;
+    private EventsCheck eventsCheck;
     private static final Logger log = Logger.getLogger(ContactServices.class.toString());
 
     private ContactDTO convertToDTO(Contact contact) {
@@ -159,10 +159,10 @@ public class ContactServices {
             existingContact.setTitle(contact.getTitle());
             existingContact.setComments(contact.getComments());
 
-            checkTags(existingContact, contact);
+            eventsCheck.checkTags(existingContact, contact);
             existingContact.setTags(contact.getTags());
 
-            checkProps(existingContact, contact);
+            eventsCheck.checkProps(existingContact, contact);
             existingContact.setProps(contact.getProps());
             existingContact.setAttributesToString(existingContact.contactAttributesToString());
 
@@ -196,74 +196,5 @@ public class ContactServices {
         tenantServices.removeTags(tenantUniqueName, contact.getTags());
 
         return "Contact deleted successfully from " + tenantUniqueName + "_main collection";
-    }
-
-    private void checkProps (Contact existingContact, Contact contact){
-        Map<String, String> existingProps = existingContact.getProps();
-        Map<String, String> props = contact.getProps();
-
-        Event event = new Event();
-        event.setUser(contact.getUser());
-        event.setContact(existingContact.getId());
-
-        for (String key : props.keySet()){
-            if(existingProps.containsKey(key)){
-                String existingValue = existingProps.get(key);
-                String value = props.get(key);
-                if(!existingValue.equals(value)){
-                    event.setEventState(EventState.UPDATED);
-                    event.setPropKey(key);
-                    event.setPrevState(existingValue);
-                    event.setCurrentState(value);
-                    eventsServices.addEvent(event, existingContact.getTenantUniqueName());
-                }
-            } else {
-                event.setEventState(EventState.PROP_ADD);
-                event.setPropKey(key);
-                event.setPrevState("");
-                event.setCurrentState(props.get(key));
-                eventsServices.addEvent(event, existingContact.getTenantUniqueName());
-            }
-        }
-        for (String key : existingProps.keySet()){
-            if (!props.containsKey(key)){
-                event.setEventState(EventState.PROP_REMOVED);
-                event.setPropKey(key);
-                event.setPrevState(existingProps.get(key));
-                event.setCurrentState("");
-                eventsServices.addEvent(event, existingContact.getTenantUniqueName());
-            }
-        }
-    }
-    private void checkTags (Contact existingContact, Contact contact) {
-        List<String> existingTags = existingContact.getTags();
-        List<String> tags = contact.getTags();
-
-        Event event = new Event();
-        event.setUser(contact.getUser());
-        event.setContact(existingContact.getId());
-
-        for (String tag : tags){
-            if(!existingTags.contains(tag)){
-                event.setEventState(EventState.TAG_ADD);
-                event.setPropKey("TAG");
-                event.setPrevState("");
-                event.setCurrentState(tag);
-                eventsServices.addEvent(event, existingContact.getTenantUniqueName());
-
-                tenantServices.addTags(contact.getTenantUniqueName(), contact.getTags());
-            }
-        }
-        for ( String existingTag : existingTags){
-            if(!tags.contains(existingTag)){
-                event.setEventState(EventState.TAG_REMOVED);
-                event.setPropKey("TAG");
-                event.setPrevState(existingTag);
-                event.setCurrentState("");
-                eventsServices.addEvent(event, existingContact.getTenantUniqueName());
-
-                tenantServices.removeTags(contact.getTenantUniqueName(), contact.getTags());
-            }
-        }
     }
 }
