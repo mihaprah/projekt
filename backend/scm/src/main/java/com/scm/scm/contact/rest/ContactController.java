@@ -96,7 +96,7 @@ public class ContactController {
                 .map(StringEscapeUtils::escapeHtml4)
                 .toList();
 
-        if(!userAccessService.hasAccessToTenant(user, tenantId)) {
+        if(!userAccessService.hasAccessToTenant(user, tenantId) || !userAccessService.hasAccessToContact(user, tenantUniqueName)) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
 
