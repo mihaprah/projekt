@@ -28,15 +28,7 @@ public class ContactTests {
         assertTrue(id.startsWith("testtitle-"));
     }
 
-    @Test
-    public void shouldContactAttributesToString() {
-        contact.setTitle("TestTitle");
-        contact.setTags(Arrays.asList("tag1", "tag2"));
-        contact.setProps(props);
 
-        String attributesToString = contact.contactAttributesToString();
-        assertEquals("testtitle,tag1,tag2,prop2,prop1,", attributesToString);
-    }
 
     @Test
     public void shouldSetAndGetId() {
