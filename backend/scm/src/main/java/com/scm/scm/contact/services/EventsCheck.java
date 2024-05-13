@@ -8,6 +8,7 @@ import com.scm.scm.tenant.services.TenantServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -84,7 +85,10 @@ public class EventsCheck {
                 event.setCurrentState("");
                 eventsServices.addEvent(event, existingContact.getTenantUniqueName());
 
-                tenantServices.removeTags(contact.getTenantUniqueName(), contact.getTags());
+                List<String> removedTags = new ArrayList<>();
+                removedTags.add(existingTag);
+
+                tenantServices.removeTags(contact.getTenantUniqueName(), removedTags);
             }
         }
     }

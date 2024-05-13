@@ -18,7 +18,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -59,7 +58,7 @@ public class ContactServices {
                 contactDTO.getComments(),
                 LocalDateTime.parse(contactDTO.getCreatedAt()),
                 contactDTO.getTags(),
-                new HashMap<>(),
+                contactDTO.getProps(),
                 contactDTO.getAttributesToString()
         );
     }
@@ -165,7 +164,7 @@ public class ContactServices {
             existingContact.setProps(contact.getProps());
             existingContact.setAttributesToString(existingContact.contactAttributesToString());
 
-            mongoTemplate.save(existingContact, existingContact.getTenantUniqueName());
+            mongoTemplate.save(existingContact, existingContact.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
             log.info("Contact updated with id: " + contact.getId() + " for tenant: " + contact.getTenantUniqueName());
             return convertToDTO(existingContact);
         } else {
@@ -177,7 +176,7 @@ public class ContactServices {
         if (contactId.isEmpty() || tenantUniqueName.isEmpty()) {
             throw new CustomHttpException("ContactId or uniqueTenantName is empty", 400, ExceptionCause.USER_ERROR);
         }
-        if (!mongoTemplateService.collectionExists(tenantUniqueName + CollectionType.MAIN.getCollectionType()) || !mongoTemplateService.collectionExists(tenantUniqueName + "_deleted")) {
+        if (!mongoTemplateService.collectionExists(tenantUniqueName + CollectionType.MAIN.getCollectionType()) || !mongoTemplateService.collectionExists(tenantUniqueName + CollectionType.DELETED.getCollectionType())) {
             throw new CustomHttpException(ExceptionMessage.COLLECTION_NOT_EXIST.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
         }
         Contact contact = mongoTemplate.findById(contactId, Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType());
