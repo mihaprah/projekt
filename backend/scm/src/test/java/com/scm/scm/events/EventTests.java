@@ -18,7 +18,7 @@ public class EventTests {
 
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         event = new Event("id1", "user1", "contact1", EventState.CREATED, "propKey", "prevState", "currentState", LocalDateTime.now());
     }
 

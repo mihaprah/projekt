@@ -17,7 +17,7 @@ public class ContactTests {
     private final Map<String, String> props = Map.of("prop1", "value1", "prop2", "value2");
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         contact = new Contact();
     }
 

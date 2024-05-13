@@ -12,7 +12,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,9 +29,10 @@ public class ContactExportTest {
     @Mock
     private UserAccessService userAccessService;
 
+
     @BeforeEach
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
+    public void init() throws Exception{
+        try (AutoCloseable ac = MockitoAnnotations.openMocks(this)){}
     }
 
     @Test

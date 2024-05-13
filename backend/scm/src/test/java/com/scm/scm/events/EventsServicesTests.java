@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
@@ -36,8 +37,10 @@ public class EventsServicesTests {
     private Event event;
 
     @BeforeEach
-    void setUp() {
-        event = new Event("id", "user1", "contact1", EventState.CREATED, "propKey", "prevState", "currentState", LocalDateTime.now());
+    public void init() throws Exception {
+        try (AutoCloseable ac = MockitoAnnotations.openMocks(this)) {
+            event = new Event("id", "user1", "contact1", EventState.CREATED, "propKey", "prevState", "currentState", LocalDateTime.now());
+        }
     }
 
     @Test
