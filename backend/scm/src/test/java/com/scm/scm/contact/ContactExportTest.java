@@ -51,12 +51,13 @@ public class ContactExportTest {
     }
 
     @Test
-    public void testExportContactsInternalServerError() {
+    public void testExportContactsNoContent() {
         ExportContactRequest request = new ExportContactRequest("user", "tenantUniqueName", "tenantId", Collections.emptyList());
         when(userAccessService.hasAccessToTenant("user", "tenantId")).thenReturn(true);
-        when(exportContactExcel.exportContacts("tenantUniqueName", Collections.emptyList())).thenThrow(IllegalArgumentException.class);
+        when(userAccessService.hasAccessToContact("user", "tenantUniqueName")).thenReturn(true);
+        when(exportContactExcel.exportContacts("tenantUniqueName", Collections.emptyList())).thenReturn(ResponseEntity.noContent().build());
         ResponseEntity<byte[]> response = contactController.exportContacts(request);
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
     @Test
@@ -64,6 +65,7 @@ public class ContactExportTest {
         ExportContactRequest request = new ExportContactRequest("user", "tenantUniqueName", "tenantId", Collections.emptyList());
         byte[] exportedContacts = new byte[0];
         when(userAccessService.hasAccessToTenant("user", "tenantId")).thenReturn(true);
+        when(userAccessService.hasAccessToContact("user", "tenantUniqueName")).thenReturn(true);
         when(exportContactExcel.exportContacts("tenantUniqueName", Collections.emptyList())).thenReturn(ResponseEntity.ok(exportedContacts));
         ResponseEntity<byte[]> response = contactController.exportContacts(request);
         assertEquals(HttpStatus.OK, response.getStatusCode());
