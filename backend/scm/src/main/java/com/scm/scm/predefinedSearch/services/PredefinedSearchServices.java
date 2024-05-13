@@ -6,6 +6,7 @@ import com.scm.scm.predefinedSearch.dto.PredefinedSearchDTO;
 import com.scm.scm.predefinedSearch.vao.PredefinedSearch;
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.exceptions.ExceptionCause;
+import com.scm.scm.support.exceptions.ExceptionMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -64,14 +65,14 @@ public class PredefinedSearchServices {
     }
 
     public PredefinedSearchDTO getPredefinedSearchById(String id) {
-        PredefinedSearch predefinedSearch = predefinedSearchRepository.findById(id).orElseThrow(() -> new CustomHttpException("PredefinedSearch not found", 404, ExceptionCause.USER_ERROR));
+        PredefinedSearch predefinedSearch = predefinedSearchRepository.findById(id).orElseThrow(() -> new CustomHttpException(ExceptionMessage.SEARCH_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR));
         log.info("PredefinedSearch found with id: " + id);
         return convertToDTO(predefinedSearch);
     }
 
     public PredefinedSearchDTO updatePredefinedSearch(PredefinedSearchDTO predefinedSearchDTO) {
         PredefinedSearch predefinedSearch = convertToEntity(predefinedSearchDTO);
-        PredefinedSearch oldPredefinedSearch = predefinedSearchRepository.findById(predefinedSearch.getId()).orElseThrow(() -> new CustomHttpException("PredefinedSearch not found", 404, ExceptionCause.USER_ERROR));
+        PredefinedSearch oldPredefinedSearch = predefinedSearchRepository.findById(predefinedSearch.getId()).orElseThrow(() -> new CustomHttpException(ExceptionMessage.SEARCH_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR));
         if (oldPredefinedSearch != null) {
             oldPredefinedSearch.setSearchQuery(predefinedSearch.getSearchQuery());
             oldPredefinedSearch.setSearchBy(predefinedSearch.getSearchBy());
@@ -81,7 +82,7 @@ public class PredefinedSearchServices {
             oldPredefinedSearch.setFilter(predefinedSearch.getFilter());
             predefinedSearchRepository.save(oldPredefinedSearch);
         } else {
-            throw new CustomHttpException("PredefinedSearch not found", 404, ExceptionCause.USER_ERROR);
+            throw new CustomHttpException(ExceptionMessage.SEARCH_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR);
         }
         log.info("PredefinedSearch updated with id: " + predefinedSearch.getId());
         return convertToDTO(oldPredefinedSearch);
@@ -93,7 +94,7 @@ public class PredefinedSearchServices {
             log.info("PredefinedSearch deleted with id: " + id);
             return "PredefinedSearch successfully deleted";
         } else {
-            throw new CustomHttpException("PredefinedSearch not found", 404, ExceptionCause.USER_ERROR);
+            throw new CustomHttpException(ExceptionMessage.SEARCH_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR);
         }
     }
 

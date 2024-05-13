@@ -2,6 +2,7 @@ package com.scm.scm.tenant.services;
 
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.exceptions.ExceptionCause;
+import com.scm.scm.support.exceptions.ExceptionMessage;
 import com.scm.scm.support.mongoTemplate.MongoTemplateService;
 import com.scm.scm.tenant.dao.TenantRepository;
 import com.scm.scm.tenant.dto.TenantDTO;
@@ -76,7 +77,7 @@ public class TenantServices {
     }
 
     public TenantDTO getTenantById(String id) {
-        Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR));
+        Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException(ExceptionMessage.TENANT_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR));
         log.info("Tenant found with id: " + id);
         return convertToDTO(tenant);
     }
@@ -90,19 +91,19 @@ public class TenantServices {
             oldTenant.setTitle(tenant.getTitle());
             tenantRepository.save(oldTenant);
         } else {
-            throw new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR);
+            throw new CustomHttpException(ExceptionMessage.TENANT_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR);
         }
         return convertToDTO(oldTenant);
     }
 
     public String deactivateTenant(String id) {
-        Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR));
+        Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException(ExceptionMessage.TENANT_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR));
         if (tenant != null) {
             tenant.setActive(false);
             tenantRepository.save(tenant);
             return "Tenant successfully deactivated";
         } else {
-            throw new CustomHttpException("Tenant is null", 500, ExceptionCause.SERVER_ERROR);
+            throw new CustomHttpException(ExceptionMessage.TENANT_NULL.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
         }
     }
 
@@ -121,7 +122,7 @@ public class TenantServices {
             tenantRepository.save(tenant);
             return "Tenant successfully added tags";
         } else {
-            throw new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR);
+            throw new CustomHttpException(ExceptionMessage.TENANT_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR);
         }
     }
 
@@ -139,12 +140,12 @@ public class TenantServices {
             tenantRepository.save(tenant);
             return "Tenant successfully removed tags";
         } else {
-            throw new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR);
+            throw new CustomHttpException(ExceptionMessage.TENANT_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR);
         }
     }
 
     public String addUsers(String id, List<String> users) {
-        Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException("Tenant not found", 404, ExceptionCause.SERVER_ERROR));
+        Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException(ExceptionMessage.TENANT_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.SERVER_ERROR));
         int userCount = 0;
         if (tenant != null) {
             List<String> oldUsers = tenant.getUsers();
@@ -164,12 +165,12 @@ public class TenantServices {
             }
             return "Users added to Tenant successfully";
         } else {
-            throw new CustomHttpException("Tenant is null", 500, ExceptionCause.SERVER_ERROR);
+            throw new CustomHttpException(ExceptionMessage.TENANT_NULL.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
         }
     }
 
     public String removeUsers(String id, List<String> users) {
-        Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR));
+        Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException(ExceptionMessage.TENANT_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR));
         int userCount = 0;
         if (tenant != null) {
             List<String> oldUsers = tenant.getUsers();
@@ -193,7 +194,7 @@ public class TenantServices {
             }
             return "Users removed from Tenant successfully";
         } else {
-            throw new CustomHttpException("Tenant is null", 500, ExceptionCause.SERVER_ERROR);
+            throw new CustomHttpException(ExceptionMessage.TENANT_NULL.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
         }
     }
 

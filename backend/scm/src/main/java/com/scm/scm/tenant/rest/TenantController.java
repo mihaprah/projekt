@@ -2,6 +2,7 @@ package com.scm.scm.tenant.rest;
 
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.exceptions.ExceptionCause;
+import com.scm.scm.support.exceptions.ExceptionMessage;
 import com.scm.scm.support.security.UserAccessService;
 import com.scm.scm.tenant.dto.TenantDTO;
 import com.scm.scm.tenant.services.TenantServices;
@@ -30,7 +31,7 @@ public class TenantController {
     public ResponseEntity<TenantDTO> getTenant(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String user_token) {
         boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
         if (!check) {
-            throw new CustomHttpException("User does not have access to this tenant", 403, ExceptionCause.USER_ERROR);
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         TenantDTO tenant = tenantServices.getTenantById(tenantId);
         return ResponseEntity.ok(tenant);
@@ -52,7 +53,7 @@ public class TenantController {
     public ResponseEntity<TenantDTO> updateTenant(@RequestHeader("userToken") String user_token, @RequestBody TenantDTO tenantDTO) {
         boolean check = userAccessService.hasAccessToTenant(user_token, tenantDTO.getId());
         if (!check) {
-            throw new CustomHttpException("User does not have access to this tenant", 403, ExceptionCause.USER_ERROR);
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         TenantDTO updatedTenant = tenantServices.updateTenant(tenantDTO);
         return ResponseEntity.ok(updatedTenant);
@@ -62,7 +63,7 @@ public class TenantController {
     public ResponseEntity<String> deactivateTenant(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String user_token){
         boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
         if (!check) {
-            throw new CustomHttpException("User does not have access to this tenant", 403, ExceptionCause.USER_ERROR);
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(tenantServices.deactivateTenant(tenantId));
     }
@@ -71,7 +72,7 @@ public class TenantController {
     public ResponseEntity<String> addTag(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String user_token, @RequestBody List<String> tags) {
         boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
         if (!check) {
-            throw new CustomHttpException("User does not have access to this tenant", 403, ExceptionCause.USER_ERROR);
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(tenantServices.addTags(tenantId, tags));
     }
@@ -80,7 +81,7 @@ public class TenantController {
     public ResponseEntity<String> removeTag(@PathVariable("tenant_id") String tenantId,@RequestHeader("userToken") String user_token, @RequestBody List<String> tags) {
         boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
         if (!check) {
-            throw new CustomHttpException("User does not have access to this tenant", 403, ExceptionCause.USER_ERROR);
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(tenantServices.removeTags(tenantId, tags));
     }
@@ -89,7 +90,7 @@ public class TenantController {
     public ResponseEntity<String> addUsers(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String user_token, @RequestBody List<String> users) {
         boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
         if (!check) {
-            throw new CustomHttpException("User does not have access to this tenant", 403, ExceptionCause.USER_ERROR);
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(tenantServices.addUsers(tenantId, users));
     }
@@ -98,7 +99,7 @@ public class TenantController {
     public ResponseEntity<String> removeUsers(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String user_token, @RequestBody List<String> users) {
         boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
         if (!check) {
-            throw new CustomHttpException("User does not have access to this tenant", 403, ExceptionCause.USER_ERROR);
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(tenantServices.removeUsers(tenantId, users));
     }
