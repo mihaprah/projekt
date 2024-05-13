@@ -18,7 +18,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
@@ -45,8 +44,8 @@ public class ContactServices {
                 .tenantUniqueName(contact.getTenantUniqueName())
                 .comments(contact.getComments())
                 .createdAt(contact.getCreatedAt().toString())
-                .tags(String.join(",", contact.getTags()))
-                .props(contact.getProps().toString())
+                .tags(contact.getTags())
+                .props(contact.getProps())
                 .attributesToString(contact.getAttributesToString())
                 .build();
     }
@@ -59,7 +58,7 @@ public class ContactServices {
                 contactDTO.getTenantUniqueName(),
                 contactDTO.getComments(),
                 LocalDateTime.parse(contactDTO.getCreatedAt()),
-                Arrays.asList(contactDTO.getTags().split(",")),
+                contactDTO.getTags(),
                 new HashMap<>(),
                 contactDTO.getAttributesToString()
         );
@@ -100,8 +99,8 @@ public class ContactServices {
         sanitizedContactDTO.setTenantUniqueName(StringEscapeUtils.escapeHtml4(contactDTO.getTenantUniqueName()));
         sanitizedContactDTO.setComments(StringEscapeUtils.escapeHtml4(contactDTO.getComments()));
         sanitizedContactDTO.setCreatedAt(StringEscapeUtils.escapeHtml4(contactDTO.getCreatedAt()));
-        sanitizedContactDTO.setTags(StringEscapeUtils.escapeHtml4(contactDTO.getTags()));
-        sanitizedContactDTO.setProps(StringEscapeUtils.escapeHtml4(contactDTO.getProps()));
+        sanitizedContactDTO.setTags(contactDTO.getTags().stream().map(StringEscapeUtils::escapeHtml4).toList());
+        sanitizedContactDTO.setProps(contactDTO.getProps().entrySet().stream().collect(Collectors.toMap(entry -> StringEscapeUtils.escapeHtml4(entry.getKey()), entry -> StringEscapeUtils.escapeHtml4(entry.getValue()))));
         sanitizedContactDTO.setAttributesToString(StringEscapeUtils.escapeHtml4(contactDTO.getAttributesToString()));
 
         Contact contact = convertToEntity(sanitizedContactDTO);

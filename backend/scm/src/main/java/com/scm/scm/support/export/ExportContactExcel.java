@@ -69,8 +69,8 @@ public class ExportContactExcel {
             row.createCell(3).setCellValue(contact.getTenantUniqueName());
             row.createCell(4).setCellValue(contact.getComments());
             row.createCell(5).setCellValue(contact.getCreatedAt());
-            row.createCell(6).setCellValue(contact.getTags());
-            row.createCell(7).setCellValue(contact.getProps());
+            row.createCell(6).setCellValue(contact.getTags().toString());
+            row.createCell(7).setCellValue(contact.getProps().toString());
             row.createCell(8).setCellValue(contact.getAttributesToString());
         }
 

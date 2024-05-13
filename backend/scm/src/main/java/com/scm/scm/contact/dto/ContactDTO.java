@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.Map;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -16,7 +19,7 @@ public class ContactDTO {
     private String tenantUniqueName;
     private String comments;
     private String createdAt;
-    private String tags;
-    private String props;
+    private List<String> tags;
+    private Map<String, String> props;
     private String attributesToString;
 }
