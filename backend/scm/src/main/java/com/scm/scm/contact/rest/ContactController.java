@@ -2,6 +2,8 @@ package com.scm.scm.contact.rest;
 
 import com.scm.scm.contact.dto.ContactDTO;
 import com.scm.scm.contact.services.ContactServices;
+import com.scm.scm.support.exceptions.CustomHttpException;
+import com.scm.scm.support.exceptions.ExceptionCause;
 import com.scm.scm.support.export.ExportContactExcel;
 import com.scm.scm.support.export.ExportContactRequest;
 import com.scm.scm.support.security.UserAccessService;
@@ -33,7 +35,7 @@ public class ContactController {
     public ResponseEntity<ContactDTO> getContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName, @PathVariable(name = "user_token") String userToken) {
         boolean check = userAccessService.hasAccessToContact(userToken, tenantUniqueName);
         if (!check) {
-            return ResponseEntity.status(403).build();
+            throw new CustomHttpException("User does not have access to this contact", 403, ExceptionCause.USER_ERROR);
         }
         ContactDTO contactDTO = contactServices.findOneContact(tenantUniqueName, id);
         return ResponseEntity.ok(contactDTO);
@@ -43,7 +45,7 @@ public class ContactController {
     public ResponseEntity<List<ContactDTO>> getContacts(@PathVariable(name = "tenant_unique_name") String tenantUniqueName, @PathVariable(name = "user_token") String userToken) {
         boolean check = userAccessService.hasAccessToContact(userToken, tenantUniqueName);
         if (!check) {
-            return ResponseEntity.status(403).build();
+            throw new CustomHttpException("User does not have access to this contact", 403, ExceptionCause.USER_ERROR);
         }
         List<ContactDTO> contacts = contactServices.findAllContacts(tenantUniqueName);
         return ResponseEntity.ok(contacts);
@@ -54,7 +56,7 @@ public class ContactController {
         String sanitizedUserToken = StringEscapeUtils.escapeHtml4(userToken);
         boolean check = userAccessService.hasAccessToContact(sanitizedUserToken, contactDTO.getTenantUniqueName());
         if (!check) {
-            return ResponseEntity.status(403).build();
+            throw new CustomHttpException("User does not have access to this contact", 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(contactServices.createContact(contactDTO));
     }
@@ -64,7 +66,7 @@ public class ContactController {
         String sanitizedUserToken = StringEscapeUtils.escapeHtml4(userToken);
         boolean check = userAccessService.hasAccessToContact(sanitizedUserToken, contactDTO.getTenantUniqueName());
         if (!check) {
-            return ResponseEntity.status(403).build();
+            throw new CustomHttpException("User does not have access to this contact", 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(contactServices.updateContact(contactDTO));
     }
@@ -74,7 +76,7 @@ public class ContactController {
         String sanitizedUserToken = StringEscapeUtils.escapeHtml4(userToken);
         boolean check = userAccessService.hasAccessToContact(sanitizedUserToken, tenantUniqueName);
         if (!check) {
-            return ResponseEntity.status(403).build();
+            throw new CustomHttpException("User does not have access to this contact", 403, ExceptionCause.USER_ERROR);
         }
         String cleanId = StringEscapeUtils.escapeHtml4(id);
         String cleanTenantUniqueName = StringEscapeUtils.escapeHtml4(tenantUniqueName);

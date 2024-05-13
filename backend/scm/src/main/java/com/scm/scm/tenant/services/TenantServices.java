@@ -145,16 +145,24 @@ public class TenantServices {
 
     public String addUsers(String id, List<String> users) {
         Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException("Tenant not found", 404, ExceptionCause.SERVER_ERROR));
+        int userCount = 0;
         if (tenant != null) {
             List<String> oldUsers = tenant.getUsers();
             for (String user : users) {
                 if (!oldUsers.contains(user)) {
                     oldUsers.add(user);
+                } else {
+                    userCount++;
                 }
             }
             tenant.setUsers(oldUsers);
             tenantRepository.save(tenant);
-            return "Tenant successfully added users";
+            if (userCount == users.size()) {
+                return "No new users added";
+            } else if (userCount > 0) {
+                return "New users added, but some users already exist in the tenant";
+            }
+            return "Users added to Tenant successfully";
         } else {
             throw new CustomHttpException("Tenant is null", 500, ExceptionCause.SERVER_ERROR);
         }
@@ -162,18 +170,39 @@ public class TenantServices {
 
     public String removeUsers(String id, List<String> users) {
         Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR));
+        int userCount = 0;
         if (tenant != null) {
             List<String> oldUsers = tenant.getUsers();
             for (String user : users) {
-                if (oldUsers.size() != 1) {
-                    oldUsers.remove(user);
+                if (oldUsers.contains(user)) {
+                    if (oldUsers.size() == 1) {
+                        throw new CustomHttpException("At least one user must remain in the tenant", 400, ExceptionCause.USER_ERROR);
+                    } else {
+                        oldUsers.remove(user);
+                    }
+                } else {
+                    userCount++;
                 }
             }
             tenant.setUsers(oldUsers);
             tenantRepository.save(tenant);
-            return "Tenant successfully removed users";
+            if (userCount == users.size()) {
+                return "No users removed";
+            } else if (userCount > 0) {
+                return "Some users not removed as they do not exist in the tenant";
+            }
+            return "Users removed from Tenant successfully";
         } else {
             throw new CustomHttpException("Tenant is null", 500, ExceptionCause.SERVER_ERROR);
         }
+    }
+
+    public List<TenantDTO> getTenantsByUser(String username) {
+        List<Tenant> tenants = tenantRepository.findByUsersContaining(username);
+        if (tenants.isEmpty()) {
+            throw new CustomHttpException("No tenants found for username " + username, 404, ExceptionCause.USER_ERROR);
+        }
+        log.info("All tenants for username " + username + " found");
+        return tenants.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 }
