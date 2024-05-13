@@ -26,8 +26,8 @@ public class TenantController {
         return ResponseEntity.ok(tenants);
     }
 
-    @GetMapping("/{tenant_id}/{user_token}")
-    public ResponseEntity<TenantDTO> getTenant(@PathVariable("tenant_id") String tenantId, @PathVariable("user_token") String user_token) {
+    @GetMapping("/{tenant_id}")
+    public ResponseEntity<TenantDTO> getTenant(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String user_token) {
         boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
         if (!check) {
             throw new CustomHttpException("User does not have access to this tenant", 403, ExceptionCause.USER_ERROR);
@@ -36,8 +36,8 @@ public class TenantController {
         return ResponseEntity.ok(tenant);
     }
 
-    @GetMapping("/user/{user_token}")
-    public ResponseEntity<List<TenantDTO>> getTenantsByUser(@PathVariable("user_token") String user_token) {
+    @GetMapping("/user")
+    public ResponseEntity<List<TenantDTO>> getTenantsByUser(@RequestHeader("userToken") String user_token) {
         List<TenantDTO> tenants = tenantServices.getTenantsByUser(user_token);
         return ResponseEntity.ok(tenants);
     }
@@ -48,8 +48,8 @@ public class TenantController {
         return ResponseEntity.ok(createdTenant);
     }
 
-    @PutMapping("/{user_token}")
-    public ResponseEntity<TenantDTO> updateTenant(@PathVariable("user_token") String user_token, @RequestBody TenantDTO tenantDTO) {
+    @PutMapping
+    public ResponseEntity<TenantDTO> updateTenant(@RequestHeader("userToken") String user_token, @RequestBody TenantDTO tenantDTO) {
         boolean check = userAccessService.hasAccessToTenant(user_token, tenantDTO.getId());
         if (!check) {
             throw new CustomHttpException("User does not have access to this tenant", 403, ExceptionCause.USER_ERROR);
@@ -58,8 +58,8 @@ public class TenantController {
         return ResponseEntity.ok(updatedTenant);
     }
 
-    @PutMapping("/deactivate/{tenant_id}/{user_token}")
-    public ResponseEntity<String> deactivateTenant(@PathVariable("tenant_id") String tenantId, @PathVariable("user_token") String user_token){
+    @PutMapping("/deactivate/{tenant_id}")
+    public ResponseEntity<String> deactivateTenant(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String user_token){
         boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
         if (!check) {
             throw new CustomHttpException("User does not have access to this tenant", 403, ExceptionCause.USER_ERROR);
@@ -67,8 +67,8 @@ public class TenantController {
         return ResponseEntity.ok(tenantServices.deactivateTenant(tenantId));
     }
 
-    @PutMapping("/tags/add/{tenant_id}/{user_token}")
-    public ResponseEntity<String> addTag(@PathVariable("tenant_id") String tenantId, @PathVariable("user_token") String user_token, @RequestBody List<String> tags) {
+    @PutMapping("/tags/add/{tenant_id}")
+    public ResponseEntity<String> addTag(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String user_token, @RequestBody List<String> tags) {
         boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
         if (!check) {
             throw new CustomHttpException("User does not have access to this tenant", 403, ExceptionCause.USER_ERROR);
@@ -76,8 +76,8 @@ public class TenantController {
         return ResponseEntity.ok(tenantServices.addTags(tenantId, tags));
     }
 
-    @PutMapping("/tags/remove/{tenant_id}/{user_token}")
-    public ResponseEntity<String> removeTag(@PathVariable("tenant_id") String tenantId, @PathVariable("user_token") String user_token, @RequestBody List<String> tags) {
+    @PutMapping("/tags/remove/{tenant_id}")
+    public ResponseEntity<String> removeTag(@PathVariable("tenant_id") String tenantId,@RequestHeader("userToken") String user_token, @RequestBody List<String> tags) {
         boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
         if (!check) {
             throw new CustomHttpException("User does not have access to this tenant", 403, ExceptionCause.USER_ERROR);
@@ -85,8 +85,8 @@ public class TenantController {
         return ResponseEntity.ok(tenantServices.removeTags(tenantId, tags));
     }
 
-    @PutMapping("/users/add/{tenant_id}/{user_token}")
-    public ResponseEntity<String> addUsers(@PathVariable("tenant_id") String tenantId, @PathVariable("user_token") String user_token, @RequestBody List<String> users) {
+    @PutMapping("/users/add/{tenant_id}")
+    public ResponseEntity<String> addUsers(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String user_token, @RequestBody List<String> users) {
         boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
         if (!check) {
             throw new CustomHttpException("User does not have access to this tenant", 403, ExceptionCause.USER_ERROR);
@@ -94,8 +94,8 @@ public class TenantController {
         return ResponseEntity.ok(tenantServices.addUsers(tenantId, users));
     }
 
-    @PutMapping("/users/remove/{tenant_id}/{user_token}")
-    public ResponseEntity<String> removeUsers(@PathVariable("tenant_id") String tenantId, @PathVariable("user_token") String user_token, @RequestBody List<String> users) {
+    @PutMapping("/users/remove/{tenant_id}")
+    public ResponseEntity<String> removeUsers(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String user_token, @RequestBody List<String> users) {
         boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
         if (!check) {
             throw new CustomHttpException("User does not have access to this tenant", 403, ExceptionCause.USER_ERROR);

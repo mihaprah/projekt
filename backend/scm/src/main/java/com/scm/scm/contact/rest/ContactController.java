@@ -31,8 +31,8 @@ public class ContactController {
 
     private static final Logger log = Logger.getLogger(ContactServices.class.toString());
 
-    @GetMapping("/{contact_id}/{tenant_unique_name}/{user_token}")
-    public ResponseEntity<ContactDTO> getContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName, @PathVariable(name = "user_token") String userToken) {
+    @GetMapping("/{contact_id}/{tenant_unique_name}")
+    public ResponseEntity<ContactDTO> getContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName, @RequestHeader("userToken") String userToken) {
         boolean check = userAccessService.hasAccessToContact(userToken, tenantUniqueName);
         if (!check) {
             throw new CustomHttpException("User does not have access to this contact", 403, ExceptionCause.USER_ERROR);
@@ -41,8 +41,8 @@ public class ContactController {
         return ResponseEntity.ok(contactDTO);
     }
 
-    @GetMapping("/{tenant_unique_name}/{user_token}")
-    public ResponseEntity<List<ContactDTO>> getContacts(@PathVariable(name = "tenant_unique_name") String tenantUniqueName, @PathVariable(name = "user_token") String userToken) {
+    @GetMapping("/{tenant_unique_name}")
+    public ResponseEntity<List<ContactDTO>> getContacts(@PathVariable(name = "tenant_unique_name") String tenantUniqueName, @RequestHeader("userToken") String userToken) {
         boolean check = userAccessService.hasAccessToContact(userToken, tenantUniqueName);
         if (!check) {
             throw new CustomHttpException("User does not have access to this contact", 403, ExceptionCause.USER_ERROR);
@@ -51,8 +51,8 @@ public class ContactController {
         return ResponseEntity.ok(contacts);
     }
 
-    @PostMapping("/{user_token}")
-    public ResponseEntity<String> addContact(@PathVariable("user_token") String userToken, @RequestBody ContactDTO contactDTO) {
+    @PostMapping
+    public ResponseEntity<String> addContact(@RequestHeader("userToken") String userToken, @RequestBody ContactDTO contactDTO) {
         String sanitizedUserToken = StringEscapeUtils.escapeHtml4(userToken);
         boolean check = userAccessService.hasAccessToContact(sanitizedUserToken, contactDTO.getTenantUniqueName());
         if (!check) {
@@ -61,8 +61,8 @@ public class ContactController {
         return ResponseEntity.ok(contactServices.createContact(contactDTO));
     }
 
-    @PutMapping("/{user_token}")
-    public ResponseEntity<ContactDTO> updateContact(@PathVariable("user_token") String userToken, @RequestBody ContactDTO contactDTO) {
+    @PutMapping
+    public ResponseEntity<ContactDTO> updateContact(@RequestHeader("userToken") String userToken, @RequestBody ContactDTO contactDTO) {
         String sanitizedUserToken = StringEscapeUtils.escapeHtml4(userToken);
         boolean check = userAccessService.hasAccessToContact(sanitizedUserToken, contactDTO.getTenantUniqueName());
         if (!check) {
@@ -71,8 +71,8 @@ public class ContactController {
         return ResponseEntity.ok(contactServices.updateContact(contactDTO));
     }
 
-    @DeleteMapping("/{contact_id}/{tenant_unique_name}/{user_token}")
-    public ResponseEntity<String> deleteContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName, @PathVariable(name = "user_token") String userToken) {
+    @DeleteMapping("/{contact_id}/{tenant_unique_name}")
+    public ResponseEntity<String> deleteContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName, @RequestHeader("userToken") String userToken) {
         String sanitizedUserToken = StringEscapeUtils.escapeHtml4(userToken);
         boolean check = userAccessService.hasAccessToContact(sanitizedUserToken, tenantUniqueName);
         if (!check) {
