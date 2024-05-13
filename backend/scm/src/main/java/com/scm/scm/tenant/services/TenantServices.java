@@ -171,25 +171,22 @@ public class TenantServices {
 
     public String removeUsers(String id, List<String> users) {
         Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException(ExceptionMessage.TENANT_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR));
-        int userCount = 0;
+        int usersNotRemovedCount = 0;
         if (tenant != null) {
             List<String> oldUsers = tenant.getUsers();
             for (String user : users) {
                 if (oldUsers.contains(user)) {
                     if (oldUsers.size() == 1) {
                         throw new CustomHttpException("At least one user must remain in the tenant", 400, ExceptionCause.USER_ERROR);
-                    } else {
-                        oldUsers.remove(user);
                     }
+                    oldUsers.remove(user);
                 } else {
-                    userCount++;
+                    usersNotRemovedCount++;
                 }
             }
             tenant.setUsers(oldUsers);
             tenantRepository.save(tenant);
-            if (userCount == users.size()) {
-                return "No users removed";
-            } else if (userCount > 0) {
+            if (usersNotRemovedCount > 0) {
                 return "Some users not removed as they do not exist in the tenant";
             }
             return "Users removed from Tenant successfully";
