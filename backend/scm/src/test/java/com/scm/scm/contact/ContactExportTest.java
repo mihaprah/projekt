@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Collections;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -35,14 +37,14 @@ public class ContactExportTest {
 
     @Test
     public void testExportContactsBadRequest() {
-        ExportContactRequest request = new ExportContactRequest(null, null, null);
+        ExportContactRequest request = new ExportContactRequest(null, null, null, Collections.emptyList());
         ResponseEntity<byte[]> response = contactController.exportContacts(request);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
     public void testExportContactsForbidden() {
-        ExportContactRequest request = new ExportContactRequest("user", "tenantUniqueName", "tenantId");
+        ExportContactRequest request = new ExportContactRequest("user", "tenantUniqueName", "tenantId", Collections.emptyList());
         when(userAccessService.hasAccessToTenant("user", "tenantId")).thenReturn(false);
         ResponseEntity<byte[]> response = contactController.exportContacts(request);
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -50,19 +52,19 @@ public class ContactExportTest {
 
     @Test
     public void testExportContactsInternalServerError() {
-        ExportContactRequest request = new ExportContactRequest("user", "tenantUniqueName", "tenantId");
+        ExportContactRequest request = new ExportContactRequest("user", "tenantUniqueName", "tenantId", Collections.emptyList());
         when(userAccessService.hasAccessToTenant("user", "tenantId")).thenReturn(true);
-        when(exportContactExcel.exportContacts("tenantUniqueName")).thenThrow(IllegalArgumentException.class);
+        when(exportContactExcel.exportContacts("tenantUniqueName", Collections.emptyList())).thenThrow(IllegalArgumentException.class);
         ResponseEntity<byte[]> response = contactController.exportContacts(request);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     @Test
     public void testExportContactsOk() {
-        ExportContactRequest request = new ExportContactRequest("user", "tenantUniqueName", "tenantId");
+        ExportContactRequest request = new ExportContactRequest("user", "tenantUniqueName", "tenantId", Collections.emptyList());
         byte[] exportedContacts = new byte[0];
         when(userAccessService.hasAccessToTenant("user", "tenantId")).thenReturn(true);
-        when(exportContactExcel.exportContacts("tenantUniqueName")).thenReturn(ResponseEntity.ok(exportedContacts));
+        when(exportContactExcel.exportContacts("tenantUniqueName", Collections.emptyList())).thenReturn(ResponseEntity.ok(exportedContacts));
         ResponseEntity<byte[]> response = contactController.exportContacts(request);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(exportedContacts, response.getBody());

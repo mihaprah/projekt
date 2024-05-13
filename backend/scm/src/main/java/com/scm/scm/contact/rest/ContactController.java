@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -93,15 +92,17 @@ public class ContactController {
         String user = StringEscapeUtils.escapeHtml4(request.getUser());
         String tenantUniqueName = StringEscapeUtils.escapeHtml4(request.getTenantUniqueName());
         String tenantId = StringEscapeUtils.escapeHtml4(request.getTenantId());
+        List<String> contactIds = request.getContactIds().stream()
+                .map(StringEscapeUtils::escapeHtml4)
+                .toList();
 
         if(!userAccessService.hasAccessToTenant(user, tenantId)) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
 
         try {
-            byte[] exportedContacts = exportContactExcel.exportContacts(tenantUniqueName).getBody();
             log.info("Contacts exported successfully for tenant: " + tenantUniqueName);
-            return new ResponseEntity<>(exportedContacts, HttpStatus.OK);
+            return exportContactExcel.exportContacts(tenantUniqueName, contactIds);
         } catch (IllegalArgumentException e) {
             log.severe("Error occurred during export: " + e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
