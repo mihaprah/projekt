@@ -35,7 +35,7 @@ public class ContactTests {
         contact.setProps(props);
 
         String attributesToString = contact.contactAttributesToString();
-        assertEquals("testtitle,tag1,tag2,prop2,prop1,", attributesToString);
+        assertEquals("testtitle,tag1,tag2,prop1,prop2,", attributesToString);
     }
 
     @Test
