@@ -106,21 +106,21 @@ public class LoadContacts {
 
             String exTitle = contact1.getTitle();
             contact1.setTitle("Contact 1.1");
-            Event event1_1 = new Event(contact1.getUser(), contact1.getId(), EventState.UPDATED);
-            event1_1.setPropKey("Title");
-            event1_1.setPrevState(exTitle);
-            event1_1.setCurrentState(contact1.getTitle());
-            loadEvents.createEvent(event1_1, contact1.getTenantUniqueName());
+            Event event11 = new Event(contact1.getUser(), contact1.getId(), EventState.UPDATED);
+            event11.setPropKey("Title");
+            event11.setPrevState(exTitle);
+            event11.setCurrentState(contact1.getTitle());
+            loadEvents.createEvent(event11, contact1.getTenantUniqueName());
 
             mongoTemplate.save(contact2, contact2.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
             Event event2 = new Event(contact2.getUser(), contact2.getId(), EventState.CREATED);
             loadEvents.createEvent(event2, contact2.getTenantUniqueName());
 
             contact2.getTags().add("NewLoad2");
-            Event event2_1 = new Event(contact2.getUser(), contact2.getId(), EventState.TAG_ADD);
-            event2_1.setPropKey("Tags");
-            event2_1.setCurrentState("NewLoad2");
-            loadEvents.createEvent(event2_1, contact2.getTenantUniqueName());
+            Event event21 = new Event(contact2.getUser(), contact2.getId(), EventState.TAG_ADD);
+            event21.setPropKey("Tags");
+            event21.setCurrentState("NewLoad2");
+            loadEvents.createEvent(event21, contact2.getTenantUniqueName());
 
             mongoTemplate.save(contact3, contact3.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
             Event event3 = new Event(contact3.getUser(), contact3.getId(), EventState.CREATED);
@@ -128,11 +128,11 @@ public class LoadContacts {
 
             String exProp = contact3.getProps().get("Hobby");
             contact3.getProps().put("Hobby", "Photography, Travel");
-            Event event3_1 = new Event(contact3.getUser(), contact3.getId(), EventState.PROP_ADD);
-            event3_1.setPropKey("Props");
-            event3_1.setPrevState(exProp);
-            event3_1.setCurrentState(contact3.getProps().get("Hobby"));
-            loadEvents.createEvent(event3_1, contact3.getTenantUniqueName());
+            Event event31 = new Event(contact3.getUser(), contact3.getId(), EventState.PROP_ADD);
+            event31.setPropKey("Props");
+            event31.setPrevState(exProp);
+            event31.setCurrentState(contact3.getProps().get("Hobby"));
+            loadEvents.createEvent(event31, contact3.getTenantUniqueName());
 
             mongoTemplate.save(contact4, contact4.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
             Event event4 = new Event(contact4.getUser(), contact4.getId(), EventState.CREATED);

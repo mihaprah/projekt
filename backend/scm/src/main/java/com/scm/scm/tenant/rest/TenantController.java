@@ -32,8 +32,8 @@ public class TenantController {
     }
 
     @GetMapping("/{tenant_id}")
-    public ResponseEntity<TenantDTO> getTenant(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String user_token) {
-        boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
+    public ResponseEntity<TenantDTO> getTenant(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken) {
+        boolean check = userAccessService.hasAccessToTenant(userToken, tenantId);
         if (!check) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
@@ -42,8 +42,8 @@ public class TenantController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<List<TenantDTO>> getTenantsByUser(@RequestHeader("userToken") String user_token) {
-        List<TenantDTO> tenants = tenantServices.getTenantsByUser(user_token);
+    public ResponseEntity<List<TenantDTO>> getTenantsByUser(@RequestHeader("userToken") String userToken) {
+        List<TenantDTO> tenants = tenantServices.getTenantsByUser(userToken);
         return ResponseEntity.ok(tenants);
     }
 
@@ -54,8 +54,8 @@ public class TenantController {
     }
 
     @PutMapping
-    public ResponseEntity<TenantDTO> updateTenant(@RequestHeader("userToken") String user_token, @RequestBody TenantDTO tenantDTO) {
-        boolean check = userAccessService.hasAccessToTenant(user_token, tenantDTO.getId());
+    public ResponseEntity<TenantDTO> updateTenant(@RequestHeader("userToken") String userToken, @RequestBody TenantDTO tenantDTO) {
+        boolean check = userAccessService.hasAccessToTenant(userToken, tenantDTO.getId());
         if (!check) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
@@ -64,8 +64,8 @@ public class TenantController {
     }
 
     @PutMapping("/deactivate/{tenant_id}")
-    public ResponseEntity<String> deactivateTenant(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String user_token){
-        boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
+    public ResponseEntity<String> deactivateTenant(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken){
+        boolean check = userAccessService.hasAccessToTenant(userToken, tenantId);
         if (!check) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
@@ -73,8 +73,8 @@ public class TenantController {
     }
 
     @PutMapping("/tags/add/{tenant_id}")
-    public ResponseEntity<String> addTag(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String user_token, @RequestBody List<String> tags) {
-        boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
+    public ResponseEntity<String> addTag(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken, @RequestBody List<String> tags) {
+        boolean check = userAccessService.hasAccessToTenant(userToken, tenantId);
         if (!check) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
@@ -82,8 +82,8 @@ public class TenantController {
     }
 
     @PutMapping("/tags/remove/{tenant_id}")
-    public ResponseEntity<String> removeTag(@PathVariable("tenant_id") String tenantId,@RequestHeader("userToken") String user_token, @RequestBody List<String> tags) {
-        boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
+    public ResponseEntity<String> removeTag(@PathVariable("tenant_id") String tenantId,@RequestHeader("userToken") String userToken, @RequestBody List<String> tags) {
+        boolean check = userAccessService.hasAccessToTenant(userToken, tenantId);
         if (!check) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
@@ -91,8 +91,8 @@ public class TenantController {
     }
 
     @PutMapping("/users/add/{tenant_id}")
-    public ResponseEntity<String> addUsers(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String user_token, @RequestBody List<String> users) {
-        boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
+    public ResponseEntity<String> addUsers(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken, @RequestBody List<String> users) {
+        boolean check = userAccessService.hasAccessToTenant(userToken, tenantId);
         if (!check) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
@@ -100,8 +100,8 @@ public class TenantController {
     }
 
     @PutMapping("/users/remove/{tenant_id}")
-    public ResponseEntity<String> removeUsers(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String user_token, @RequestBody List<String> users) {
-        boolean check = userAccessService.hasAccessToTenant(user_token, tenantId);
+    public ResponseEntity<String> removeUsers(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken, @RequestBody List<String> users) {
+        boolean check = userAccessService.hasAccessToTenant(userToken, tenantId);
         if (!check) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
@@ -109,8 +109,8 @@ public class TenantController {
     }
 
     @PutMapping("/tags/multiple/add/{tenant_unique_name}/{tag}")
-    public ResponseEntity<String> addMultipleTags(@PathVariable("tenant_unique_name") String tenantUniqueName, @PathVariable("tag") String tag, @RequestHeader("userToken") String user_token, @RequestHeader("tenantId") String tenant_id, @RequestBody List<String> contactIds) {
-        boolean check = userAccessService.hasAccessToTenant(user_token, tenant_id);
+    public ResponseEntity<String> addMultipleTags(@PathVariable("tenant_unique_name") String tenantUniqueName, @PathVariable("tag") String tag, @RequestHeader("userToken") String userToken, @RequestHeader("tenantId") String tenantId, @RequestBody List<String> contactIds) {
+        boolean check = userAccessService.hasAccessToTenant(userToken, tenantId);
         if (!check) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
