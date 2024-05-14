@@ -53,7 +53,7 @@ public class PredefinedSearchTests {
         assertEquals("user", predefinedSearch.getUser());
         assertEquals("onTenant", predefinedSearch.getOnTenant());
         assertEquals("title", predefinedSearch.getTitle());
-        assertEquals("filter", predefinedSearch.getFilter());
+        assertEquals("filter", predefinedSearch.getFilter().getFirst());
         assertEquals(SortOrientation.ASC, predefinedSearch.getSortOrientation());
     }
 
