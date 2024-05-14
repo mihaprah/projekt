@@ -26,8 +26,12 @@ public class ExportContactExcel {
 
     private static final Logger log = Logger.getLogger(ExportContactExcel.class.toString());
 
+    private final ContactServices contactServices;
+
     @Autowired
-    private ContactServices contactServices;
+    public ExportContactExcel(ContactServices contactServices) {
+        this.contactServices = contactServices;
+    }
 
     public ResponseEntity<byte[]> exportContacts(String tenantUniqueName, List<String> contactIds) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");

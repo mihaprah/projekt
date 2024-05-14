@@ -85,7 +85,7 @@ public class ContactServices {
         if (contact == null) {
             throw new CustomHttpException("Contact not found", 404, ExceptionCause.USER_ERROR);
         }
-        log.log(Level.INFO, "Contact found with id: " + contactId);
+        log.log(Level.INFO, "Contact found with id: {0}", contactId);
         return convertToDTO(contact);
     }
 
@@ -96,7 +96,7 @@ public class ContactServices {
         if (!mongoTemplateService.collectionExists(tenantUniqueName + CollectionType.MAIN.getCollectionType())) {
             throw new CustomHttpException(ExceptionMessage.COLLECTION_NOT_EXIST.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
         }
-        log.log(Level.INFO, "All contacts found for tenant: " + tenantUniqueName);
+        log.log(Level.INFO, "All contacts found for tenant: {0}", tenantUniqueName);
         List<Contact> contacts = mongoTemplate.findAll(Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType());
         return contacts.stream().map(this::convertToDTO).toList();
     }
@@ -137,7 +137,7 @@ public class ContactServices {
         Event event = new Event(contact.getUser(), contact.getId(), EventState.CREATED);
         eventsServices.addEvent(event, contact.getTenantUniqueName());
 
-        log.log(Level.INFO, "Contact created with id: " + contact.getId() + FOR_TENANT + contact.getTenantUniqueName());
+        log.log(Level.INFO, String.format("Contact created with id: %s %s %s ", contact.getId(), FOR_TENANT, contact.getTenantUniqueName()));
         return "Contact created successfully to " + contact.getTenantUniqueName() + "_main collection";
     }
 
@@ -155,7 +155,7 @@ public class ContactServices {
 
         Contact existingContact = mongoTemplate.findById(contact.getId(), Contact.class, contact.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
         if (existingContact != null) {
-            if(!existingContact.getTitle().equals(contact.getTitle())){
+            if (!existingContact.getTitle().equals(contact.getTitle())) {
                 Event event = new Event();
                 event.setUser(contact.getUser());
                 event.setContact(existingContact.getId());
@@ -176,7 +176,7 @@ public class ContactServices {
             existingContact.setAttributesToString(existingContact.contactAttributesToString());
 
             mongoTemplate.save(existingContact, existingContact.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
-            log.log(Level.INFO, "Contact updated with id: " + contact.getId() + FOR_TENANT + contact.getTenantUniqueName());
+            log.log(Level.INFO, String.format("Contact updated with id: %s %s %s ", contact.getId(), FOR_TENANT, contact.getTenantUniqueName()));
             return convertToDTO(existingContact);
         } else {
             throw new CustomHttpException("Contact does not exist", 500, ExceptionCause.SERVER_ERROR);
@@ -195,9 +195,9 @@ public class ContactServices {
             throw new CustomHttpException("Contact not found", 404, ExceptionCause.USER_ERROR);
         }
         mongoTemplate.remove(contact, tenantUniqueName + CollectionType.MAIN.getCollectionType());
-        log.log(Level.INFO, "Contact deleted with id: " + contactId + FOR_TENANT + tenantUniqueName);
+        log.log(Level.INFO, String.format("Contact deleted with id: %s %s %s ", contact.getId(), FOR_TENANT, contact.getTenantUniqueName()));
         mongoTemplate.save(contact, tenantUniqueName + CollectionType.DELETED.getCollectionType());
-        log.log(Level.INFO, "Contact saved to " + tenantUniqueName + "_deleted collection");
+        log.log(Level.INFO, "Contact saved to {} _deleted collection", tenantUniqueName);
 
         Event event = new Event(contact.getUser(), contact.getId(), EventState.DELETED);
         eventsServices.addEvent(event, contact.getTenantUniqueName());

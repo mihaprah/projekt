@@ -20,12 +20,16 @@ import java.util.logging.Logger;
 @AllArgsConstructor
 public class EventsServices {
 
-    @Autowired
     private MongoTemplate mongoTemplate;
 
     private MongoTemplateService mongoTemplateService;
 
     private static final Logger log = Logger.getLogger(EventsServices.class.toString());
+
+    @Autowired
+    public EventsServices(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
 
     public void addEvent (Event event, String tenantUniqueName){
         event.setId(event.generateId());
