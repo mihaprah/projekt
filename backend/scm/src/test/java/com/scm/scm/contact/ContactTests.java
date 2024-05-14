@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,8 +28,6 @@ public class ContactTests {
         assertNotNull(id);
         assertTrue(id.startsWith("testtitle-"));
     }
-
-
 
     @Test
     public void shouldSetAndGetId() {
@@ -83,5 +82,20 @@ public class ContactTests {
     public void shouldSetAndGetAttributesToString() {
         contact.setAttributesToString("testAttributesToString");
         assertEquals("testAttributesToString", contact.getAttributesToString());
+    }
+
+    @Test
+    public void shouldContactAttributesToString() {
+        contact.setTitle("TestTitle");
+        contact.setTags(Arrays.asList("tag1", "tag2"));
+
+        Map<String, String> orderedProps = new LinkedHashMap<>();
+        orderedProps.put("prop1", "value1");
+        orderedProps.put("prop2", "value2");
+        contact.setProps(orderedProps);
+
+        String attributesToString = contact.contactAttributesToString();
+
+        assertEquals("testtitle,tag1,tag2,prop1,prop2,", attributesToString);
     }
 }
