@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class ContactExportTest {
+class ContactExportTest {
 
     @InjectMocks
     private ContactController contactController;
@@ -36,14 +36,14 @@ public class ContactExportTest {
     }
 
     @Test
-    public void testExportContactsBadRequest() {
+    void testExportContactsBadRequest() {
         ExportContactRequest request = new ExportContactRequest(null, null, null, Collections.emptyList());
         ResponseEntity<byte[]> response = contactController.exportContacts(request);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
-    public void testExportContactsForbidden() {
+    void testExportContactsForbidden() {
         ExportContactRequest request = new ExportContactRequest("user", "tenantUniqueName", "tenantId", Collections.emptyList());
         when(userAccessService.hasAccessToTenant("user", "tenantId")).thenReturn(false);
         ResponseEntity<byte[]> response = contactController.exportContacts(request);

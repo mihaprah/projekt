@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class EventsServicesTests {
+class EventsServicesTests {
 
     @InjectMocks
     private EventsServices eventsServices;

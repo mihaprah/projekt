@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
-public class PredefinedSearchTests {
+class PredefinedSearchTests {
 
     private PredefinedSearch predefinedSearch;
 

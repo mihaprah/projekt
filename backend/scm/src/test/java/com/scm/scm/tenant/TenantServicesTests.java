@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-public class TenantServicesTests {
+class TenantServicesTests {
 
     @Mock
     private TenantRepository tenantRepository;
@@ -48,7 +48,7 @@ public class TenantServicesTests {
     }
 
     @Test
-    public void testAddTenant() {
+    void testAddTenant() {
         when(tenantRepository.existsById(anyString())).thenReturn(false);
         when(mongoTemplateService.createNewTenantCollections(anyString())).thenReturn(true);
         when(tenantRepository.save(any(Tenant.class))).thenReturn(tenant);
@@ -62,7 +62,7 @@ public class TenantServicesTests {
     }
 
     @Test
-    public void testGetAllTenants() {
+    void testGetAllTenants() {
         List<Tenant> tenants = Collections.singletonList(tenant);
 
         when(tenantRepository.findAll()).thenReturn(tenants);
@@ -75,7 +75,7 @@ public class TenantServicesTests {
     }
 
     @Test
-    public void testGetTenantById() {
+    void testGetTenantById() {
 
         when(tenantRepository.findById(anyString())).thenReturn(Optional.of(tenant));
 
@@ -86,7 +86,7 @@ public class TenantServicesTests {
     }
 
     @Test
-    public void testUpdateTenant() {
+    void testUpdateTenant() {
         tenantDTO.setTitle("Updated Tenant");
 
         when(tenantRepository.findById(anyString())).thenReturn(Optional.of(tenant));
@@ -100,7 +100,7 @@ public class TenantServicesTests {
     }
 
     @Test
-    public void testDeactivateTenant() {
+    void testDeactivateTenant() {
         when(tenantRepository.findById(anyString())).thenReturn(Optional.of(tenant));
         when(tenantRepository.save(any(Tenant.class))).thenReturn(tenant);
 
@@ -112,7 +112,7 @@ public class TenantServicesTests {
     }
 
     @Test
-    public void testGetTenantsByUser() {
+    void testGetTenantsByUser() {
         when(tenantRepository.findByUsersContaining(anyString())).thenReturn(Arrays.asList(tenant));
 
         List<TenantDTO> result = tenantServices.getTenantsByUser("user1");
@@ -123,7 +123,7 @@ public class TenantServicesTests {
     }
 
     @Test
-    public void testAddTags() {
+    void testAddTags() {
         when(tenantRepository.findByTenantUniqueName(anyString())).thenReturn(tenant);
         when(tenantRepository.save(any(Tenant.class))).thenReturn(tenant);
 
@@ -135,7 +135,7 @@ public class TenantServicesTests {
     }
 
     @Test
-    public void testRemoveTags() {
+    void testRemoveTags() {
         when(tenantRepository.findByTenantUniqueName(anyString())).thenReturn(tenant);
         when(tenantRepository.save(any(Tenant.class))).thenReturn(tenant);
 
@@ -147,7 +147,7 @@ public class TenantServicesTests {
     }
 
     @Test
-    public void testAddUsers() {
+    void testAddUsers() {
         when(tenantRepository.findById(anyString())).thenReturn(Optional.of(tenant));
         when(tenantRepository.save(any(Tenant.class))).thenReturn(tenant);
 
@@ -159,7 +159,7 @@ public class TenantServicesTests {
     }
 
     @Test
-    public void testRemoveUsers() {
+    void testRemoveUsers() {
         when(tenantRepository.findById(anyString())).thenReturn(Optional.of(tenant));
         when(tenantRepository.save(any(Tenant.class))).thenReturn(tenant);
 

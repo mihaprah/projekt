@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
 
 
 @SpringBootTest
-public class ContactServicesTests {
+class ContactServicesTests {
 
     @Mock
     private MongoTemplate mongoTemplate;

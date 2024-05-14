@@ -13,7 +13,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class ContactTests {
+class ContactTests {
     private Contact contact;
     private final Map<String, String> props = Map.of("prop1", "value1", "prop2", "value2");
 
@@ -23,69 +23,69 @@ public class ContactTests {
     }
 
     @Test
-    public void shouldGenerateId() {
+    void shouldGenerateId() {
         String id = contact.generateId("TestTitle");
         assertNotNull(id);
         assertTrue(id.startsWith("testtitle-"));
     }
 
     @Test
-    public void shouldSetAndGetId() {
+    void shouldSetAndGetId() {
         contact.setId("testId");
         assertEquals("testId", contact.getId());
     }
 
     @Test
-    public void shouldSetAndGetTitle() {
+    void shouldSetAndGetTitle() {
         contact.setTitle("testTitle");
         assertEquals("testTitle", contact.getTitle());
     }
 
     @Test
-    public void shouldSetAndGetUser() {
+    void shouldSetAndGetUser() {
         contact.setUser("testUser");
         assertEquals("testUser", contact.getUser());
     }
 
     @Test
-    public void shouldSetAndGetTenantUniqueName() {
+    void shouldSetAndGetTenantUniqueName() {
         contact.setTenantUniqueName("testTenantUniqueName");
         assertEquals("testTenantUniqueName", contact.getTenantUniqueName());
     }
 
     @Test
-    public void shouldSetAndGetComments() {
+    void shouldSetAndGetComments() {
         contact.setComments("testComments");
         assertEquals("testComments", contact.getComments());
     }
 
     @Test
-    public void shouldSetAndGetCreatedAt() {
+    void shouldSetAndGetCreatedAt() {
         LocalDateTime now = LocalDateTime.now();
         contact.setCreatedAt(now);
         assertEquals(now, contact.getCreatedAt());
     }
 
     @Test
-    public void shouldSetAndGetTags() {
+    void shouldSetAndGetTags() {
         contact.setTags(Arrays.asList("tag1", "tag2"));
         assertEquals(Arrays.asList("tag1", "tag2"), contact.getTags());
     }
 
     @Test
-    public void shouldSetAndGetProps() {
+    void shouldSetAndGetProps() {
         contact.setProps(props);
         assertEquals(props, contact.getProps());
     }
 
     @Test
-    public void shouldSetAndGetAttributesToString() {
+    void shouldSetAndGetAttributesToString() {
         contact.setAttributesToString("testAttributesToString");
         assertEquals("testAttributesToString", contact.getAttributesToString());
     }
 
     @Test
-    public void shouldContactAttributesToString() {
+    void shouldContactAttributesToString() {
         contact.setTitle("TestTitle");
         contact.setTags(Arrays.asList("tag1", "tag2"));
 

@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-public class PredefinedSearchServicesTest {
+class PredefinedSearchServicesTest {
 
     @InjectMocks
     private PredefinedSearchServices predefinedSearchServices;
@@ -40,7 +40,7 @@ public class PredefinedSearchServicesTest {
     }
 
     @Test
-    public void testGetAllPredefinedSearches() {
+    void testGetAllPredefinedSearches() {
 
         when(predefinedSearchRepository.findAll()).thenReturn(Collections.singletonList(predefinedSearch));
 
@@ -51,7 +51,7 @@ public class PredefinedSearchServicesTest {
     }
 
     @Test
-    public void testGetPredefinedSearchById() {
+    void testGetPredefinedSearchById() {
         predefinedSearch.setId("123");
         when(predefinedSearchRepository.findById("123")).thenReturn(java.util.Optional.of(predefinedSearch));
 
@@ -62,7 +62,7 @@ public class PredefinedSearchServicesTest {
     }
 
     @Test
-    public void getAllPredefinedSearches_ReturnsListOfPredefinedSearches_WhenRepositoryHasData() {
+    void getAllPredefinedSearches_ReturnsListOfPredefinedSearches_WhenRepositoryHasData() {
         when(predefinedSearchRepository.findAll()).thenReturn(Arrays.asList(predefinedSearch, new PredefinedSearch()));
 
         List<PredefinedSearchDTO> predefinedSearches = predefinedSearchServices.getAllPredefinedSearches();
@@ -72,7 +72,7 @@ public class PredefinedSearchServicesTest {
     }
 
     @Test
-    public void getPredefinedSearchById_ReturnsNull_WhenIdDoesNotExist() {
+    void getPredefinedSearchById_ReturnsNull_WhenIdDoesNotExist() {
         when(predefinedSearchRepository.findById("123")).thenReturn(Optional.empty());
 
         assertThrows(CustomHttpException.class, () -> predefinedSearchServices.getPredefinedSearchById("123"));
@@ -81,19 +81,19 @@ public class PredefinedSearchServicesTest {
     }
 
     @Test
-    public void deletePredefinedSearch_ThrowsException_WhenIdDoesNotExist() {
+    void deletePredefinedSearch_ThrowsException_WhenIdDoesNotExist() {
         when(predefinedSearchRepository.existsById(anyString())).thenReturn(false);
 
         assertThrows(CustomHttpException.class, () -> predefinedSearchServices.deletePredefinedSearch("123"));
     }
 
     @Test
-    public void getPredefinedSearchByUser_ThrowsException_WhenUserIsEmpty() {
+    void getPredefinedSearchByUser_ThrowsException_WhenUserIsEmpty() {
         assertThrows(CustomHttpException.class, () -> predefinedSearchServices.getPredefinedSearchByUser(""));
     }
 
     @Test
-    public void getPredefinedSearchByTenant_ThrowsException_WhenTenantIsEmpty() {
+    void getPredefinedSearchByTenant_ThrowsException_WhenTenantIsEmpty() {
         assertThrows(CustomHttpException.class, () -> predefinedSearchServices.getPredefinedSearchByTenant(""));
     }
 

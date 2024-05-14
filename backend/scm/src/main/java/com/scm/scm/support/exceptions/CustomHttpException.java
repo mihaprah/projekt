@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class CustomHttpException extends RuntimeException {
     private final int httpStatusCode;
-    private ExceptionCause exceptionCause;
+    private final ExceptionCause exceptionCause;
 
     public CustomHttpException(String message, int httpStatusCode, ExceptionCause exceptionCause) {
         super(message);
