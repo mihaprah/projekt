@@ -19,7 +19,7 @@ public class LoadPredefinedSearches {
     private MongoTemplate mongoTemplate;
 
     public void createPredefinedSearches() {
-        PredefinedSearch predefinedSearch = new PredefinedSearch("global", "user1@example.com", "ACM-May-24-694", "Global search", "", SortOrientation.ASC);
+        PredefinedSearch predefinedSearch = new PredefinedSearch("global", "user1@example.com", "ACM-May-24-694", "Global search", null, SortOrientation.ASC);
         predefinedSearch.setId(predefinedSearch.generateId(predefinedSearch.getTitle()));
         mongoTemplate.save(predefinedSearch);
         log.info("Loaded test PredefinedSearches into the database.");

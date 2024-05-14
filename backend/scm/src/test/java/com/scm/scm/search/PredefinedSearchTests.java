@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Collections;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -16,7 +18,7 @@ public class PredefinedSearchTests {
 
     @BeforeEach
     void setUp() {
-        predefinedSearch = new PredefinedSearch("searchQuery", "user", "onTenant", "title", "filter", SortOrientation.ASC);
+        predefinedSearch = new PredefinedSearch("searchQuery", "user", "onTenant", "title", Collections.singletonList("filter"), SortOrientation.ASC);
     }
 
     @Test
@@ -26,7 +28,7 @@ public class PredefinedSearchTests {
         assertEquals("user", predefinedSearch.getUser());
         assertEquals("onTenant", predefinedSearch.getOnTenant());
         assertEquals("title", predefinedSearch.getTitle());
-        assertEquals("filter", predefinedSearch.getFilter());
+        assertEquals("filter", predefinedSearch.getFilter().getFirst());
         assertEquals(SortOrientation.ASC, predefinedSearch.getSortOrientation());
     }
 

@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.security.SecureRandom;
+import java.util.List;
 
 @Data
 @Document(collection = "predefinedSearches")
@@ -16,7 +17,7 @@ import java.security.SecureRandom;
 @Builder
 public class PredefinedSearch {
 
-    public PredefinedSearch (String searchQuery, String user, String onTenant, String title, String filter, SortOrientation sortOrientation) {
+    public PredefinedSearch (String searchQuery, String user, String onTenant, String title, List<String> filter, SortOrientation sortOrientation) {
         this.searchQuery = searchQuery;
         this.user = user;
         this.onTenant = onTenant;
@@ -31,7 +32,7 @@ public class PredefinedSearch {
     private String user;
     private String onTenant;
     private String title;
-    private String filter;
+    private List<String> filter;
     private SortOrientation sortOrientation;
 
     private static final SecureRandom random = new SecureRandom();
