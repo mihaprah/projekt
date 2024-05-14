@@ -22,18 +22,22 @@ public class LoadContacts {
 
     private static final Logger log = Logger.getLogger(LoadContacts.class.toString());
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private final MongoTemplate mongoTemplate;
 
-    @Autowired
-    private TenantServices tenantServices;
+    private final TenantServices tenantServices;
 
-    @Autowired
-    private LoadEvents loadEvents;
+    private final LoadEvents loadEvents;
 
     private static final SecureRandom random = new SecureRandom();
 
     private boolean load10k = false;
+
+    @Autowired
+    public LoadContacts(MongoTemplate mongoTemplate, TenantServices tenantServices, LoadEvents loadEvents) {
+        this.mongoTemplate = mongoTemplate;
+        this.tenantServices = tenantServices;
+        this.loadEvents = loadEvents;
+    }
 
     public void createContacts(String[] tenantUniqueNames) {
 

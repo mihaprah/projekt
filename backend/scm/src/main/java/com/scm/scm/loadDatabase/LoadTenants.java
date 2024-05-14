@@ -16,14 +16,18 @@ public class LoadTenants {
 
     private static final Logger log = Logger.getLogger(LoadTenants.class.toString());
 
-    @Autowired
-    private TenantRepository tenantRepository;
+    private final TenantRepository tenantRepository;
+
+    private final MongoTemplateService mongoTemplateService;
+
+    private final MongoTemplate mongoTemplate;
 
     @Autowired
-    private MongoTemplateService mongoTemplateService;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    public LoadTenants(TenantRepository tenantRepository, MongoTemplateService mongoTemplateService, MongoTemplate mongoTemplate) {
+        this.tenantRepository = tenantRepository;
+        this.mongoTemplateService = mongoTemplateService;
+        this.mongoTemplate = mongoTemplate;
+    }
 
     public String[] createTenants() {
 

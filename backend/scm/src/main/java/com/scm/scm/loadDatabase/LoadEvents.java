@@ -15,8 +15,12 @@ public class LoadEvents {
 
     private static final Logger log = Logger.getLogger(LoadEvents.class.toString());
 
+    private final MongoTemplate mongoTemplate;
+
     @Autowired
-    private MongoTemplate mongoTemplate;
+    public LoadEvents(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
 
     public void createEvent(Event event, String tenantUniqueName) {
         event.setId(event.generateId());

@@ -9,14 +9,18 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class LoadAllData {
 
-    @Autowired
-    private LoadTenants loadTenants;
+    private final LoadTenants loadTenants;
+
+    private final LoadContacts loadContacts;
+
+    private final LoadPredefinedSearches loadPredefinedSearches;
 
     @Autowired
-    private LoadContacts loadContacts;
-
-    @Autowired
-    private LoadPredefinedSearches loadPredefinedSearches;
+    public LoadAllData(LoadTenants loadTenants, LoadContacts loadContacts, LoadPredefinedSearches loadPredefinedSearches) {
+        this.loadTenants = loadTenants;
+        this.loadContacts = loadContacts;
+        this.loadPredefinedSearches = loadPredefinedSearches;
+    }
 
     @Bean
     @Profile("dev")
