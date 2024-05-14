@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -68,7 +68,7 @@ public class TenantServices {
                     throw new CustomHttpException("Failed to create tenant collections", 500, ExceptionCause.SERVER_ERROR);
                 }
                 tenantRepository.save(tenant);
-                log.info("Tenant created with id: " + tenant.getId());
+                log.log(Level.INFO, "Tenant created with id: {0}", tenant.getId());
                 return convertToDTO(tenant);
             }
         }
@@ -76,13 +76,13 @@ public class TenantServices {
 
     public List<TenantDTO> getAllTenants() {
         List<Tenant> tenants = tenantRepository.findAll();
-        log.info("All tenants found");
-        return tenants.stream().map(this::convertToDTO).collect(Collectors.toList());
+        log.log(Level.INFO, "All tenants found");
+        return tenants.stream().map(this::convertToDTO).toList();
     }
 
     public TenantDTO getTenantById(String id) {
         Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException(ExceptionMessage.TENANT_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR));
-        log.info("Tenant found with id: " + id);
+        log.log(Level.INFO, "Tenant found with id: {0}", id);
         return convertToDTO(tenant);
     }
 
@@ -204,8 +204,8 @@ public class TenantServices {
         if (tenants.isEmpty()) {
             throw new CustomHttpException("No tenants found for username " + username, 404, ExceptionCause.USER_ERROR);
         }
-        log.info("All tenants for username " + username + " found");
-        return tenants.stream().map(this::convertToDTO).collect(Collectors.toList());
+        log.log(Level.INFO, "All tenants for username {0} found", username);
+        return tenants.stream().map(this::convertToDTO).toList();
     }
 
     public String addTagsToMultipleContacts(String tenantUniqueName, List<String> contactIds, String tag) {
