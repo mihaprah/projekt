@@ -5,7 +5,6 @@ import com.scm.scm.events.services.EventsServices;
 import com.scm.scm.events.vao.Event;
 import com.scm.scm.events.vao.EventState;
 import com.scm.scm.tenant.services.TenantServices;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,11 +13,14 @@ import java.util.Map;
 
 @Service
 public class EventsCheck {
-    @Autowired
-    private EventsServices eventsServices;
+    private final EventsServices eventsServices;
 
-    @Autowired
-    private TenantServices tenantServices;
+    private final TenantServices tenantServices;
+
+    public EventsCheck(EventsServices eventsServices, TenantServices tenantServices) {
+        this.eventsServices = eventsServices;
+        this.tenantServices = tenantServices;
+    }
 
     public void checkProps (Contact existingContact, Contact contact){
         Map<String, String> existingProps = existingContact.getProps();
@@ -28,10 +30,11 @@ public class EventsCheck {
         event.setUser(contact.getUser());
         event.setContact(existingContact.getId());
 
-        for (String key : props.keySet()){
+        for (Map.Entry<String, String> entry : props.entrySet()){
+            String key = entry.getKey();
+            String value = entry.getValue();
             if(existingProps.containsKey(key)){
                 String existingValue = existingProps.get(key);
-                String value = props.get(key);
                 if(!existingValue.equals(value)){
                     event.setEventState(EventState.UPDATED);
                     event.setPropKey(key);
@@ -43,15 +46,16 @@ public class EventsCheck {
                 event.setEventState(EventState.PROP_ADD);
                 event.setPropKey(key);
                 event.setPrevState("");
-                event.setCurrentState(props.get(key));
+                event.setCurrentState(value);
                 eventsServices.addEvent(event, existingContact.getTenantUniqueName());
             }
         }
-        for (String key : existingProps.keySet()){
+        for (Map.Entry<String, String> entry : existingProps.entrySet()){
+            String key = entry.getKey();
             if (!props.containsKey(key)){
                 event.setEventState(EventState.PROP_REMOVED);
                 event.setPropKey(key);
-                event.setPrevState(existingProps.get(key));
+                event.setPrevState(entry.getValue());
                 event.setCurrentState("");
                 eventsServices.addEvent(event, existingContact.getTenantUniqueName());
             }
@@ -77,7 +81,7 @@ public class EventsCheck {
                 tenantServices.addTags(contact.getTenantUniqueName(), contact.getTags());
             }
         }
-        for ( String existingTag : existingTags){
+        for (String existingTag : existingTags){
             if(!tags.contains(existingTag)){
                 event.setEventState(EventState.TAG_REMOVED);
                 event.setPropKey("TAG");

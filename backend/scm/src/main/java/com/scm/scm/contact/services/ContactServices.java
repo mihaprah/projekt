@@ -20,9 +20,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ContactServices {
 
-    @Autowired
     private MongoTemplate mongoTemplate;
 
     private MongoTemplateService mongoTemplateService;
@@ -38,6 +38,13 @@ public class ContactServices {
     private EventsServices eventsServices;
     private EventsCheck eventsCheck;
     private static final Logger log = Logger.getLogger(ContactServices.class.toString());
+
+    private static final String FOR_TENANT = " for tenant: ";
+
+    @Autowired
+    public ContactServices(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
 
     private ContactDTO convertToDTO(Contact contact) {
         return ContactDTO.builder()
@@ -78,7 +85,7 @@ public class ContactServices {
         if (contact == null) {
             throw new CustomHttpException("Contact not found", 404, ExceptionCause.USER_ERROR);
         }
-        log.info("Contact found with id: " + contactId);
+        log.log(Level.INFO, "Contact found with id: " + contactId);
         return convertToDTO(contact);
     }
 
@@ -89,9 +96,9 @@ public class ContactServices {
         if (!mongoTemplateService.collectionExists(tenantUniqueName + CollectionType.MAIN.getCollectionType())) {
             throw new CustomHttpException(ExceptionMessage.COLLECTION_NOT_EXIST.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
         }
-        log.info("All contacts found for tenant: " + tenantUniqueName);
+        log.log(Level.INFO, "All contacts found for tenant: " + tenantUniqueName);
         List<Contact> contacts = mongoTemplate.findAll(Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType());
-        return contacts.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return contacts.stream().map(this::convertToDTO).toList();
     }
 
     public String createContact(ContactDTO contactDTO) {
@@ -130,7 +137,7 @@ public class ContactServices {
         Event event = new Event(contact.getUser(), contact.getId(), EventState.CREATED);
         eventsServices.addEvent(event, contact.getTenantUniqueName());
 
-        log.info("Contact created with id: " + contact.getId() + " for tenant: " + contact.getTenantUniqueName());
+        log.log(Level.INFO, "Contact created with id: " + contact.getId() + FOR_TENANT + contact.getTenantUniqueName());
         return "Contact created successfully to " + contact.getTenantUniqueName() + "_main collection";
     }
 
@@ -169,7 +176,7 @@ public class ContactServices {
             existingContact.setAttributesToString(existingContact.contactAttributesToString());
 
             mongoTemplate.save(existingContact, existingContact.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
-            log.info("Contact updated with id: " + contact.getId() + " for tenant: " + contact.getTenantUniqueName());
+            log.log(Level.INFO, "Contact updated with id: " + contact.getId() + FOR_TENANT + contact.getTenantUniqueName());
             return convertToDTO(existingContact);
         } else {
             throw new CustomHttpException("Contact does not exist", 500, ExceptionCause.SERVER_ERROR);
@@ -188,9 +195,9 @@ public class ContactServices {
             throw new CustomHttpException("Contact not found", 404, ExceptionCause.USER_ERROR);
         }
         mongoTemplate.remove(contact, tenantUniqueName + CollectionType.MAIN.getCollectionType());
-        log.info("Contact deleted with id: " + contactId + " for tenant: " + tenantUniqueName);
+        log.log(Level.INFO, "Contact deleted with id: " + contactId + FOR_TENANT + tenantUniqueName);
         mongoTemplate.save(contact, tenantUniqueName + CollectionType.DELETED.getCollectionType());
-        log.info("Contact saved to " + tenantUniqueName + "_deleted collection");
+        log.log(Level.INFO, "Contact saved to " + tenantUniqueName + "_deleted collection");
 
         Event event = new Event(contact.getUser(), contact.getId(), EventState.DELETED);
         eventsServices.addEvent(event, contact.getTenantUniqueName());
@@ -208,17 +215,17 @@ public class ContactServices {
             throw new CustomHttpException(ExceptionMessage.COLLECTION_NOT_EXIST.getExceptionMessage(), 404, ExceptionCause.SERVER_ERROR);
         }
         if (search.getSearchQuery().isEmpty()) {
-            List<Contact> onlyFilteredContacts = mongoTemplate.findAll(Contact.class, search.getOnTenant() + CollectionType.MAIN.getCollectionType()).stream().filter(contact -> contact.getTags().containsAll(search.getFilter())).collect(Collectors.toList());
+            List<Contact> onlyFilteredContacts = mongoTemplate.findAll(Contact.class, search.getOnTenant() + CollectionType.MAIN.getCollectionType()).stream().filter(contact -> new HashSet<>(contact.getTags()).containsAll(search.getFilter())).collect(Collectors.toList());
             Comparator<Contact> comparator = getComparatorBasedOnOrientation(search.getSortOrientation());
-            Collections.sort(onlyFilteredContacts, comparator);
-            return onlyFilteredContacts.stream().map(this::convertToDTO).collect(Collectors.toList());
+            onlyFilteredContacts.sort(comparator);
+            return onlyFilteredContacts.stream().map(this::convertToDTO).toList();
         }
         List<Contact> allContactsByQuery = getContactsBySearchQuery(search.getSearchQuery(), mongoTemplate.findAll(Contact.class, search.getOnTenant() + CollectionType.MAIN.getCollectionType()), search.getSortOrientation());
         if (search.getFilter().isEmpty()) {
-            return allContactsByQuery.stream().map(this::convertToDTO).collect(Collectors.toList());
+            return allContactsByQuery.stream().map(this::convertToDTO).toList();
         }
-        List<Contact> filteredContacts = allContactsByQuery.stream().filter(contact -> contact.getTags().containsAll(search.getFilter())).toList();
-        return filteredContacts.stream().map(this::convertToDTO).collect(Collectors.toList());
+        List<Contact> filteredContacts = allContactsByQuery.stream().filter(contact -> new HashSet<>(contact.getTags()).containsAll(search.getFilter())).toList();
+        return filteredContacts.stream().map(this::convertToDTO).toList();
     }
 
     public List<Contact> getContactsBySearchQuery(String searchQuery, List<Contact> contacts, SortOrientation sortOrientation) {
@@ -228,7 +235,7 @@ public class ContactServices {
 
         Comparator<Contact> comparator = getComparatorBasedOnOrientation(sortOrientation);
 
-        Collections.sort(filteredContacts, comparator);
+        filteredContacts.sort(comparator);
 
         return filteredContacts;
     }
