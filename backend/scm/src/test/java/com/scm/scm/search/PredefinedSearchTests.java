@@ -23,31 +23,15 @@ public class PredefinedSearchTests {
 
     @Test
     void testConstructor() {
-        assertNotNull(predefinedSearch);
-        assertEquals("searchQuery", predefinedSearch.getSearchQuery());
-        assertEquals("user", predefinedSearch.getUser());
-        assertEquals("onTenant", predefinedSearch.getOnTenant());
-        assertEquals("title", predefinedSearch.getTitle());
-        assertEquals("filter", predefinedSearch.getFilter().getFirst());
-        assertEquals(SortOrientation.ASC, predefinedSearch.getSortOrientation());
-    }
-
-    @Test
-    void testGenerateId() {
-        String title = "Test Title 123";
-        String id = predefinedSearch.generateId(title);
-
-        assertNotNull(id);
-        assertTrue(id.startsWith("testtitle123-"));
-        assertTrue(id.matches("testtitle123-\\d+-\\d+"));
-
-        String anotherId = predefinedSearch.generateId(title);
-        assertNotEquals(id, anotherId);
+        assertPredefinedSearch();
     }
 
     @Test
     void predefinedSearchConstructorShouldSetCorrectValues() {
+        assertPredefinedSearch();
+    }
 
+    private void assertPredefinedSearch() {
         assertNotNull(predefinedSearch);
         assertEquals("searchQuery", predefinedSearch.getSearchQuery());
         assertEquals("user", predefinedSearch.getUser());
@@ -57,8 +41,7 @@ public class PredefinedSearchTests {
         assertEquals(SortOrientation.ASC, predefinedSearch.getSortOrientation());
     }
 
-    @Test
-    void generateIdShouldCreateUniqueIds() {
+    private void testGenerateId() {
         String title = "Test Title 123";
         String id = predefinedSearch.generateId(title);
 
@@ -68,6 +51,11 @@ public class PredefinedSearchTests {
 
         String anotherId = predefinedSearch.generateId(title);
         assertNotEquals(id, anotherId);
+    }
+
+    @Test
+    void generateIdShouldCreateUniqueIds() {
+        testGenerateId();
     }
 
     @Test

@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -53,20 +53,20 @@ public class PredefinedSearchServices {
         } else {
             predefinedSearch.setId(predefinedSearch.generateId(predefinedSearch.getTitle()));
             predefinedSearchRepository.save(predefinedSearch);
-            log.info("PredefinedSearch created with id: " + predefinedSearch.getId());
+            log.log(Level.INFO, "PredefinedSearch created with id: {0}", predefinedSearch.getId());
             return convertToDTO(predefinedSearch);
         }
     }
 
     public List<PredefinedSearchDTO> getAllPredefinedSearches() {
         List<PredefinedSearch> predefinedSearches = predefinedSearchRepository.findAll();
-        log.info("All predefined searches found");
-        return predefinedSearches.stream().map(this::convertToDTO).collect(Collectors.toList());
+        log.log(Level.INFO, "All predefined searches found");
+        return predefinedSearches.stream().map(this::convertToDTO).toList();
     }
 
     public PredefinedSearchDTO getPredefinedSearchById(String id) {
         PredefinedSearch predefinedSearch = predefinedSearchRepository.findById(id).orElseThrow(() -> new CustomHttpException(ExceptionMessage.SEARCH_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR));
-        log.info("PredefinedSearch found with id: " + id);
+        log.log(Level.INFO, "PredefinedSearch found with id: {0}", id);
         return convertToDTO(predefinedSearch);
     }
 
@@ -83,14 +83,14 @@ public class PredefinedSearchServices {
         } else {
             throw new CustomHttpException(ExceptionMessage.SEARCH_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR);
         }
-        log.info("PredefinedSearch updated with id: " + predefinedSearch.getId());
+        log.log(Level.INFO, "PredefinedSearch updated with id: {0}", predefinedSearch.getId());
         return convertToDTO(oldPredefinedSearch);
     }
 
     public String deletePredefinedSearch(String id) {
         if (!id.isEmpty() && predefinedSearchRepository.existsById(id)) {
             predefinedSearchRepository.deleteById(id);
-            log.info("PredefinedSearch deleted with id: " + id);
+            log.log(Level.INFO, "PredefinedSearch deleted with id: {0}", id);
             return "PredefinedSearch successfully deleted";
         } else {
             throw new CustomHttpException(ExceptionMessage.SEARCH_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR);
@@ -101,9 +101,9 @@ public class PredefinedSearchServices {
         if (user == null || user.isEmpty()) {
             throw new CustomHttpException("User is empty", 400, ExceptionCause.USER_ERROR);
         } else {
-            log.info("PredefinedSearch found by user: " + user);
+            log.log(Level.INFO, "PredefinedSearch found by user: {0}", user);
             List<PredefinedSearch> predefinedSearches = predefinedSearchRepository.findByUser(user);
-            return predefinedSearches.stream().map(this::convertToDTO).collect(Collectors.toList());
+            return predefinedSearches.stream().map(this::convertToDTO).toList();
         }
     }
 
@@ -111,9 +111,9 @@ public class PredefinedSearchServices {
         if (tenant == null || tenant.isEmpty()) {
             throw new CustomHttpException("Tenant is empty", 400, ExceptionCause.USER_ERROR);
         } else {
-            log.info("PredefinedSearch found by tenant: " + tenant);
+            log.log(Level.INFO, "PredefinedSearch found by tenant: {0}", tenant);
             List<PredefinedSearch> predefinedSearches = predefinedSearchRepository.findByOnTenant(tenant);
-            return predefinedSearches.stream().map(this::convertToDTO).collect(Collectors.toList());
+            return predefinedSearches.stream().map(this::convertToDTO).toList();
         }
     }
 

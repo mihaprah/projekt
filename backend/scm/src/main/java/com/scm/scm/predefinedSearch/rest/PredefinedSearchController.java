@@ -12,8 +12,12 @@ import java.util.List;
 @RequestMapping("/predefined_searches")
 public class PredefinedSearchController {
 
+    private final PredefinedSearchServices predefinedSearchServices;
+
     @Autowired
-    private PredefinedSearchServices predefinedSearchServices;
+    public PredefinedSearchController(PredefinedSearchServices predefinedSearchServices) {
+        this.predefinedSearchServices = predefinedSearchServices;
+    }
 
     @GetMapping
     public ResponseEntity<List<PredefinedSearchDTO>> getPredefinedSearches() {
