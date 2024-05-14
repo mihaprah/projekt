@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 public class LoadContacts {
 
     private static final Logger log = Logger.getLogger(LoadContacts.class.toString());
+    private static final String HOBBY = "Hobby";
+    private static final String USER3 = "user3@example.com";
 
     private final MongoTemplate mongoTemplate;
 
@@ -59,7 +61,7 @@ public class LoadContacts {
         props.put("Company", "XYZ Corp");
         props.put("Position", "Senior Marketing Manager");
         props.put("OfficeLocation", "Downtown");
-        props.put("Hobby", "Photography");
+        props.put(HOBBY, "Photography");
         props.put("SocialMedia", "@john_photographer");
         props.put("Website", "www.johnphotography.com");
         props.put("EmergencyContact", "Jane Doe");
@@ -92,11 +94,11 @@ public class LoadContacts {
             contact2.setId(contact2.generateId(contact2.getTitle()));
             contact2.setAttributesToString(contact2.contactAttributesToString());
 
-            Contact contact3 = new Contact("", "Contact 3", "user3@example.com", tenantUniqueNames[1], "", LocalDateTime.now(), tags3, selectRandomProps(props, 4), "");
+            Contact contact3 = new Contact("", "Contact 3", USER3, tenantUniqueNames[1], "", LocalDateTime.now(), tags3, selectRandomProps(props, 4), "");
             contact3.setId(contact3.generateId(contact3.getTitle()));
             contact3.setAttributesToString(contact3.contactAttributesToString());
 
-            Contact contact4 = new Contact("", "Contact 4", "user3@example.com", tenantUniqueNames[1], "", LocalDateTime.now(), tags4, selectRandomProps(props, 4), "");
+            Contact contact4 = new Contact("", "Contact 4", USER3, tenantUniqueNames[1], "", LocalDateTime.now(), tags4, selectRandomProps(props, 4), "");
             contact4.setId(contact4.generateId(contact4.getTitle()));
             contact4.setAttributesToString(contact4.contactAttributesToString());
 
@@ -126,19 +128,19 @@ public class LoadContacts {
             Event event3 = new Event(contact3.getUser(), contact3.getId(), EventState.CREATED);
             loadEvents.createEvent(event3, contact3.getTenantUniqueName());
 
-            String exProp = contact3.getProps().get("Hobby");
-            contact3.getProps().put("Hobby", "Photography, Travel");
+            String exProp = contact3.getProps().get(HOBBY);
+            contact3.getProps().put(HOBBY, "Photography, Travel");
             Event event31 = new Event(contact3.getUser(), contact3.getId(), EventState.PROP_ADD);
             event31.setPropKey("Props");
             event31.setPrevState(exProp);
-            event31.setCurrentState(contact3.getProps().get("Hobby"));
+            event31.setCurrentState(contact3.getProps().get(HOBBY));
             loadEvents.createEvent(event31, contact3.getTenantUniqueName());
 
             mongoTemplate.save(contact4, contact4.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
             Event event4 = new Event(contact4.getUser(), contact4.getId(), EventState.CREATED);
             loadEvents.createEvent(event4, contact4.getTenantUniqueName());
 
-            Contact contact5 = new Contact("", "Contact 5", "user3@example.com", tenantUniqueNames[1], "", LocalDateTime.now(), tags4, selectRandomProps(props, 4), "");
+            Contact contact5 = new Contact("", "Contact 5", USER3, tenantUniqueNames[1], "", LocalDateTime.now(), tags4, selectRandomProps(props, 4), "");
             contact5.setId(contact5.generateId(contact5.getTitle()));
             mongoTemplate.save(contact5, contact5.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
 
@@ -163,7 +165,7 @@ public class LoadContacts {
         }
 
         List<String> randomTags = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
+        for (int i = count - 1; i >= 0; i--) {
             int randomIndex = random.nextInt(tags.size());
             String randomTag = tags.get(randomIndex);
             randomTags.add(randomTag);
