@@ -16,20 +16,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/contacts")
 public class ContactController {
 
-    @Autowired
-    private ContactServices contactServices;
+    private final ContactServices contactServices;
+    private final ExportContactExcel exportContactExcel;
+    private final UserAccessService userAccessService;
 
     @Autowired
-    private ExportContactExcel exportContactExcel;
-
-    @Autowired
-    private UserAccessService userAccessService;
+    public ContactController(ContactServices contactServices, ExportContactExcel exportContactExcel, UserAccessService userAccessService) {
+        this.contactServices = contactServices;
+        this.exportContactExcel = exportContactExcel;
+        this.userAccessService = userAccessService;
+    }
 
     private static final Logger log = Logger.getLogger(ContactServices.class.toString());
 
@@ -104,7 +107,7 @@ public class ContactController {
         }
 
         try {
-            log.info("Contacts exported successfully for tenant: " + tenantUniqueName);
+            log.log(Level.INFO, "Contacts exported successfully for tenant: {0}", tenantUniqueName);
             return exportContactExcel.exportContacts(tenantUniqueName, contactIds);
         } catch (IllegalArgumentException e) {
             log.severe("Error occurred during export: " + e.getMessage());
