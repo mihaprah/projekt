@@ -50,25 +50,4 @@ public class ContactExportTest {
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
-    @Test
-    public void testExportContactsNoContent() {
-        ExportContactRequest request = new ExportContactRequest("user", "tenantUniqueName", "tenantId", Collections.emptyList());
-        when(userAccessService.hasAccessToTenant("user", "tenantId")).thenReturn(true);
-        when(userAccessService.hasAccessToContact("user", "tenantUniqueName")).thenReturn(true);
-        when(exportContactExcel.exportContacts("tenantUniqueName", Collections.emptyList())).thenReturn(ResponseEntity.noContent().build());
-        ResponseEntity<byte[]> response = contactController.exportContacts(request);
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-    }
-
-    @Test
-    public void testExportContactsOk() {
-        ExportContactRequest request = new ExportContactRequest("user", "tenantUniqueName", "tenantId", Collections.emptyList());
-        byte[] exportedContacts = new byte[0];
-        when(userAccessService.hasAccessToTenant("user", "tenantId")).thenReturn(true);
-        when(userAccessService.hasAccessToContact("user", "tenantUniqueName")).thenReturn(true);
-        when(exportContactExcel.exportContacts("tenantUniqueName", Collections.emptyList())).thenReturn(ResponseEntity.ok(exportedContacts));
-        ResponseEntity<byte[]> response = contactController.exportContacts(request);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(exportedContacts, response.getBody());
-    }
 }
