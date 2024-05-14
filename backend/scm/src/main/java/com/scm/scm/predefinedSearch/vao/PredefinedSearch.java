@@ -28,7 +28,6 @@ public class PredefinedSearch {
     @Id
     private String id;
     private String searchQuery;
-    private String searchBy;
     private String user;
     private String onTenant;
     private String title;

@@ -75,7 +75,6 @@ public class PredefinedSearchServices {
         PredefinedSearch oldPredefinedSearch = predefinedSearchRepository.findById(predefinedSearch.getId()).orElseThrow(() -> new CustomHttpException(ExceptionMessage.SEARCH_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR));
         if (oldPredefinedSearch != null) {
             oldPredefinedSearch.setSearchQuery(predefinedSearch.getSearchQuery());
-            oldPredefinedSearch.setSearchBy(predefinedSearch.getSearchBy());
             oldPredefinedSearch.setUser(predefinedSearch.getUser());
             oldPredefinedSearch.setOnTenant(predefinedSearch.getOnTenant());
             oldPredefinedSearch.setTitle(predefinedSearch.getTitle());

@@ -1,13 +1,16 @@
 package com.scm.scm.tenant.services;
 
+import com.scm.scm.contact.vao.Contact;
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.exceptions.ExceptionCause;
 import com.scm.scm.support.exceptions.ExceptionMessage;
+import com.scm.scm.support.mongoTemplate.CollectionType;
 import com.scm.scm.support.mongoTemplate.MongoTemplateService;
 import com.scm.scm.tenant.dao.TenantRepository;
 import com.scm.scm.tenant.dto.TenantDTO;
 import com.scm.scm.tenant.vao.Tenant;
 import lombok.AllArgsConstructor;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +25,7 @@ public class TenantServices {
 
     private TenantRepository tenantRepository;
     private MongoTemplateService mongoTemplateService;
+    private MongoTemplate mongoTemplate;
     private static final Logger log = Logger.getLogger(TenantServices.class.toString());
 
     private TenantDTO convertToDTO(Tenant tenant) {
@@ -202,5 +206,30 @@ public class TenantServices {
         }
         log.info("All tenants for username " + username + " found");
         return tenants.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    public String addTagsToMultipleContacts(String tenantUniqueName, List<String> contactIds, String tag) {
+        if (contactIds.isEmpty()) {
+            throw new CustomHttpException("Contact ids cannot be empty", 400, ExceptionCause.USER_ERROR);
+        }
+        if (tag.isEmpty()) {
+            throw new CustomHttpException("Tag cannot be empty", 400, ExceptionCause.USER_ERROR);
+        }
+        if (tenantUniqueName.isEmpty()) {
+            throw new CustomHttpException("Tenant unique name cannot be empty", 400, ExceptionCause.USER_ERROR);
+        }
+        List<Contact> contacts = mongoTemplate.findAll(Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType());
+        for (Contact c : contacts) {
+            if (contactIds.contains(c.getId())) {
+                List<String> oldTags = c.getTags();
+                if (!oldTags.contains(tag)) {
+                    oldTags.add(tag);
+                }
+                c.setTags(oldTags);
+                mongoTemplate.save(c, tenantUniqueName + CollectionType.MAIN.getCollectionType());
+                addTags(tenantUniqueName, List.of(tag));
+            }
+        }
+        return "Tags added to contacts successfully";
     }
 }

@@ -103,4 +103,13 @@ public class TenantController {
         }
         return ResponseEntity.ok(tenantServices.removeUsers(tenantId, users));
     }
+
+    @PutMapping("/tags/multiple/add/{tenant_unique_name}/{tag}")
+    public ResponseEntity<String> addMultipleTags(@PathVariable("tenant_unique_name") String tenantUniqueName, @PathVariable("tag") String tag, @RequestHeader("userToken") String user_token, @RequestHeader("tenantId") String tenant_id, @RequestBody List<String> contactIds) {
+        boolean check = userAccessService.hasAccessToTenant(user_token, tenant_id);
+        if (!check) {
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
+        }
+        return ResponseEntity.ok(tenantServices.addTagsToMultipleContacts(tenantUniqueName, contactIds, tag));
+    }
 }
