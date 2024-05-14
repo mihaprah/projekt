@@ -77,5 +77,28 @@ public class EventTests {
         assertEquals(newTime, event.getEventTime());
     }
 
+    @Test
+    void generateIdShouldReturnUniqueIds() {
+        String id1 = event.generateId();
+        String id2 = event.generateId();
+        assertNotEquals(id1, id2);
+    }
+
+    @Test
+    void eventConstructorShouldSetEmptyStringsForOptionalFields() {
+        Event newEvent = new Event("user3", "contact3", EventState.CREATED);
+        assertEquals("", newEvent.getPropKey());
+        assertEquals("", newEvent.getPrevState());
+        assertEquals("", newEvent.getCurrentState());
+    }
+
+    @Test
+    void eventConstructorShouldSetProvidedFields() {
+        Event newEvent = new Event("user3", "contact3", EventState.CREATED);
+        assertEquals("user3", newEvent.getUser());
+        assertEquals("contact3", newEvent.getContact());
+        assertEquals(EventState.CREATED, newEvent.getEventState());
+    }
+
 
 }
