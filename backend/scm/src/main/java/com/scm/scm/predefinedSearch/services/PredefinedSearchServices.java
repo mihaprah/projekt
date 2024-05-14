@@ -34,7 +34,7 @@ public class PredefinedSearchServices {
                 .build();
     }
 
-    private PredefinedSearch convertToEntity(PredefinedSearchDTO predefinedSearchDTO) {
+    public PredefinedSearch convertToEntity(PredefinedSearchDTO predefinedSearchDTO) {
         return PredefinedSearch.builder()
                 .id(predefinedSearchDTO.getId())
                 .searchQuery(predefinedSearchDTO.getSearchQuery())

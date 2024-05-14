@@ -2,6 +2,8 @@ package com.scm.scm.contact.rest;
 
 import com.scm.scm.contact.dto.ContactDTO;
 import com.scm.scm.contact.services.ContactServices;
+import com.scm.scm.predefinedSearch.dto.PredefinedSearchDTO;
+import com.scm.scm.predefinedSearch.services.PredefinedSearchServices;
 import com.scm.scm.predefinedSearch.vao.PredefinedSearch;
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.exceptions.ExceptionCause;
@@ -26,12 +28,14 @@ public class ContactController {
     private final ContactServices contactServices;
     private final ExportContactExcel exportContactExcel;
     private final UserAccessService userAccessService;
+    private final PredefinedSearchServices predefinedSearchServices;
 
     @Autowired
-    public ContactController(ContactServices contactServices, ExportContactExcel exportContactExcel, UserAccessService userAccessService) {
+    public ContactController(ContactServices contactServices, ExportContactExcel exportContactExcel, UserAccessService userAccessService, PredefinedSearchServices predefinedSearchServices) {
         this.contactServices = contactServices;
         this.exportContactExcel = exportContactExcel;
         this.userAccessService = userAccessService;
+        this.predefinedSearchServices = predefinedSearchServices;
     }
 
     private static final Logger log = Logger.getLogger(ContactServices.class.toString());
@@ -116,12 +120,13 @@ public class ContactController {
     }
 
     @GetMapping("/search/{tenant_unique_name}")
-    public ResponseEntity<List<ContactDTO>> searchContacts(@PathVariable(name = "tenant_unique_name") String tenantUniqueName, @RequestHeader("userToken") String userToken, @RequestBody PredefinedSearch search) {
+    public ResponseEntity<List<ContactDTO>> searchContacts(@PathVariable(name = "tenant_unique_name") String tenantUniqueName, @RequestHeader("userToken") String userToken, @RequestBody PredefinedSearchDTO searchDTO) {
         String sanitizedUserToken = StringEscapeUtils.escapeHtml4(userToken);
         boolean check = userAccessService.hasAccessToContact(sanitizedUserToken, tenantUniqueName);
         if (!check) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
+        PredefinedSearch search = predefinedSearchServices.convertToEntity(searchDTO);
         return ResponseEntity.ok(contactServices.getContactsBySearch(search));
     }
 }
