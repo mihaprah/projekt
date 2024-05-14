@@ -5,6 +5,8 @@ import com.scm.scm.contact.vao.Contact;
 import com.scm.scm.events.services.EventsServices;
 import com.scm.scm.events.vao.Event;
 import com.scm.scm.events.vao.EventState;
+import com.scm.scm.predefinedSearch.vao.PredefinedSearch;
+import com.scm.scm.predefinedSearch.vao.SortOrientation;
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.exceptions.ExceptionCause;
 import com.scm.scm.support.exceptions.ExceptionMessage;
@@ -18,6 +20,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -194,5 +198,46 @@ public class ContactServices {
         tenantServices.removeTags(tenantUniqueName, contact.getTags());
 
         return "Contact deleted successfully from " + tenantUniqueName + "_main collection";
+    }
+
+    public List<ContactDTO> getContactsBySearch(PredefinedSearch search) {
+        if (search.getOnTenant().isEmpty()) {
+            throw new CustomHttpException("Search query or tenant is empty", 400, ExceptionCause.USER_ERROR);
+        }
+        if (!mongoTemplateService.collectionExists(search.getOnTenant() + CollectionType.MAIN.getCollectionType())) {
+            throw new CustomHttpException(ExceptionMessage.COLLECTION_NOT_EXIST.getExceptionMessage(), 404, ExceptionCause.SERVER_ERROR);
+        }
+        if (search.getSearchQuery().isEmpty()) {
+            List<Contact> onlyFilteredContacts = mongoTemplate.findAll(Contact.class, search.getOnTenant() + CollectionType.MAIN.getCollectionType()).stream().filter(contact -> contact.getTags().containsAll(search.getFilter())).collect(Collectors.toList());
+            Comparator<Contact> comparator = getComparatorBasedOnOrientation(search.getSortOrientation());
+            Collections.sort(onlyFilteredContacts, comparator);
+            return onlyFilteredContacts.stream().map(this::convertToDTO).collect(Collectors.toList());
+        }
+        List<Contact> allContactsByQuery = getContactsBySearchQuery(search.getSearchQuery(), mongoTemplate.findAll(Contact.class, search.getOnTenant() + CollectionType.MAIN.getCollectionType()), search.getSortOrientation());
+        if (search.getFilter().isEmpty()) {
+            return allContactsByQuery.stream().map(this::convertToDTO).collect(Collectors.toList());
+        }
+        List<Contact> filteredContacts = allContactsByQuery.stream().filter(contact -> contact.getTags().containsAll(search.getFilter())).toList();
+        return filteredContacts.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    public List<Contact> getContactsBySearchQuery(String searchQuery, List<Contact> contacts, SortOrientation sortOrientation) {
+        List<Contact> filteredContacts = contacts.stream()
+                .filter(contact -> contact.getAttributesToString().contains(searchQuery.toLowerCase()))
+                .collect(Collectors.toList());
+
+        Comparator<Contact> comparator = getComparatorBasedOnOrientation(sortOrientation);
+
+        Collections.sort(filteredContacts, comparator);
+
+        return filteredContacts;
+    }
+
+    private Comparator<Contact> getComparatorBasedOnOrientation(SortOrientation sortOrientation) {
+        Comparator<Contact> comparator = Comparator.comparing(Contact::getTitle);
+        if (sortOrientation == SortOrientation.DESC) {
+            comparator = comparator.reversed();
+        }
+        return comparator;
     }
 }

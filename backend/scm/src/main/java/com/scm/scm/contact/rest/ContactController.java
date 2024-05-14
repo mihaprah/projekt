@@ -2,6 +2,7 @@ package com.scm.scm.contact.rest;
 
 import com.scm.scm.contact.dto.ContactDTO;
 import com.scm.scm.contact.services.ContactServices;
+import com.scm.scm.predefinedSearch.vao.PredefinedSearch;
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.exceptions.ExceptionCause;
 import com.scm.scm.support.exceptions.ExceptionMessage;
@@ -109,5 +110,15 @@ public class ContactController {
             log.severe("Error occurred during export: " + e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/search/{tenant_unique_name}")
+    public ResponseEntity<List<ContactDTO>> searchContacts(@PathVariable(name = "tenant_unique_name") String tenantUniqueName, @RequestHeader("userToken") String userToken, @RequestBody PredefinedSearch search) {
+        String sanitizedUserToken = StringEscapeUtils.escapeHtml4(userToken);
+        boolean check = userAccessService.hasAccessToContact(sanitizedUserToken, tenantUniqueName);
+        if (!check) {
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
+        }
+        return ResponseEntity.ok(contactServices.getContactsBySearch(search));
     }
 }
