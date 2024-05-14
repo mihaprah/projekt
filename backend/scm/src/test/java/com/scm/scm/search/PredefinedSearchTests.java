@@ -87,4 +87,45 @@ class PredefinedSearchTests {
         assertTrue(id.matches("testtitle123-\\d+-\\d+"));
     }
 
+    @Test
+    void testDataAnnotation() {
+        PredefinedSearch search1 = new PredefinedSearch("query1", "user1", "tenant1", "title1", Collections.singletonList("filter1"), SortOrientation.ASC);
+        PredefinedSearch search2 = new PredefinedSearch("query1", "user1", "tenant1", "title1", Collections.singletonList("filter1"), SortOrientation.ASC);
+
+        assertEquals(search1, search2);
+        assertEquals(search1.hashCode(), search2.hashCode());
+        assertEquals(search1.toString(), search2.toString());
+    }
+
+    @Test
+    void testAllArgsConstructor() {
+        PredefinedSearch search = new PredefinedSearch("query", "user", "tenant", "title", Collections.singletonList("filter"), SortOrientation.ASC);
+
+        assertEquals("query", search.getSearchQuery());
+        assertEquals("user", search.getUser());
+        assertEquals("tenant", search.getOnTenant());
+        assertEquals("title", search.getTitle());
+        assertEquals(Collections.singletonList("filter"), search.getFilter());
+        assertEquals(SortOrientation.ASC, search.getSortOrientation());
+    }
+
+    @Test
+    void testBuilder() {
+        PredefinedSearch search = PredefinedSearch.builder()
+                .searchQuery("query")
+                .user("user")
+                .onTenant("tenant")
+                .title("title")
+                .filter(Collections.singletonList("filter"))
+                .sortOrientation(SortOrientation.ASC)
+                .build();
+
+        assertEquals("query", search.getSearchQuery());
+        assertEquals("user", search.getUser());
+        assertEquals("tenant", search.getOnTenant());
+        assertEquals("title", search.getTitle());
+        assertEquals(Collections.singletonList("filter"), search.getFilter());
+        assertEquals(SortOrientation.ASC, search.getSortOrientation());
+    }
+
 }
