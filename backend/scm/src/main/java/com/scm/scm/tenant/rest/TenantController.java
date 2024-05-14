@@ -16,10 +16,14 @@ import java.util.List;
 @RequestMapping("/tenants")
 public class TenantController {
 
+    private final TenantServices tenantServices;
+    private final UserAccessService userAccessService;
+
     @Autowired
-    private TenantServices tenantServices;
-    @Autowired
-    private UserAccessService userAccessService;
+    public TenantController(TenantServices tenantServices, UserAccessService userAccessService) {
+        this.tenantServices = tenantServices;
+        this.userAccessService = userAccessService;
+    }
 
     @GetMapping
     public ResponseEntity<List<TenantDTO>> getTenants() {
