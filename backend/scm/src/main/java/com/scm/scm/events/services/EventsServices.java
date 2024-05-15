@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
 public class EventsServices {
 
     private MongoTemplate mongoTemplate;
-
+    @Autowired
     private MongoTemplateService mongoTemplateService;
 
     private static final Logger log = Logger.getLogger(EventsServices.class.toString());
@@ -35,12 +36,15 @@ public class EventsServices {
         event.setId(event.generateId());
         event.setEventTime(LocalDateTime.now());
         if (Objects.equals(event.getUser(), "")) {
+            log.severe("Event user is empty");
             throw new CustomHttpException("Event user is empty", 400, ExceptionCause.USER_ERROR);
         }
         if (Objects.equals(event.getContact(), "")) {
+            log.severe("Event contact is empty");
             throw new CustomHttpException("Event contact is empty", 400, ExceptionCause.USER_ERROR);
         }
         if (!checkEnum(event.getEventState())){
+            log.severe("Event state is not valid");
             throw new CustomHttpException("Event state is not valid", 400, ExceptionCause.USER_ERROR);
         }
         log.info("Event created with id: " + event.getId());
@@ -50,16 +54,46 @@ public class EventsServices {
             log.info("Event " + event.getId() + " saved in collection " + tenantUniqueName + CollectionType.ACTIVITY.getCollectionType());
         }
         else {
+            log.severe("Collection does not exist");
             throw new CustomHttpException("Collection does not exist", 500, ExceptionCause.SERVER_ERROR);
         }
     }
 
     public boolean checkEnum(EventState eventState) {
+        log.info("Checking if event state is valid");
         for (EventState event : EventState.values()) {
             if (event == eventState) {
+                log.info("Event state is valid");
                 return true;
             }
         }
+        log.severe("Event state is not valid");
         return false;
+    }
+
+    public List<Event> getAllEventsForContact(String contactId, String tenantUniqueName) {
+        checkCollection(tenantUniqueName);
+        log.info("Getting all events for contact: " + contactId);
+        return mongoTemplate.findAll(Event.class, tenantUniqueName + CollectionType.ACTIVITY.getCollectionType())
+                .stream()
+                .filter(event -> event.getContact().equals(contactId))
+                .toList();
+    }
+
+    public List<Event> getAllEventsForTenant(String tenantUniqueName) {
+        checkCollection(tenantUniqueName);
+        log.info("Getting all events for tenant: " + tenantUniqueName);
+        return mongoTemplate.findAll(Event.class, tenantUniqueName + CollectionType.ACTIVITY.getCollectionType());
+    }
+
+    private void checkCollection(String tenantUniqueName) {
+        if (tenantUniqueName == null || tenantUniqueName.isEmpty()) {
+            log.severe("Tenant unique name is empty");
+            throw new CustomHttpException("Tenant unique name is empty", 400, ExceptionCause.USER_ERROR);
+        }
+        if (!mongoTemplateService.collectionExists(tenantUniqueName + CollectionType.ACTIVITY.getCollectionType())) {
+            log.severe("Collection does not exist");
+            throw new CustomHttpException("Collection does not exist", 500, ExceptionCause.SERVER_ERROR);
+        }
     }
 }
