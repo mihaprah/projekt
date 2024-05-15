@@ -1,6 +1,7 @@
 package com.scm.scm.tenant;
 
 
+import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.mongoTemplate.MongoTemplateService;
 import com.scm.scm.tenant.dao.TenantRepository;
 import com.scm.scm.tenant.dto.TenantDTO;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -113,7 +115,7 @@ class TenantServicesTests {
 
     @Test
     void testGetTenantsByUser() {
-        when(tenantRepository.findByUsersContaining(anyString())).thenReturn(Arrays.asList(tenant));
+        when(tenantRepository.findByUsersContaining(anyString())).thenReturn(Collections.singletonList(tenant));
 
         List<TenantDTO> result = tenantServices.getTenantsByUser("user1");
 
@@ -168,6 +170,94 @@ class TenantServicesTests {
         assertEquals("Users removed from Tenant successfully", result);
         verify(tenantRepository, times(1)).findById(anyString());
         verify(tenantRepository, times(1)).save(any(Tenant.class));
+    }
+
+    @Test
+    void testAddTenantWithExistingId() {
+        when(tenantRepository.existsById(anyString())).thenReturn(true);
+
+        assertThrows(CustomHttpException.class, () -> tenantServices.addTenant(tenantDTO));
+        verify(tenantRepository, times(1)).existsById(anyString());
+    }
+
+    @Test
+    void testAddTenantWithEmptyTitle() {
+        tenantDTO.setTitle("");
+        assertThrows(CustomHttpException.class, () -> tenantServices.addTenant(tenantDTO));
+    }
+
+    @Test
+    void testAddTenantWithFailedCollectionCreation() {
+        when(tenantRepository.existsById(anyString())).thenReturn(false);
+        when(mongoTemplateService.createNewTenantCollections(anyString())).thenReturn(false);
+
+        assertThrows(CustomHttpException.class, () -> tenantServices.addTenant(tenantDTO));
+        verify(tenantRepository, times(1)).existsById(anyString());
+        verify(mongoTemplateService, times(1)).createNewTenantCollections(anyString());
+    }
+
+    @Test
+    void testGetTenantByIdNotFound() {
+        when(tenantRepository.findById(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(CustomHttpException.class, () -> tenantServices.getTenantById("1"));
+        verify(tenantRepository, times(1)).findById(anyString());
+    }
+
+    @Test
+    void testUpdateTenantNotFound() {
+        when(tenantRepository.findById(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(CustomHttpException.class, () -> tenantServices.updateTenant(tenantDTO));
+        verify(tenantRepository, times(1)).findById(anyString());
+    }
+
+    @Test
+    void testDeactivateTenantNotFound() {
+        when(tenantRepository.findById(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(CustomHttpException.class, () -> tenantServices.deactivateTenant("1"));
+        verify(tenantRepository, times(1)).findById(anyString());
+    }
+
+    @Test
+    void testAddTagsNotFound() {
+        when(tenantRepository.findByTenantUniqueName(anyString())).thenReturn(null);
+
+        assertThrows(CustomHttpException.class, () -> tenantServices.addTags(tenant.getTenantUniqueName(), Arrays.asList("tag4", "tag5")));
+        verify(tenantRepository, times(1)).findByTenantUniqueName(anyString());
+    }
+
+    @Test
+    void testRemoveTagsNotFound() {
+        when(tenantRepository.findByTenantUniqueName(anyString())).thenReturn(null);
+
+        assertThrows(CustomHttpException.class, () -> tenantServices.removeTags(tenant.getTenantUniqueName(), Arrays.asList("tag1", "tag2")));
+        verify(tenantRepository, times(1)).findByTenantUniqueName(anyString());
+    }
+
+    @Test
+    void testAddUsersNotFound() {
+        when(tenantRepository.findById(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(CustomHttpException.class, () -> tenantServices.addUsers(tenant.getId(), Arrays.asList("user4", "user5")));
+        verify(tenantRepository, times(1)).findById(anyString());
+    }
+
+    @Test
+    void testRemoveUsersNotFound() {
+        when(tenantRepository.findById(anyString())).thenReturn(Optional.empty());
+
+        assertThrows(CustomHttpException.class, () -> tenantServices.removeUsers(tenant.getId(), Arrays.asList("user1", "user2")));
+        verify(tenantRepository, times(1)).findById(anyString());
+    }
+
+    @Test
+    void testRemoveUsersLastUser() {
+        when(tenantRepository.findById(anyString())).thenReturn(Optional.of(tenant));
+
+        assertThrows(CustomHttpException.class, () -> tenantServices.removeUsers(tenant.getId(), Arrays.asList("user1", "user2", "user3")));
+        verify(tenantRepository, times(1)).findById(anyString());
     }
 
 
