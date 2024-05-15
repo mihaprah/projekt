@@ -28,7 +28,7 @@ const config: Config = {
         danger: "#EA3323"
       },
       borderRadius: {
-        '10': '10px',
+        '8': '8px',
       }
     },
   },

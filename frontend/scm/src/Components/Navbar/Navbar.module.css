@@ -2,3 +2,19 @@
     width: 150px;
     height: auto;
 }
+
+.icon {
+    color: white;
+    width: 35px;
+    height: auto;
+}
+
+.dropdownMenu {
+    position: absolute;
+    background-color: black;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    right: 0;
+    top: 5%;
+}
