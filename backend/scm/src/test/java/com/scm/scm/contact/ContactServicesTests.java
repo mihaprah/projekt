@@ -2,10 +2,12 @@ package com.scm.scm.contact;
 
 
 import com.scm.scm.contact.dto.ContactDTO;
+import com.scm.scm.predefinedSearch.vao.PredefinedSearch;
 import com.scm.scm.contact.services.ContactServices;
 import com.scm.scm.contact.services.EventsCheck;
 import com.scm.scm.contact.vao.Contact;
 import com.scm.scm.events.services.EventsServices;
+import com.scm.scm.predefinedSearch.vao.SortOrientation;
 import com.scm.scm.support.mongoTemplate.MongoTemplateService;
 import com.scm.scm.tenant.dto.TenantDTO;
 import com.scm.scm.tenant.services.TenantServices;
@@ -20,7 +22,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -135,5 +137,15 @@ class ContactServicesTests {
 
         assertEquals("Contact deleted successfully from tenantUniqueName_main collection", result);
         verify(mongoTemplate, times(1)).remove(any(Contact.class), anyString());
+    }
+
+    @Test
+    void testGetComparatorBasedOnOrientation() {
+        SortOrientation sortOrientation = SortOrientation.ASC;
+
+        Comparator<Contact> result = contactServices.getComparatorBasedOnOrientation(sortOrientation);
+
+        assertNotNull(result);
+        assertInstanceOf(Comparator.class, result);
     }
 }

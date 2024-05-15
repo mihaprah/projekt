@@ -240,7 +240,7 @@ public class ContactServices {
         return filteredContacts;
     }
 
-    private Comparator<Contact> getComparatorBasedOnOrientation(SortOrientation sortOrientation) {
+    public Comparator<Contact> getComparatorBasedOnOrientation(SortOrientation sortOrientation) {
         Comparator<Contact> comparator = Comparator.comparing(Contact::getTitle);
         if (sortOrientation == SortOrientation.DESC) {
             comparator = comparator.reversed();

@@ -15,11 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class EventTests {
 
     private Event event;
+    private Event anotherEvent;
 
 
     @BeforeEach
     public void setUp() {
         event = new Event("id1", "user1", "contact1", EventState.CREATED, "propKey", "prevState", "currentState", LocalDateTime.now());
+        anotherEvent = new Event("id2", "user2", "contact2", EventState.UPDATED, "propKey2", "prevState2", "currentState2", LocalDateTime.now());
     }
 
     @Test
@@ -98,6 +100,22 @@ class EventTests {
         assertEquals("user3", newEvent.getUser());
         assertEquals("contact3", newEvent.getContact());
         assertEquals(EventState.CREATED, newEvent.getEventState());
+    }
+
+    @Test
+    void shouldTestEqualsAndHashCode() {
+        assertNotEquals(event, anotherEvent);
+        assertNotEquals(event.hashCode(), anotherEvent.hashCode());
+
+        Event sameAsEvent = new Event("id1", "user1", "contact1", EventState.CREATED, "propKey", "prevState", "currentState", event.getEventTime());
+        assertEquals(event, sameAsEvent);
+        assertEquals(event.hashCode(), sameAsEvent.hashCode());
+    }
+
+    @Test
+    void shouldTestToString() {
+        String expectedString = "Event(id=id1, user=user1, contact=contact1, eventState=CREATED, propKey=propKey, prevState=prevState, currentState=currentState, eventTime=" + event.getEventTime() + ")";
+        assertEquals(expectedString, event.toString());
     }
 
 

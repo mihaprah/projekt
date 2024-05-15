@@ -8,7 +8,6 @@ import com.scm.scm.support.exceptions.ExceptionCause;
 import com.scm.scm.support.exceptions.ExceptionMessage;
 import com.scm.scm.support.mongoTemplate.CollectionType;
 import com.scm.scm.support.mongoTemplate.MongoTemplateService;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
@@ -16,21 +15,21 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Service
-@AllArgsConstructor
 public class EventsServices {
 
-    private MongoTemplate mongoTemplate;
-    @Autowired
-    private MongoTemplateService mongoTemplateService;
+    private final MongoTemplate mongoTemplate;
+    private final MongoTemplateService mongoTemplateService;
 
     private static final Logger log = Logger.getLogger(EventsServices.class.toString());
 
     @Autowired
-    public EventsServices(MongoTemplate mongoTemplate) {
+    public EventsServices(MongoTemplate mongoTemplate, MongoTemplateService mongoTemplateService) {
         this.mongoTemplate = mongoTemplate;
+        this.mongoTemplateService = mongoTemplateService;
     }
 
     public void addEvent (Event event, String tenantUniqueName){
@@ -74,7 +73,7 @@ public class EventsServices {
 
     public List<Event> getAllEventsForContact(String contactId, String tenantUniqueName) {
         checkCollection(tenantUniqueName);
-        log.info("Getting all events for contact: " + contactId);
+        log.log(Level.INFO, "Getting all events for contact: {0} ", contactId);
         return mongoTemplate.findAll(Event.class, tenantUniqueName + CollectionType.ACTIVITY.getCollectionType())
                 .stream()
                 .filter(event -> event.getContact().equals(contactId))
@@ -83,7 +82,7 @@ public class EventsServices {
 
     public List<Event> getAllEventsForTenant(String tenantUniqueName) {
         checkCollection(tenantUniqueName);
-        log.info("Getting all events for tenant: " + tenantUniqueName);
+        log.log(Level.INFO, "Getting all events for tenant: {0}", tenantUniqueName);
         return mongoTemplate.findAll(Event.class, tenantUniqueName + CollectionType.ACTIVITY.getCollectionType());
     }
 

@@ -98,4 +98,61 @@ class ContactTests {
 
         assertEquals("testtitle,tag1,tag2,prop1,prop2,", attributesToString);
     }
+
+    @Test
+    void shouldBuildContact() {
+        LocalDateTime now = LocalDateTime.now();
+        Contact builtContact = Contact.builder()
+                .id("testId")
+                .title("testTitle")
+                .user("testUser")
+                .tenantUniqueName("testTenantUniqueName")
+                .comments("testComments")
+                .createdAt(now)
+                .tags(Arrays.asList("tag1", "tag2"))
+                .props(props)
+                .attributesToString("testAttributesToString")
+                .build();
+
+        assertEquals("testId", builtContact.getId());
+        assertEquals("testTitle", builtContact.getTitle());
+        assertEquals("testUser", builtContact.getUser());
+        assertEquals("testTenantUniqueName", builtContact.getTenantUniqueName());
+        assertEquals("testComments", builtContact.getComments());
+        assertEquals(now, builtContact.getCreatedAt());
+        assertEquals(Arrays.asList("tag1", "tag2"), builtContact.getTags());
+        assertEquals(props, builtContact.getProps());
+        assertEquals("testAttributesToString", builtContact.getAttributesToString());
+    }
+
+    @Test
+    void shouldCheckEqualsAndHashCode() {
+        LocalDateTime now = LocalDateTime.now();
+        Contact contact1 = Contact.builder()
+                .id("testId")
+                .title("testTitle")
+                .user("testUser")
+                .tenantUniqueName("testTenantUniqueName")
+                .comments("testComments")
+                .createdAt(now)
+                .tags(Arrays.asList("tag1", "tag2"))
+                .props(props)
+                .attributesToString("testAttributesToString")
+                .build();
+
+        Contact contact2 = Contact.builder()
+                .id("testId")
+                .title("testTitle")
+                .user("testUser")
+                .tenantUniqueName("testTenantUniqueName")
+                .comments("testComments")
+                .createdAt(now)
+                .tags(Arrays.asList("tag1", "tag2"))
+                .props(props)
+                .attributesToString("testAttributesToString")
+                .build();
+
+        assertEquals(contact1, contact2);
+        assertEquals(contact1.hashCode(), contact2.hashCode());
+    }
 }
