@@ -10,7 +10,8 @@ public enum ExceptionMessage {
     TENANT_NOT_FOUND("Tenant not found"),
     SEARCH_NOT_FOUND("PredefinedSearch not found"),
     TENANT_NULL("Tenant is null"),
-    TENANT_NAME_EMPTY("TenantUniqueName name is empty");
+    TENANT_NAME_EMPTY("TenantUniqueName name is empty"),
+    EVENT_STATE_NOT_VALID("Event state is not valid");
 
     private final String exceptionMessage;
 

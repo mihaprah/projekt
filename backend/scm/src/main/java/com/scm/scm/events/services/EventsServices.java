@@ -5,6 +5,7 @@ import com.scm.scm.events.vao.Event;
 import com.scm.scm.events.vao.EventState;
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.exceptions.ExceptionCause;
+import com.scm.scm.support.exceptions.ExceptionMessage;
 import com.scm.scm.support.mongoTemplate.CollectionType;
 import com.scm.scm.support.mongoTemplate.MongoTemplateService;
 import lombok.AllArgsConstructor;
@@ -44,8 +45,8 @@ public class EventsServices {
             throw new CustomHttpException("Event contact is empty", 400, ExceptionCause.USER_ERROR);
         }
         if (!checkEnum(event.getEventState())){
-            log.severe("Event state is not valid");
-            throw new CustomHttpException("Event state is not valid", 400, ExceptionCause.USER_ERROR);
+            log.severe(ExceptionMessage.EVENT_STATE_NOT_VALID.getExceptionMessage());
+            throw new CustomHttpException(ExceptionMessage.EVENT_STATE_NOT_VALID.getExceptionMessage(), 400, ExceptionCause.USER_ERROR);
         }
         log.info("Event created with id: " + event.getId());
 
@@ -54,8 +55,8 @@ public class EventsServices {
             log.info("Event " + event.getId() + " saved in collection " + tenantUniqueName + CollectionType.ACTIVITY.getCollectionType());
         }
         else {
-            log.severe("Collection does not exist");
-            throw new CustomHttpException("Collection does not exist", 500, ExceptionCause.SERVER_ERROR);
+            log.severe(ExceptionMessage.COLLECTION_NOT_EXIST.getExceptionMessage());
+            throw new CustomHttpException(ExceptionMessage.COLLECTION_NOT_EXIST.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
         }
     }
 
@@ -67,7 +68,7 @@ public class EventsServices {
                 return true;
             }
         }
-        log.severe("Event state is not valid");
+        log.severe(ExceptionMessage.EVENT_STATE_NOT_VALID.getExceptionMessage());
         return false;
     }
 
@@ -92,8 +93,8 @@ public class EventsServices {
             throw new CustomHttpException("Tenant unique name is empty", 400, ExceptionCause.USER_ERROR);
         }
         if (!mongoTemplateService.collectionExists(tenantUniqueName + CollectionType.ACTIVITY.getCollectionType())) {
-            log.severe("Collection does not exist");
-            throw new CustomHttpException("Collection does not exist", 500, ExceptionCause.SERVER_ERROR);
+            log.severe(ExceptionMessage.COLLECTION_NOT_EXIST.getExceptionMessage());
+            throw new CustomHttpException(ExceptionMessage.COLLECTION_NOT_EXIST.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
         }
     }
 }
