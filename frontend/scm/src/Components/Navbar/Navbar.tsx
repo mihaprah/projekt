@@ -23,7 +23,7 @@ const Navbar = () => {
     const handleLogout = async () => {
         try {
             await signOut(auth);
-            // Po odjavi lahko preusmerite uporabnika nazaj na prijavno stran
+            // TODO Po odjavi lahko preusmerite uporabnika nazaj na prijavno stran
             window.location.href = '/login';
         } catch (error) {
             console.error("Error logging out:", error);
@@ -35,16 +35,16 @@ const Navbar = () => {
     }
 
     return (
-        <div className={"bg-primary-light flex justify-between text-white"}>
+        <div className={"bg-primary-light flex justify-between text-white dark:bg-primary-dark"}>
             <div className={"flex"}>
                 <img className={styles.logo} src={"/logo-scm.png"} alt={"Logo"}/>
                 <div className={"items-center justify-center flex"}>
                     <nav className={"navbar"}>
                         <ul>
-                            <li className={"m-2 p-3 rounded-8 font-semibold hover:bg-primary-dark"}>
+                            <li className={"m-2 p-3 rounded-8 font-semibold hover:bg-primary-dark dark:hover:bg-primary-light"}>
                                 <Link href={"/tenants"}>Tenants</Link>
                             </li>
-                            <li className={"m-2 p-3 rounded-8 font-semibold hover:bg-primary-dark"}>
+                            <li className={"m-2 p-3 rounded-8 font-semibold hover:bg-primary-dark dark:hover:bg-primary-light"}>
                                 <Link href={"/saved-searches"}>Saved Searches</Link>
                             </li>
                         </ul>
@@ -54,9 +54,16 @@ const Navbar = () => {
 
             <div className={"items-center justify-center flex mr-10"}>
                 {user && (
-                    <div>
-                        <div className={styles.userEmail}>{user.email}</div>
-                        <button onClick={handleLogout}>Logout</button>
+                    <div className="dropdown dropdown-end">
+                        <div tabIndex={0} role="button"
+                             className="btn bg-primary-light dark:bg-primary-dark text-white border-none m-1 shadow-none hover:bg-primary-dark dark:hover:bg-primary-light">
+                            <span className={"p-2 font-medium"}>{user.email}</span>
+                            <FontAwesomeIcon className={`${styles.icon} p-2`} icon={faUser}/>
+                        </div>
+                        <ul tabIndex={0}
+                            className="dropdown-content z-[1] menu p-2 shadow-none rounded-8 w-52 bg-primary-light dark:bg-primary-dark">
+                            <li className={"p-3 hover:bg-primary-dark dark:hover:bg-primary-light hover:rounded-8"} onClick={handleLogout}>Logout</li>
+                        </ul>
                     </div>
                 )}
             </div>
