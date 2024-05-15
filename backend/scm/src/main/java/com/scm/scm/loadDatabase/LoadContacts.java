@@ -159,7 +159,7 @@ public class LoadContacts {
         }
     }
 
-    private List<String> selectRandomTags(List<String> tags, int count) {
+    public List<String> selectRandomTags(List<String> tags, int count) {
         if (count >= tags.size()) {
             return new ArrayList<>(tags);
         }
