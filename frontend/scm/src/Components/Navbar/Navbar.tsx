@@ -1,10 +1,38 @@
+"use client";
 import styles from './Navbar.module.css';
 import Link from "next/link";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-regular-svg-icons";
+import {faUser} from "@fortawesome/free-regular-svg-icons";
+import {useEffect, useState} from "react";
+import {usePathname} from 'next/navigation';
+import {onAuthStateChanged, signOut} from "firebase/auth";
+import {auth} from "@/firebase";
 
 
 const Navbar = () => {
+    const [user, setUser] = useState<any>(null);
+    const pathname = usePathname();
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+        });
+        return () => unsubscribe();
+    }, []);
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            // Po odjavi lahko preusmerite uporabnika nazaj na prijavno stran
+            window.location.href = '/login';
+        } catch (error) {
+            console.error("Error logging out:", error);
+        }
+    };
+
+    if (!user || pathname === '/login') {
+        return null;
+    }
 
     return (
         <div className={"bg-primary-light flex justify-between text-white"}>
@@ -25,15 +53,12 @@ const Navbar = () => {
             </div>
 
             <div className={"items-center justify-center flex mr-10"}>
-                <div className="dropdown dropdown-end">
-                    <div tabIndex={0} role="button" className="btn bg-primary-light text-white border-none m-1 shadow-none hover:bg-primary-dark">
-                        <span className={"p-2 font-normal"}>user1@example.com</span>
-                        <FontAwesomeIcon className={`${styles.icon} p-2`} icon={faUser}/>
+                {user && (
+                    <div>
+                        <div className={styles.userEmail}>{user.email}</div>
+                        <button onClick={handleLogout}>Logout</button>
                     </div>
-                    <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow rounded-8 w-52 bg-primary-light">
-                        <li className={"hover:bg-primary-dark hover:rounded-8"}><a>Logout</a></li>
-                    </ul>
-                </div>
+                )}
             </div>
         </div>
     );
