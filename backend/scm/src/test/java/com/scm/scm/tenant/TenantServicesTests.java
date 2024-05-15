@@ -222,44 +222,47 @@ class TenantServicesTests {
 
     @Test
     void testAddTagsNotFound() {
-        when(tenantRepository.findByTenantUniqueName(anyString())).thenReturn(null);
+        String tenantUniqueName = tenant.getTenantUniqueName();
+        when(tenantRepository.findByTenantUniqueName(tenantUniqueName)).thenReturn(null);
 
-        assertThrows(CustomHttpException.class, () -> tenantServices.addTags(tenant.getTenantUniqueName(), Arrays.asList("tag4", "tag5")));
-        verify(tenantRepository, times(1)).findByTenantUniqueName(anyString());
+        assertThrows(CustomHttpException.class, () -> tenantServices.addTags(tenantUniqueName, Arrays.asList("tag4", "tag5")));
+        verify(tenantRepository, times(1)).findByTenantUniqueName(tenantUniqueName);
     }
 
     @Test
     void testRemoveTagsNotFound() {
-        when(tenantRepository.findByTenantUniqueName(anyString())).thenReturn(null);
+        String tenantUniqueName = tenant.getTenantUniqueName();
+        when(tenantRepository.findByTenantUniqueName(tenantUniqueName)).thenReturn(null);
 
-        assertThrows(CustomHttpException.class, () -> tenantServices.removeTags(tenant.getTenantUniqueName(), Arrays.asList("tag1", "tag2")));
-        verify(tenantRepository, times(1)).findByTenantUniqueName(anyString());
+        assertThrows(CustomHttpException.class, () -> tenantServices.removeTags(tenantUniqueName, Arrays.asList("tag1", "tag2")));
+        verify(tenantRepository, times(1)).findByTenantUniqueName(tenantUniqueName);
     }
+
 
     @Test
     void testAddUsersNotFound() {
-        when(tenantRepository.findById(anyString())).thenReturn(Optional.empty());
+        String tenantId = tenant.getId();
+        when(tenantRepository.findById(tenantId)).thenReturn(Optional.empty());
 
-        assertThrows(CustomHttpException.class, () -> tenantServices.addUsers(tenant.getId(), Arrays.asList("user4", "user5")));
-        verify(tenantRepository, times(1)).findById(anyString());
+        assertThrows(CustomHttpException.class, () -> tenantServices.addUsers(tenantId, Arrays.asList("user4", "user5")));
+        verify(tenantRepository, times(1)).findById(tenantId);
     }
 
     @Test
     void testRemoveUsersNotFound() {
-        when(tenantRepository.findById(anyString())).thenReturn(Optional.empty());
+        String tenantId = tenant.getId();
+        when(tenantRepository.findById(tenantId)).thenReturn(Optional.empty());
 
-        assertThrows(CustomHttpException.class, () -> tenantServices.removeUsers(tenant.getId(), Arrays.asList("user1", "user2")));
-        verify(tenantRepository, times(1)).findById(anyString());
+        assertThrows(CustomHttpException.class, () -> tenantServices.removeUsers(tenantId, Arrays.asList("user1", "user2")));
+        verify(tenantRepository, times(1)).findById(tenantId);
     }
 
     @Test
     void testRemoveUsersLastUser() {
-        when(tenantRepository.findById(anyString())).thenReturn(Optional.of(tenant));
+        String tenantId = tenant.getId();
+        when(tenantRepository.findById(tenantId)).thenReturn(Optional.of(tenant));
 
-        assertThrows(CustomHttpException.class, () -> tenantServices.removeUsers(tenant.getId(), Arrays.asList("user1", "user2", "user3")));
-        verify(tenantRepository, times(1)).findById(anyString());
+        assertThrows(CustomHttpException.class, () -> tenantServices.removeUsers(tenantId, users));
+        verify(tenantRepository, times(1)).findById(tenantId);
     }
-
-
-
 }

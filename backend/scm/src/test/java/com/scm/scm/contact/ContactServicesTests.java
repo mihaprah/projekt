@@ -2,7 +2,6 @@ package com.scm.scm.contact;
 
 
 import com.scm.scm.contact.dto.ContactDTO;
-import com.scm.scm.predefinedSearch.vao.PredefinedSearch;
 import com.scm.scm.contact.services.ContactServices;
 import com.scm.scm.contact.services.EventsCheck;
 import com.scm.scm.contact.vao.Contact;

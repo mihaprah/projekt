@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class ExportContactExcelTests {
+class ExportContactExcelTests {
 
     @MockBean
     private ContactServices contactServices;
@@ -28,12 +28,12 @@ public class ExportContactExcelTests {
     private ExportContactExcel exportContactExcel;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testExportContacts() {
+    void testExportContacts() {
         String contactId1 = "1";
         String contactId2 = "2";
         ContactDTO contact1 = new ContactDTO(contactId1, "Title1", "User1", "Tenant1", "Comments1", "2022-01-01", List.of("Tag1"), Collections.emptyMap(), "Attributes1");
@@ -48,7 +48,7 @@ public class ExportContactExcelTests {
     }
 
     @Test
-    public void testExportContactsNoContacts() {
+    void testExportContactsNoContacts() {
         when(contactServices.findAllContacts("Tenant")).thenReturn(Collections.emptyList());
 
         ResponseEntity<byte[]> response = exportContactExcel.exportContacts("Tenant", List.of("1"));

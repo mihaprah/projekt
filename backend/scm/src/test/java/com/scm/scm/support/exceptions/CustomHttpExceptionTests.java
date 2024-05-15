@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class CustomHttpExceptionTests {
+class CustomHttpExceptionTests {
 
     @Test
-    public void testCustomHttpException() {
+    void testCustomHttpException() {
         String message = "Test message";
         int httpStatusCode = 400;
         ExceptionCause exceptionCause = ExceptionCause.USER_ERROR;
@@ -20,7 +20,7 @@ public class CustomHttpExceptionTests {
     }
 
     @Test
-    public void testEqualsAndHashCode() {
+    void testEqualsAndHashCode() {
         CustomHttpException exception1 = new CustomHttpException("Test message", 400, ExceptionCause.USER_ERROR);
         CustomHttpException exception2 = new CustomHttpException("Test message", 400, ExceptionCause.USER_ERROR);
         CustomHttpException exception3 = new CustomHttpException("Different message", 500, ExceptionCause.SERVER_ERROR);

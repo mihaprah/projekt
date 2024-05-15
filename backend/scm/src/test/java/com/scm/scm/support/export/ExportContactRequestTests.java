@@ -8,10 +8,10 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class ExportContactRequestTests {
+class ExportContactRequestTests {
 
     @Test
-    public void testGettersAndSetters() {
+    void testGettersAndSetters() {
         ExportContactRequest request = new ExportContactRequest("user1", "uniqueName", "123", (Arrays.asList("contact1", "contact2")));
 
         assertEquals("user1", request.getUser());
@@ -21,7 +21,7 @@ public class ExportContactRequestTests {
     }
 
     @Test
-    public void testEqualsAndHashCode() {
+    void testEqualsAndHashCode() {
         ExportContactRequest request1 = new ExportContactRequest("user1", "uniqueName", "123", Arrays.asList("contact1", "contact2"));
         ExportContactRequest request2 = new ExportContactRequest("user1", "uniqueName", "123", Arrays.asList("contact1", "contact2"));
 
@@ -30,7 +30,7 @@ public class ExportContactRequestTests {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         ExportContactRequest request = new ExportContactRequest("user1", "uniqueName", "123", Arrays.asList("contact1", "contact2"));
         String expectedString = "ExportContactRequest(user=user1, tenantUniqueName=uniqueName, tenantId=123, contactIds=[contact1, contact2])";
 

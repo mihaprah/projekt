@@ -1,10 +1,12 @@
 package com.scm.scm.tenant;
 
+import com.scm.scm.tenant.dto.TenantDTO;
 import com.scm.scm.tenant.vao.Tenant;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -81,5 +83,40 @@ class TenantDTOTests {
         List<String> newUsers = Arrays.asList("user4", "user5");
         tenant.setUsers(newUsers);
         assertEquals(newUsers, tenant.getUsers());
+    }
+
+    @Test
+    void testToString() {
+        TenantDTO tenantDTO = TenantDTO.builder()
+                .id("id")
+                .title("title")
+                .tenantUniqueName("uniqueName")
+                .description("description")
+                .colorCode("#ffffff")
+                .active(true)
+                .users(Arrays.asList("user1", "user2"))
+                .contactTags(new HashMap<>())
+                .build();
+
+        String expected = "TenantDTO(id=id, title=title, tenantUniqueName=uniqueName, description=description, colorCode=#ffffff, active=true, users=[user1, user2], contactTags={})";
+        assertEquals(expected, tenantDTO.toString());
+    }
+
+    @Test
+    void testEqualsAndHashCode() {
+        TenantDTO tenantDTO1 = TenantDTO.builder().id("id").build();
+        TenantDTO tenantDTO2 = TenantDTO.builder().id("id").build();
+
+        assertTrue(tenantDTO1.equals(tenantDTO2) && tenantDTO2.equals(tenantDTO1));
+        assertEquals(tenantDTO1.hashCode(), tenantDTO2.hashCode());
+    }
+
+    @Test
+    void testNotEqualsAndHashCode() {
+        TenantDTO tenantDTO1 = TenantDTO.builder().id("id1").build();
+        TenantDTO tenantDTO2 = TenantDTO.builder().id("id2").build();
+
+        assertFalse(tenantDTO1.equals(tenantDTO2) || tenantDTO2.equals(tenantDTO1));
+        assertNotEquals(tenantDTO1.hashCode(), tenantDTO2.hashCode());
     }
 }

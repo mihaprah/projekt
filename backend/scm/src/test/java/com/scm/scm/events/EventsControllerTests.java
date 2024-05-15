@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class EventsControllerTests {
+class EventsControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,12 +35,12 @@ public class EventsControllerTests {
     private List<Event> eventList;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         eventList = Collections.singletonList(new Event());
     }
 
     @Test
-    public void getAllEventsForContactTest() throws Exception {
+    void getAllEventsForContactTest() throws Exception {
         when(userAccessService.hasAccessToContact(anyString(), anyString())).thenReturn(true);
         when(eventsServices.getAllEventsForContact(anyString(), anyString())).thenReturn(eventList);
 
@@ -50,7 +50,7 @@ public class EventsControllerTests {
     }
 
     @Test
-    public void getAllEventsForTenantTest() throws Exception {
+    void getAllEventsForTenantTest() throws Exception {
         when(userAccessService.hasAccessToTenant(anyString(), anyString())).thenReturn(true);
         when(eventsServices.getAllEventsForTenant(anyString())).thenReturn(eventList);
 
@@ -61,7 +61,7 @@ public class EventsControllerTests {
     }
 
     @Test
-    public void getAllEventsForContactShouldThrowExceptionWhenUserHasNoAccess() throws Exception {
+    void getAllEventsForContactShouldThrowExceptionWhenUserHasNoAccess() throws Exception {
         when(userAccessService.hasAccessToContact(anyString(), anyString())).thenReturn(false);
 
         mockMvc.perform(get("/events/contact_id/tenant_unique_name")
@@ -70,7 +70,7 @@ public class EventsControllerTests {
     }
 
     @Test
-    public void getAllEventsForTenantShouldThrowExceptionWhenUserHasNoAccess() throws Exception {
+    void getAllEventsForTenantShouldThrowExceptionWhenUserHasNoAccess() throws Exception {
         when(userAccessService.hasAccessToTenant(anyString(), anyString())).thenReturn(false);
 
         mockMvc.perform(get("/events/tenant_unique_name")

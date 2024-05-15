@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PredefinedSearchControllerTests {
+class PredefinedSearchControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -30,14 +30,14 @@ public class PredefinedSearchControllerTests {
     private PredefinedSearchDTO predefinedSearchDTO;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         predefinedSearchDTO = new PredefinedSearchDTO();
         predefinedSearchDTO.setId("123");
         predefinedSearchDTO.setTitle("Test Title");
     }
 
     @Test
-    public void testGetPredefinedSearches() throws Exception {
+    void testGetPredefinedSearches() throws Exception {
         when(predefinedSearchServices.getAllPredefinedSearches()).thenReturn(Collections.singletonList(predefinedSearchDTO));
 
         mockMvc.perform(get("/predefined_searches")
@@ -46,7 +46,7 @@ public class PredefinedSearchControllerTests {
     }
 
     @Test
-    public void testGetPredefinedSearch() throws Exception {
+    void testGetPredefinedSearch() throws Exception {
         when(predefinedSearchServices.getPredefinedSearchById("123")).thenReturn(predefinedSearchDTO);
 
         mockMvc.perform(get("/predefined_searches/123")
@@ -55,7 +55,7 @@ public class PredefinedSearchControllerTests {
     }
 
     @Test
-    public void testCreatePredefinedSearch() throws Exception {
+    void testCreatePredefinedSearch() throws Exception {
         when(predefinedSearchServices.addPredefinedSearch(predefinedSearchDTO)).thenReturn(predefinedSearchDTO);
 
         mockMvc.perform(post("/predefined_searches")
@@ -65,7 +65,7 @@ public class PredefinedSearchControllerTests {
     }
 
     @Test
-    public void testUpdatePredefinedSearch() throws Exception {
+    void testUpdatePredefinedSearch() throws Exception {
         when(predefinedSearchServices.updatePredefinedSearch(predefinedSearchDTO)).thenReturn(predefinedSearchDTO);
 
         mockMvc.perform(put("/predefined_searches")
@@ -75,7 +75,7 @@ public class PredefinedSearchControllerTests {
     }
 
     @Test
-    public void testDeletePredefinedSearch() throws Exception {
+    void testDeletePredefinedSearch() throws Exception {
         when(predefinedSearchServices.deletePredefinedSearch("123")).thenReturn("PredefinedSearch successfully deleted");
 
         mockMvc.perform(delete("/predefined_searches/123")
@@ -84,7 +84,7 @@ public class PredefinedSearchControllerTests {
     }
 
     @Test
-    public void testGetPredefinedSearchByUser() throws Exception {
+    void testGetPredefinedSearchByUser() throws Exception {
         when(predefinedSearchServices.getPredefinedSearchByUser("testUser")).thenReturn(Collections.singletonList(predefinedSearchDTO));
 
         mockMvc.perform(get("/predefined_searches/user/testUser")
@@ -93,7 +93,7 @@ public class PredefinedSearchControllerTests {
     }
 
     @Test
-    public void testGetPredefinedSearchByTenant() throws Exception {
+    void testGetPredefinedSearchByTenant() throws Exception {
         when(predefinedSearchServices.getPredefinedSearchByTenant("testTenant")).thenReturn(Collections.singletonList(predefinedSearchDTO));
 
         mockMvc.perform(get("/predefined_searches/tenant/testTenant")

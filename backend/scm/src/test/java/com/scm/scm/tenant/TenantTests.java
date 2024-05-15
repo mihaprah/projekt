@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -81,5 +82,40 @@ class TenantTests {
         List<String> newUsers = Arrays.asList("user4", "user5");
         tenant.setUsers(newUsers);
         assertEquals(newUsers, tenant.getUsers());
+    }
+
+    @Test
+    void testToString() {
+        Tenant tenant = Tenant.builder()
+                .id("id")
+                .title("title")
+                .tenantUniqueName("uniqueName")
+                .description("description")
+                .colorCode("#ffffff")
+                .active(true)
+                .users(Arrays.asList("user1", "user2"))
+                .contactTags(new HashMap<>())
+                .build();
+
+        String expected = "Tenant(id=id, title=title, tenantUniqueName=uniqueName, description=description, colorCode=#ffffff, active=true, users=[user1, user2], contactTags={})";
+        assertEquals(expected, tenant.toString());
+    }
+
+    @Test
+    void testEqualsAndHashCode() {
+        Tenant tenant1 = Tenant.builder().id("id").build();
+        Tenant tenant2 = Tenant.builder().id("id").build();
+
+        assertTrue(tenant1.equals(tenant2) && tenant2.equals(tenant1));
+        assertEquals(tenant1.hashCode(), tenant2.hashCode());
+    }
+
+    @Test
+    void testNotEqualsAndHashCode() {
+        Tenant tenant1 = Tenant.builder().id("id1").build();
+        Tenant tenant2 = Tenant.builder().id("id2").build();
+
+        assertFalse(tenant1.equals(tenant2) || tenant2.equals(tenant1));
+        assertNotEquals(tenant1.hashCode(), tenant2.hashCode());
     }
 }

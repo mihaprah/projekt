@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class MongoTemplateServiceTests {
+class MongoTemplateServiceTests {
 
     @Mock
     private MongoTemplate mongoTemplate;
@@ -20,7 +20,7 @@ public class MongoTemplateServiceTests {
     private MongoTemplateService mongoTemplateService;
 
     @Test
-    public void testCreateNewTenantCollections() {
+    void testCreateNewTenantCollections() {
         String tenantUniqueName = "tenant";
         when(mongoTemplate.createCollection(anyString())).thenReturn(null);
 
@@ -32,7 +32,7 @@ public class MongoTemplateServiceTests {
     }
 
     @Test
-    public void testCreateNewTenantCollectionsException() {
+    void testCreateNewTenantCollectionsException() {
         String tenantUniqueName = "tenant";
         doThrow(new RuntimeException()).when(mongoTemplate).createCollection(anyString());
 
@@ -40,7 +40,7 @@ public class MongoTemplateServiceTests {
     }
 
     @Test
-    public void testCollectionExists() {
+    void testCollectionExists() {
         String collectionName = "collection";
         when(mongoTemplate.collectionExists(collectionName)).thenReturn(true);
 

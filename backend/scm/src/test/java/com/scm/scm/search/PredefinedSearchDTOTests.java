@@ -12,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest
-public class PredefinedSearchDTOTests {
+class PredefinedSearchDTOTests {
 
     @Test
-    public void testNoArgsConstructor() {
+    void testNoArgsConstructor() {
         PredefinedSearchDTO predefinedSearchDTO = new PredefinedSearchDTO();
 
         assertNull(predefinedSearchDTO.getId());
@@ -28,7 +28,7 @@ public class PredefinedSearchDTOTests {
     }
 
     @Test
-    public void testAllArgsConstructor() {
+    void testAllArgsConstructor() {
         List<String> filter = Collections.singletonList("Test Filter");
 
         PredefinedSearchDTO predefinedSearchDTO = new PredefinedSearchDTO("123", "Test Query", "Test User", "Test Tenant", "Test Title", filter, SortOrientation.ASC);
@@ -43,7 +43,7 @@ public class PredefinedSearchDTOTests {
     }
 
     @Test
-    public void testBuilder() {
+    void testBuilder() {
         List<String> filter = Collections.singletonList("Test Filter");
 
         PredefinedSearchDTO predefinedSearchDTO = PredefinedSearchDTO.builder()

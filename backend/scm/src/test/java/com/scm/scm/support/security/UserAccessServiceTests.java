@@ -15,7 +15,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class UserAccessServiceTests {
+class UserAccessServiceTests {
 
     @Autowired
     private UserAccessService userAccessService;
@@ -24,12 +24,11 @@ public class UserAccessServiceTests {
     private TenantRepository tenantRepository;
 
     @BeforeEach
-    public void setup() {
-        // No need to open mocks manually when using @MockBean
+    void setup() {
     }
 
     @Test
-    public void testHasAccessToTenant() {
+    void testHasAccessToTenant() {
         String tenantId = "123";
         Tenant tenant = new Tenant(tenantId, "123", "123", "description", "colorCode", true, null, null);
         tenant.setUsers(Arrays.asList("user1", "user2"));
@@ -41,24 +40,24 @@ public class UserAccessServiceTests {
     }
 
     @Test
-    public void testHasAccessToTenantWithEmptyUsername() {
+    void testHasAccessToTenantWithEmptyUsername() {
         assertThrows(CustomHttpException.class, () -> userAccessService.hasAccessToTenant("", "123"));
     }
 
     @Test
-    public void testHasAccessToTenantWithEmptyTenantId() {
+    void testHasAccessToTenantWithEmptyTenantId() {
         assertThrows(CustomHttpException.class, () -> userAccessService.hasAccessToTenant("user1", ""));
     }
 
     @Test
-    public void testHasAccessToTenantWithNonExistentTenant() {
+    void testHasAccessToTenantWithNonExistentTenant() {
         when(tenantRepository.findById("123")).thenReturn(java.util.Optional.empty());
 
         assertThrows(CustomHttpException.class, () -> userAccessService.hasAccessToTenant("user1", "123"));
     }
 
     @Test
-    public void testHasAccessToContact() {
+    void testHasAccessToContact() {
         String tenantUniqueName = "uniqueName";
         Tenant tenant = new Tenant("123", "123", tenantUniqueName, "description", "colorCode", true, null, null);
         tenant.setUsers(Arrays.asList("user1", "user2"));
@@ -70,17 +69,17 @@ public class UserAccessServiceTests {
     }
 
     @Test
-    public void testHasAccessToContactWithEmptyUsername() {
+    void testHasAccessToContactWithEmptyUsername() {
         assertThrows(CustomHttpException.class, () -> userAccessService.hasAccessToContact("", "uniqueName"));
     }
 
     @Test
-    public void testHasAccessToContactWithEmptyTenantUniqueName() {
+    void testHasAccessToContactWithEmptyTenantUniqueName() {
         assertThrows(CustomHttpException.class, () -> userAccessService.hasAccessToContact("user1", ""));
     }
 
     @Test
-    public void testHasAccessToContactWithNonExistentTenant() {
+    void testHasAccessToContactWithNonExistentTenant() {
         when(tenantRepository.findByTenantUniqueName("uniqueName")).thenReturn(null);
 
         assertThrows(CustomHttpException.class, () -> userAccessService.hasAccessToContact("user1", "uniqueName"));
