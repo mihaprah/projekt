@@ -1,6 +1,8 @@
-/**package com.scm.scm.tenant;
+package com.scm.scm.tenant;
 
+import com.scm.scm.config.FirebaseConfig;
 import com.scm.scm.support.exceptions.CustomHttpException;
+import com.scm.scm.support.security.UserVerifyService;
 import com.scm.scm.tenant.dto.TenantDTO;
 import com.scm.scm.tenant.services.TenantServices;
 import com.scm.scm.tenant.rest.TenantController;
@@ -32,6 +34,12 @@ class TenantControllerTests {
 
     @MockBean
     private UserAccessService userAccessService;
+
+    @MockBean
+    private UserVerifyService userVerifyService;
+
+    @MockBean
+    private FirebaseConfig firebaseConfig;
 
     @BeforeEach
     public void init() throws Exception{
@@ -220,4 +228,4 @@ class TenantControllerTests {
         when(userAccessService.hasAccessToTenant(userToken, tenantId)).thenReturn(false);
         assertThrows(CustomHttpException.class, () -> tenantController.addMultipleTags(tenantUniqueName, tag, userToken, tenantId, contactIds));
     }
-}*/
+}

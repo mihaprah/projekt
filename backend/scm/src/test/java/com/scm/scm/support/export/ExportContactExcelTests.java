@@ -1,7 +1,9 @@
-/**package com.scm.scm.support.export;
+package com.scm.scm.support.export;
 
+import com.scm.scm.config.FirebaseConfig;
 import com.scm.scm.contact.dto.ContactDTO;
 import com.scm.scm.contact.services.ContactServices;
+import com.scm.scm.support.security.UserVerifyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -23,6 +25,12 @@ class ExportContactExcelTests {
 
     @MockBean
     private ContactServices contactServices;
+
+    @MockBean
+    private UserVerifyService userVerifyService;
+
+    @MockBean
+    private FirebaseConfig firebaseConfig;
 
     @Autowired
     private ExportContactExcel exportContactExcel;
@@ -55,4 +63,4 @@ class ExportContactExcelTests {
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
-}*/
+}

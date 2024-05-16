@@ -1,7 +1,9 @@
-/**package com.scm.scm.search;
+package com.scm.scm.search;
 
+import com.scm.scm.config.FirebaseConfig;
 import com.scm.scm.predefinedSearch.dto.PredefinedSearchDTO;
 import com.scm.scm.predefinedSearch.services.PredefinedSearchServices;
+import com.scm.scm.support.security.UserVerifyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,12 @@ class PredefinedSearchControllerTests {
 
     @MockBean
     private PredefinedSearchServices predefinedSearchServices;
+
+    @MockBean
+    private UserVerifyService userVerifyService;
+
+    @MockBean
+    private FirebaseConfig firebaseConfig;
 
     private PredefinedSearchDTO predefinedSearchDTO;
 
@@ -100,4 +108,4 @@ class PredefinedSearchControllerTests {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
-}*/
+}

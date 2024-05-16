@@ -1,8 +1,10 @@
-/**package com.scm.scm.events;
+package com.scm.scm.events;
 
+import com.scm.scm.config.FirebaseConfig;
 import com.scm.scm.events.services.EventsServices;
 import com.scm.scm.events.vao.Event;
 import com.scm.scm.support.security.UserAccessService;
+import com.scm.scm.support.security.UserVerifyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,12 @@ class EventsControllerTests {
 
     @MockBean
     private UserAccessService userAccessService;
+
+    @MockBean
+    private UserVerifyService userVerifyService;
+
+    @MockBean
+    private FirebaseConfig firebaseConfig;
 
     private List<Event> eventList;
 
@@ -78,4 +86,4 @@ class EventsControllerTests {
                         .header("tenantId", "tenantId"))
                 .andExpect(status().isForbidden());
     }
-}*/
+}

@@ -1,5 +1,6 @@
 /**package com.scm.scm.support.security;
 
+import com.scm.scm.config.FirebaseConfig;
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.tenant.dao.TenantRepository;
 import com.scm.scm.tenant.vao.Tenant;
@@ -22,6 +23,12 @@ class UserAccessServiceTests {
 
     @MockBean
     private TenantRepository tenantRepository;
+
+    @MockBean
+    private UserVerifyService userVerifyService;
+
+    @MockBean
+    private FirebaseConfig firebaseConfig;
 
     @BeforeEach
     void setup() {

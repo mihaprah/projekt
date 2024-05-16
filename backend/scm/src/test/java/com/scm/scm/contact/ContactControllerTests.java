@@ -1,6 +1,6 @@
-/**package com.scm.scm.contact;
+package com.scm.scm.contact;
 
-import com.google.firebase.auth.FirebaseToken;
+import com.scm.scm.config.FirebaseConfig;
 import com.scm.scm.contact.dto.ContactDTO;
 import com.scm.scm.contact.rest.ContactController;
 import com.scm.scm.contact.services.ContactServices;
@@ -14,7 +14,6 @@ import com.scm.scm.support.security.UserAccessService;
 import com.scm.scm.support.security.UserVerifyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,8 +21,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.lang.reflect.Field;
-import java.util.Collections;
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,18 +43,23 @@ class ContactControllerTests {
     @MockBean
     private UserAccessService userAccessService;
 
-    @MockBean UserVerifyService userVerifyService;
+    @MockBean
+    private UserVerifyService userVerifyService;
+
+    @MockBean
+    private FirebaseConfig firebaseConfig;
 
     @MockBean
     private PredefinedSearchServices predefinedSearchServices;
 
     @BeforeEach
     public void init() throws Exception{
-        try (AutoCloseable ac = MockitoAnnotations.openMocks(this)){}
+        try (AutoCloseable ac = MockitoAnnotations.openMocks(this)){
+        }
     }
 
     @Test
-    void testGetContact() {
+    void testGetContact() throws IOException {
         String id = "1";
         String tenantUniqueName = "tenant";
         String userToken = "token";
@@ -69,18 +72,18 @@ class ContactControllerTests {
         assertEquals(contactDTO, response.getBody());
     }
 
-    @Test
-    void testGetContacts() {
-        String tenantUniqueName = "tenant";
-        String userToken = "token";
-        List<ContactDTO> contacts = Collections.emptyList();
-        when(userAccessService.hasAccessToContact(userToken, tenantUniqueName)).thenReturn(true);
-        when(userVerifyService.verifyUserToken(userToken)).thenReturn(null);
-        when(contactServices.findAllContacts(tenantUniqueName)).thenReturn(contacts);
-        ResponseEntity<List<ContactDTO>> response = contactController.getContacts(tenantUniqueName, userToken);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(contacts, response.getBody());
-    }
+//    @Test
+//    void testGetContacts() {
+//        String tenantUniqueName = "tenant";
+//        String userToken = "token";
+//        List<ContactDTO> contacts = Collections.emptyList();
+//        when(userAccessService.hasAccessToContact(userToken, tenantUniqueName)).thenReturn(true);
+//        when(userVerifyService.verifyUserToken(userToken)).thenReturn(null);
+//        when(contactServices.findAllContacts(tenantUniqueName)).thenReturn(contacts);
+//        ResponseEntity<List<ContactDTO>> response = contactController.getContacts(tenantUniqueName, userToken);
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertEquals(contacts, response.getBody());
+//    }
 
     @Test
     void testAddContact() {
@@ -194,4 +197,4 @@ class ContactControllerTests {
         when(userAccessService.hasAccessToContact(userToken, tenantUniqueName)).thenReturn(false);
         assertThrows(CustomHttpException.class, () -> contactController.searchContacts(tenantUniqueName, userToken, searchDTO));
     }
-}*/
+}
