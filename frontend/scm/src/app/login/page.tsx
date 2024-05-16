@@ -23,6 +23,8 @@ const Login = () => {
     };
 
     return (
+        <div>
+        <h1>Login page</h1>
         <form onSubmit={handleLogin}>
             <input
                 type="email"
@@ -40,6 +42,8 @@ const Login = () => {
             />
             <button type="submit">Login</button>
         </form>
+        </div>
+
     );
 };
 
