@@ -1,8 +1,11 @@
 package com.scm.scm.predefinedSearch.rest;
 
+import com.google.firebase.auth.FirebaseToken;
 import com.scm.scm.predefinedSearch.dto.PredefinedSearchDTO;
 import com.scm.scm.predefinedSearch.services.PredefinedSearchServices;
+import com.scm.scm.support.security.UserVerifyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,10 +16,12 @@ import java.util.List;
 public class PredefinedSearchController {
 
     private final PredefinedSearchServices predefinedSearchServices;
+    private final UserVerifyService userVerifyService;
 
     @Autowired
-    public PredefinedSearchController(PredefinedSearchServices predefinedSearchServices) {
+    public PredefinedSearchController(PredefinedSearchServices predefinedSearchServices, UserVerifyService userVerifyService) {
         this.predefinedSearchServices = predefinedSearchServices;
+        this.userVerifyService = userVerifyService;
     }
 
     @GetMapping
@@ -25,37 +30,49 @@ public class PredefinedSearchController {
         return ResponseEntity.ok(predefinedSearches);
     }
 
-    @GetMapping("/{predefined_search_id}")
-    public ResponseEntity<PredefinedSearchDTO> getPredefinedSearch(@PathVariable("predefined_search_id") String predefinedSearchId) {
+    @GetMapping(value = "/{predefined_search_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PredefinedSearchDTO> getPredefinedSearch(@PathVariable("predefined_search_id") String predefinedSearchId, @RequestHeader("userToken") String userToken) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
         PredefinedSearchDTO predefinedSearch = predefinedSearchServices.getPredefinedSearchById(predefinedSearchId);
         return ResponseEntity.ok(predefinedSearch);
     }
 
-    @PostMapping
-    public ResponseEntity<PredefinedSearchDTO> createPredefinedSearch(@RequestBody PredefinedSearchDTO predefinedSearchDTO) {
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PredefinedSearchDTO> createPredefinedSearch(@RequestBody PredefinedSearchDTO predefinedSearchDTO,  @RequestHeader("userToken") String userToken) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
         PredefinedSearchDTO createdPredefinedSearch = predefinedSearchServices.addPredefinedSearch(predefinedSearchDTO);
         return ResponseEntity.ok(createdPredefinedSearch);
     }
 
-    @PutMapping
-    public ResponseEntity<PredefinedSearchDTO> updatePredefinedSearch(@RequestBody PredefinedSearchDTO predefinedSearchDTO) {
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PredefinedSearchDTO> updatePredefinedSearch(@RequestBody PredefinedSearchDTO predefinedSearchDTO,  @RequestHeader("userToken") String userToken) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
         PredefinedSearchDTO updatedPredefinedSearch = predefinedSearchServices.updatePredefinedSearch(predefinedSearchDTO);
         return ResponseEntity.ok(updatedPredefinedSearch);
     }
 
     @DeleteMapping("/{predefined_search_id}")
-    public ResponseEntity<String> deletePredefinedSearch(@PathVariable("predefined_search_id") String predefinedSearchId) {
+    public ResponseEntity<String> deletePredefinedSearch(@PathVariable("predefined_search_id") String predefinedSearchId,  @RequestHeader("userToken") String userToken) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
         return ResponseEntity.ok(predefinedSearchServices.deletePredefinedSearch(predefinedSearchId));
     }
 
-    @GetMapping("/user/{user}")
-    public ResponseEntity<List<PredefinedSearchDTO>> getPredefinedSearchByUser(@PathVariable("user") String user) {
+    @GetMapping(value = "/user/{user}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<PredefinedSearchDTO>> getPredefinedSearchByUser(@PathVariable("user") String user,  @RequestHeader("userToken") String userToken) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
         List<PredefinedSearchDTO> predefinedSearches = predefinedSearchServices.getPredefinedSearchByUser(user);
         return ResponseEntity.ok(predefinedSearches);
     }
 
-    @GetMapping("/tenant/{tenant}")
-    public ResponseEntity<List<PredefinedSearchDTO>> getPredefinedSearchByTenant(@PathVariable("tenant") String tenant) {
+    @GetMapping(value = "/tenant/{tenant}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<PredefinedSearchDTO>> getPredefinedSearchByTenant(@PathVariable("tenant") String tenant,  @RequestHeader("userToken") String userToken) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
         List<PredefinedSearchDTO> predefinedSearches = predefinedSearchServices.getPredefinedSearchByTenant(tenant);
         return ResponseEntity.ok(predefinedSearches);
     }

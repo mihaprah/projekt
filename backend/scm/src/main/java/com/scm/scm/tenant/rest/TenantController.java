@@ -1,12 +1,15 @@
 package com.scm.scm.tenant.rest;
 
+import com.google.firebase.auth.FirebaseToken;
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.exceptions.ExceptionCause;
 import com.scm.scm.support.exceptions.ExceptionMessage;
 import com.scm.scm.support.security.UserAccessService;
+import com.scm.scm.support.security.UserVerifyService;
 import com.scm.scm.tenant.dto.TenantDTO;
 import com.scm.scm.tenant.services.TenantServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,100 +21,116 @@ public class TenantController {
 
     private final TenantServices tenantServices;
     private final UserAccessService userAccessService;
+    private final UserVerifyService userVerifyService;
+
 
     @Autowired
-    public TenantController(TenantServices tenantServices, UserAccessService userAccessService) {
+    public TenantController(TenantServices tenantServices, UserAccessService userAccessService, UserVerifyService userVerifyService) {
         this.tenantServices = tenantServices;
         this.userAccessService = userAccessService;
+        this.userVerifyService = userVerifyService;
+
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<TenantDTO>> getTenants() {
         List<TenantDTO> tenants = tenantServices.getAllTenants();
         return ResponseEntity.ok(tenants);
     }
 
-    @GetMapping("/{tenant_id}")
+    @GetMapping(value = "/{tenant_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TenantDTO> getTenant(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken) {
-        boolean check = userAccessService.hasAccessToTenant(userToken, tenantId);
-        if (!check) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         TenantDTO tenant = tenantServices.getTenantById(tenantId);
         return ResponseEntity.ok(tenant);
     }
 
-    @GetMapping("/user")
+    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<TenantDTO>> getTenantsByUser(@RequestHeader("userToken") String userToken) {
-        List<TenantDTO> tenants = tenantServices.getTenantsByUser(userToken);
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        List<TenantDTO> tenants = tenantServices.getTenantsByUser(decodedToken.getEmail());
         return ResponseEntity.ok(tenants);
     }
 
-    @PostMapping
-    public ResponseEntity<TenantDTO> createTenant(@RequestBody TenantDTO tenantDTO) {
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TenantDTO> createTenant(@RequestHeader("userToken") String userToken, @RequestBody TenantDTO tenantDTO) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
         TenantDTO createdTenant = tenantServices.addTenant(tenantDTO);
         return ResponseEntity.ok(createdTenant);
     }
 
-    @PutMapping
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TenantDTO> updateTenant(@RequestHeader("userToken") String userToken, @RequestBody TenantDTO tenantDTO) {
-        boolean check = userAccessService.hasAccessToTenant(userToken, tenantDTO.getId());
-        if (!check) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantDTO.getId())) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         TenantDTO updatedTenant = tenantServices.updateTenant(tenantDTO);
         return ResponseEntity.ok(updatedTenant);
     }
 
-    @PutMapping("/deactivate/{tenant_id}")
+    @PutMapping(value = "/deactivate/{tenant_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deactivateTenant(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken){
-        boolean check = userAccessService.hasAccessToTenant(userToken, tenantId);
-        if (!check) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(tenantServices.deactivateTenant(tenantId));
     }
 
-    @PutMapping("/tags/add/{tenant_id}")
+    @PutMapping(value = "/tags/add/{tenant_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addTag(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken, @RequestBody List<String> tags) {
-        boolean check = userAccessService.hasAccessToTenant(userToken, tenantId);
-        if (!check) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(tenantServices.addTags(tenantId, tags));
     }
 
-    @PutMapping("/tags/remove/{tenant_id}")
+    @PutMapping(value = "/tags/remove/{tenant_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> removeTag(@PathVariable("tenant_id") String tenantId,@RequestHeader("userToken") String userToken, @RequestBody List<String> tags) {
-        boolean check = userAccessService.hasAccessToTenant(userToken, tenantId);
-        if (!check) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(tenantServices.removeTags(tenantId, tags));
     }
 
-    @PutMapping("/users/add/{tenant_id}")
+    @PutMapping(value = "/users/add/{tenant_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addUsers(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken, @RequestBody List<String> users) {
-        boolean check = userAccessService.hasAccessToTenant(userToken, tenantId);
-        if (!check) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(tenantServices.addUsers(tenantId, users));
     }
 
-    @PutMapping("/users/remove/{tenant_id}")
+    @PutMapping(value = "/users/remove/{tenant_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> removeUsers(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken, @RequestBody List<String> users) {
-        boolean check = userAccessService.hasAccessToTenant(userToken, tenantId);
-        if (!check) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(tenantServices.removeUsers(tenantId, users));
     }
 
-    @PutMapping("/tags/multiple/add/{tenant_unique_name}/{tag}")
+    @PutMapping(value = "/tags/multiple/add/{tenant_unique_name}/{tag}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addMultipleTags(@PathVariable("tenant_unique_name") String tenantUniqueName, @PathVariable("tag") String tag, @RequestHeader("userToken") String userToken, @RequestHeader("tenantId") String tenantId, @RequestBody List<String> contactIds) {
-        boolean check = userAccessService.hasAccessToTenant(userToken, tenantId);
-        if (!check) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(tenantServices.addTagsToMultipleContacts(tenantUniqueName, contactIds, tag));

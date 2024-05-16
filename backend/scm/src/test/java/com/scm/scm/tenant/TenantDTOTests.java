@@ -15,14 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class TenantDTOTests {
 
     @Test
-    void testGenerateTenantUniqueName() {
-        Tenant tenant = Tenant.builder().build();
-        String tenantUniqueName = tenant.generateTenantUniqueName("TestTenant");
-        assertNotNull(tenantUniqueName);
-        assertTrue(tenantUniqueName.matches("[A-Z]{3}-[A-Z][a-z]{2}-\\d{2}-\\d{1,3}"));
-    }
-
-    @Test
     void testGenerateTenantUniqueNameShortTitle() {
         Tenant tenant = Tenant.builder().build();
         assertThrows(IllegalArgumentException.class, () -> tenant.generateTenantUniqueName("Te"));

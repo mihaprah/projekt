@@ -16,6 +16,7 @@ import com.scm.scm.support.security.UserVerifyService;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class ContactController {
     private final ExportContactExcel exportContactExcel;
     private final UserAccessService userAccessService;
     private final PredefinedSearchServices predefinedSearchServices;
-    private final UserVerifyService UserVerifyService;
+    private final UserVerifyService userVerifyService;
 
     @Autowired
     public ContactController(ContactServices contactServices, ExportContactExcel exportContactExcel, UserAccessService userAccessService, PredefinedSearchServices predefinedSearchServices, UserVerifyService userVerifyService) {
@@ -39,28 +40,25 @@ public class ContactController {
         this.exportContactExcel = exportContactExcel;
         this.userAccessService = userAccessService;
         this.predefinedSearchServices = predefinedSearchServices;
-        this.UserVerifyService = userVerifyService;
+        this.userVerifyService = userVerifyService;
     }
 
     private static final Logger log = Logger.getLogger(ContactServices.class.toString());
 
-    @GetMapping("/{contact_id}/{tenant_unique_name}")
+    @GetMapping(value = "/{contact_id}/{tenant_unique_name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ContactDTO> getContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName, @RequestHeader("userToken") String userToken) {
-        boolean check = userAccessService.hasAccessToContact(userToken, tenantUniqueName);
-        if (!check) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToContact(decodedToken.getEmail(), tenantUniqueName)) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         ContactDTO contactDTO = contactServices.findOneContact(tenantUniqueName, id);
         return ResponseEntity.ok(contactDTO);
     }
 
-    @GetMapping("/{tenant_unique_name}")
+    @PostMapping(value = "/{tenant_unique_name}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ContactDTO>> getContacts(@PathVariable(name = "tenant_unique_name") String tenantUniqueName, @RequestHeader("userToken") String userToken) {
-
-
-        FirebaseToken decodedToken = UserVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
-
-        System.out.println(decodedToken.getEmail());
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
 
         if (!userAccessService.hasAccessToContact(decodedToken.getEmail(), tenantUniqueName)) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
@@ -69,21 +67,23 @@ public class ContactController {
         return ResponseEntity.ok(contacts);
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addContact(@RequestHeader("userToken") String userToken, @RequestBody ContactDTO contactDTO) {
-        String sanitizedUserToken = StringEscapeUtils.escapeHtml4(userToken);
-        boolean check = userAccessService.hasAccessToContact(sanitizedUserToken, contactDTO.getTenantUniqueName());
-        if (!check) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+        String sanitizedUserToken = StringEscapeUtils.escapeHtml4(decodedToken.getEmail());
+
+        if (!userAccessService.hasAccessToContact(sanitizedUserToken, contactDTO.getTenantUniqueName())) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(contactServices.createContact(contactDTO));
     }
 
-    @PutMapping
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ContactDTO> updateContact(@RequestHeader("userToken") String userToken, @RequestBody ContactDTO contactDTO) {
-        String sanitizedUserToken = StringEscapeUtils.escapeHtml4(userToken);
-        boolean check = userAccessService.hasAccessToContact(sanitizedUserToken, contactDTO.getTenantUniqueName());
-        if (!check) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+        String sanitizedUserToken = StringEscapeUtils.escapeHtml4(decodedToken.getEmail());
+
+        if (!userAccessService.hasAccessToContact(sanitizedUserToken, contactDTO.getTenantUniqueName())) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(contactServices.updateContact(contactDTO));
@@ -91,9 +91,10 @@ public class ContactController {
 
     @DeleteMapping("/{contact_id}/{tenant_unique_name}")
     public ResponseEntity<String> deleteContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName, @RequestHeader("userToken") String userToken) {
-        String sanitizedUserToken = StringEscapeUtils.escapeHtml4(userToken);
-        boolean check = userAccessService.hasAccessToContact(sanitizedUserToken, tenantUniqueName);
-        if (!check) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+        String sanitizedUserToken = StringEscapeUtils.escapeHtml4(decodedToken.getEmail());
+
+        if (!userAccessService.hasAccessToContact(sanitizedUserToken, tenantUniqueName)) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         String cleanId = StringEscapeUtils.escapeHtml4(id);
@@ -104,6 +105,7 @@ public class ContactController {
 
     @PostMapping("/export")
     public ResponseEntity<byte[]> exportContacts(@RequestBody ExportContactRequest request) {
+
         if (request == null || request.getUser() == null || request.getTenantUniqueName() == null || request.getTenantId() == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -128,11 +130,12 @@ public class ContactController {
         }
     }
 
-    @GetMapping("/search/{tenant_unique_name}")
+    @GetMapping(value = "/search/{tenant_unique_name}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ContactDTO>> searchContacts(@PathVariable(name = "tenant_unique_name") String tenantUniqueName, @RequestHeader("userToken") String userToken, @RequestBody PredefinedSearchDTO searchDTO) {
-        String sanitizedUserToken = StringEscapeUtils.escapeHtml4(userToken);
-        boolean check = userAccessService.hasAccessToContact(sanitizedUserToken, tenantUniqueName);
-        if (!check) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+        String sanitizedUserToken = StringEscapeUtils.escapeHtml4(decodedToken.getEmail());
+
+        if (!userAccessService.hasAccessToContact(sanitizedUserToken, tenantUniqueName)) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         PredefinedSearch search = predefinedSearchServices.convertToEntity(searchDTO);

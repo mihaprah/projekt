@@ -1,5 +1,6 @@
 package com.scm.scm.contact;
 
+import com.google.firebase.auth.FirebaseToken;
 import com.scm.scm.config.FirebaseConfig;
 import com.scm.scm.contact.dto.ContactDTO;
 import com.scm.scm.contact.rest.ContactController;
@@ -14,6 +15,7 @@ import com.scm.scm.support.security.UserAccessService;
 import com.scm.scm.support.security.UserVerifyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -59,48 +61,66 @@ class ContactControllerTests {
     }
 
     @Test
-    void testGetContact() throws IOException {
+    void testGetContact() {
         String id = "1";
         String tenantUniqueName = "tenant";
-        String userToken = "token";
+        String userToken = "Bearer token";
+        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
         ContactDTO contactDTO = new ContactDTO();
-        when(userAccessService.hasAccessToContact(userToken, tenantUniqueName)).thenReturn(true);
-        when(userVerifyService.verifyUserToken(userToken)).thenReturn(null);
+
+        when(mockToken.getEmail()).thenReturn("test@example.com");
+        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
+        when(userAccessService.hasAccessToContact(mockToken.getEmail(), tenantUniqueName)).thenReturn(true);
         when(contactServices.findOneContact(tenantUniqueName, id)).thenReturn(contactDTO);
+
         ResponseEntity<ContactDTO> response = contactController.getContact(id, tenantUniqueName, userToken);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(contactDTO, response.getBody());
     }
 
-//    @Test
-//    void testGetContacts() {
-//        String tenantUniqueName = "tenant";
-//        String userToken = "token";
-//        List<ContactDTO> contacts = Collections.emptyList();
-//        when(userAccessService.hasAccessToContact(userToken, tenantUniqueName)).thenReturn(true);
-//        when(userVerifyService.verifyUserToken(userToken)).thenReturn(null);
-//        when(contactServices.findAllContacts(tenantUniqueName)).thenReturn(contacts);
-//        ResponseEntity<List<ContactDTO>> response = contactController.getContacts(tenantUniqueName, userToken);
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals(contacts, response.getBody());
-//    }
+    @Test
+    void testGetContacts() {
+        String tenantUniqueName = "tenant";
+        String userToken = "Bearer token";
+        List<ContactDTO> contacts = Collections.emptyList();
+        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
+
+        when(mockToken.getEmail()).thenReturn("test@example.com");
+        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
+        when(userAccessService.hasAccessToContact(mockToken.getEmail(), tenantUniqueName)).thenReturn(true);
+        when(contactServices.findAllContacts(tenantUniqueName)).thenReturn(contacts);
+
+        ResponseEntity<List<ContactDTO>> response = contactController.getContacts(tenantUniqueName, userToken);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(contacts, response.getBody());
+    }
 
     @Test
     void testAddContact() {
-        String userToken = "token";
+        String userToken = "Bearer token";
+        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
+
         ContactDTO contactDTO = new ContactDTO();
-        when(userAccessService.hasAccessToContact(userToken, contactDTO.getTenantUniqueName())).thenReturn(true);
-        when(userVerifyService.verifyUserToken(userToken)).thenReturn(null);
+
+        when(mockToken.getEmail()).thenReturn("test@example.com");
+        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
+        when(userAccessService.hasAccessToContact(mockToken.getEmail(), contactDTO.getTenantUniqueName())).thenReturn(true);
+
         ResponseEntity<String> response = contactController.addContact(userToken, contactDTO);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
     void testUpdateContact() {
-        String userToken = "token";
+        String userToken = "Bearer token";
+        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
+
         ContactDTO contactDTO = new ContactDTO();
-        when(userAccessService.hasAccessToContact(userToken, contactDTO.getTenantUniqueName())).thenReturn(true);
-        when(userVerifyService.verifyUserToken(userToken)).thenReturn(null);
+        when(mockToken.getEmail()).thenReturn("test@example.com");
+        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
+        when(userAccessService.hasAccessToContact(mockToken.getEmail(), contactDTO.getTenantUniqueName())).thenReturn(true);
+
         ResponseEntity<ContactDTO> response = contactController.updateContact(userToken, contactDTO);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
@@ -109,9 +129,13 @@ class ContactControllerTests {
     void testDeleteContact() {
         String id = "1";
         String tenantUniqueName = "tenant";
-        String userToken = "token";
-        when(userAccessService.hasAccessToContact(userToken, tenantUniqueName)).thenReturn(true);
-        when(userVerifyService.verifyUserToken(userToken)).thenReturn(null);
+        String userToken = "Bearer token";
+        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
+
+        when(mockToken.getEmail()).thenReturn("test@example.com");
+        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
+        when(userAccessService.hasAccessToContact(mockToken.getEmail(), tenantUniqueName)).thenReturn(true);
+
         ResponseEntity<String> response = contactController.deleteContact(id, tenantUniqueName, userToken);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
@@ -119,11 +143,15 @@ class ContactControllerTests {
     @Test
     void testSearchContacts() {
         String tenantUniqueName = "tenant";
-        String userToken = "token";
+        String userToken = "Bearer token";
+        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
+
         PredefinedSearchDTO searchDTO = new PredefinedSearchDTO();
         PredefinedSearch search = new PredefinedSearch();
-        when(userAccessService.hasAccessToContact(userToken, tenantUniqueName)).thenReturn(true);
-        when(userVerifyService.verifyUserToken(userToken)).thenReturn(null);
+
+        when(mockToken.getEmail()).thenReturn("test@example.com");
+        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
+        when(userAccessService.hasAccessToContact(mockToken.getEmail(), tenantUniqueName)).thenReturn(true);
         when(predefinedSearchServices.convertToEntity(searchDTO)).thenReturn(search);
         ResponseEntity<List<ContactDTO>> response = contactController.searchContacts(tenantUniqueName, userToken, searchDTO);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -133,9 +161,12 @@ class ContactControllerTests {
     void testGetContactAccessDenied() {
         String id = "1";
         String tenantUniqueName = "tenant";
-        String userToken = "token";
-        when(userAccessService.hasAccessToContact(userToken, tenantUniqueName)).thenReturn(false);
-        when(userVerifyService.verifyUserToken(userToken)).thenReturn(null);
+        String userToken = "Bearer token";
+        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
+
+        when(mockToken.getEmail()).thenReturn("test@example.com");
+        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
+        when(userAccessService.hasAccessToContact(mockToken.getEmail(), tenantUniqueName)).thenReturn(false);
         assertThrows(CustomHttpException.class, () -> contactController.getContact(id, tenantUniqueName, userToken));
     }
 
@@ -166,17 +197,25 @@ class ContactControllerTests {
 
     @Test
     void testAddContactAccessDenied() {
-        String userToken = "token";
+        String userToken = "Bearer token";
+        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
+
         ContactDTO contactDTO = new ContactDTO();
-        when(userAccessService.hasAccessToContact(userToken, contactDTO.getTenantUniqueName())).thenReturn(false);
+        when(mockToken.getEmail()).thenReturn("test@example.com");
+        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
+        when(userAccessService.hasAccessToContact(mockToken.getEmail(), contactDTO.getTenantUniqueName())).thenReturn(false);
         assertThrows(CustomHttpException.class, () -> contactController.addContact(userToken, contactDTO));
     }
 
     @Test
     void testUpdateContactAccessDenied() {
-        String userToken = "token";
+        String userToken = "Bearer token";
+        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
+
         ContactDTO contactDTO = new ContactDTO();
-        when(userAccessService.hasAccessToContact(userToken, contactDTO.getTenantUniqueName())).thenReturn(false);
+        when(mockToken.getEmail()).thenReturn("test@example.com");
+        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
+        when(userAccessService.hasAccessToContact(mockToken.getEmail(), contactDTO.getTenantUniqueName())).thenReturn(false);
         assertThrows(CustomHttpException.class, () -> contactController.updateContact(userToken, contactDTO));
     }
 
@@ -184,17 +223,26 @@ class ContactControllerTests {
     void testDeleteContactAccessDenied() {
         String id = "1";
         String tenantUniqueName = "tenant";
-        String userToken = "token";
-        when(userAccessService.hasAccessToContact(userToken, tenantUniqueName)).thenReturn(false);
+
+        String userToken = "Bearer token";
+        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
+
+        when(mockToken.getEmail()).thenReturn("test@example.com");
+        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
+        when(userAccessService.hasAccessToContact(mockToken.getEmail(), tenantUniqueName)).thenReturn(false);
         assertThrows(CustomHttpException.class, () -> contactController.deleteContact(id, tenantUniqueName, userToken));
     }
 
     @Test
     void testSearchContactsAccessDenied() {
         String tenantUniqueName = "tenant";
-        String userToken = "token";
+        String userToken = "Bearer token";
+        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
+
         PredefinedSearchDTO searchDTO = new PredefinedSearchDTO();
-        when(userAccessService.hasAccessToContact(userToken, tenantUniqueName)).thenReturn(false);
+        when(mockToken.getEmail()).thenReturn("test@example.com");
+        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
+        when(userAccessService.hasAccessToContact(mockToken.getEmail(), tenantUniqueName)).thenReturn(false);
         assertThrows(CustomHttpException.class, () -> contactController.searchContacts(tenantUniqueName, userToken, searchDTO));
     }
 }
