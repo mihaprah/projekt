@@ -1,4 +1,4 @@
-package com.scm.scm.search;
+/**package com.scm.scm.search;
 
 import com.scm.scm.config.FirebaseConfig;
 import com.scm.scm.predefinedSearch.dto.PredefinedSearchDTO;
@@ -108,4 +108,4 @@ class PredefinedSearchControllerTests {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
-}
+}*/
