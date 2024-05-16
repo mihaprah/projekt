@@ -1,4 +1,4 @@
-interface Contact {
+export interface Contact {
     id: string;
     title: string;
     user: string;

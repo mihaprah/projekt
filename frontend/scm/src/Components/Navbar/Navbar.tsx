@@ -7,6 +7,7 @@ import {useEffect, useState} from "react";
 import {usePathname} from 'next/navigation';
 import {onAuthStateChanged, signOut} from "firebase/auth";
 import {auth} from "@/firebase";
+import Cookies from "js-cookie";
 
 
 const Navbar = () => {
@@ -23,7 +24,7 @@ const Navbar = () => {
     const handleLogout = async () => {
         try {
             await signOut(auth);
-            // TODO Po odjavi lahko preusmerite uporabnika nazaj na prijavno stran
+            Cookies.remove('IdToken');
             window.location.href = '/login';
         } catch (error) {
             console.error("Error logging out:", error);

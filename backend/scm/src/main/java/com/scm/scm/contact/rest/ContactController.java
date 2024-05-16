@@ -56,7 +56,7 @@ public class ContactController {
         return ResponseEntity.ok(contactDTO);
     }
 
-    @PostMapping(value = "/{tenant_unique_name}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping( "/{tenant_unique_name}")
     public ResponseEntity<List<ContactDTO>> getContacts(@PathVariable(name = "tenant_unique_name") String tenantUniqueName, @RequestHeader("userToken") String userToken) {
         FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
 

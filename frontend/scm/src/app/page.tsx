@@ -7,14 +7,17 @@ import { auth } from "@/firebase";
 
 const Home = () => {
     const [user, setUser] = useState<any>(null);
+    const [token, setToken] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            if (!currentUser || !currentUser.emailVerified) {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            if (!currentUser) {
                 router.push('/login');
             } else {
                 setUser(currentUser);
+                const idToken = await currentUser.getIdToken();
+                setToken(idToken);
             }
         });
         return () => unsubscribe();
@@ -26,8 +29,7 @@ const Home = () => {
 
     return (
         <div>
-            <h1>Welcome, {user.email}</h1>
-            {/* Ostale strani in komponente */}
+            <h1>Welcome, {user.email}, token: {token}</h1>
         </div>
     );
 };

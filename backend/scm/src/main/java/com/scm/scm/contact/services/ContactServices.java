@@ -42,8 +42,9 @@ public class ContactServices {
     private static final String FOR_TENANT = " for tenant: ";
 
     @Autowired
-    public ContactServices(MongoTemplate mongoTemplate) {
+    public ContactServices(MongoTemplate mongoTemplate, MongoTemplateService mongoTemplateService) {
         this.mongoTemplate = mongoTemplate;
+        this.mongoTemplateService = mongoTemplateService;
     }
 
     private ContactDTO convertToDTO(Contact contact) {
