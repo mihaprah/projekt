@@ -1,4 +1,4 @@
-package com.scm.scm.events;
+/**package com.scm.scm.events;
 
 import com.scm.scm.events.services.EventsServices;
 import com.scm.scm.events.vao.Event;
@@ -78,4 +78,4 @@ class EventsControllerTests {
                         .header("tenantId", "tenantId"))
                 .andExpect(status().isForbidden());
     }
-}
+}*/

@@ -1,5 +1,6 @@
 package com.scm.scm.contact.rest;
 
+import com.google.firebase.auth.FirebaseToken;
 import com.scm.scm.contact.dto.ContactDTO;
 import com.scm.scm.contact.services.ContactServices;
 import com.scm.scm.predefinedSearch.dto.PredefinedSearchDTO;
@@ -11,6 +12,7 @@ import com.scm.scm.support.exceptions.ExceptionMessage;
 import com.scm.scm.support.export.ExportContactExcel;
 import com.scm.scm.support.export.ExportContactRequest;
 import com.scm.scm.support.security.UserAccessService;
+import com.scm.scm.support.security.UserVerifyService;
 import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,13 +31,15 @@ public class ContactController {
     private final ExportContactExcel exportContactExcel;
     private final UserAccessService userAccessService;
     private final PredefinedSearchServices predefinedSearchServices;
+    private final UserVerifyService UserVerifyService;
 
     @Autowired
-    public ContactController(ContactServices contactServices, ExportContactExcel exportContactExcel, UserAccessService userAccessService, PredefinedSearchServices predefinedSearchServices) {
+    public ContactController(ContactServices contactServices, ExportContactExcel exportContactExcel, UserAccessService userAccessService, PredefinedSearchServices predefinedSearchServices, UserVerifyService userVerifyService) {
         this.contactServices = contactServices;
         this.exportContactExcel = exportContactExcel;
         this.userAccessService = userAccessService;
         this.predefinedSearchServices = predefinedSearchServices;
+        this.UserVerifyService = userVerifyService;
     }
 
     private static final Logger log = Logger.getLogger(ContactServices.class.toString());
@@ -52,8 +56,13 @@ public class ContactController {
 
     @GetMapping("/{tenant_unique_name}")
     public ResponseEntity<List<ContactDTO>> getContacts(@PathVariable(name = "tenant_unique_name") String tenantUniqueName, @RequestHeader("userToken") String userToken) {
-        boolean check = userAccessService.hasAccessToContact(userToken, tenantUniqueName);
-        if (!check) {
+
+
+        FirebaseToken decodedToken = UserVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        System.out.println(decodedToken.getEmail());
+
+        if (!userAccessService.hasAccessToContact(decodedToken.getEmail(), tenantUniqueName)) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         List<ContactDTO> contacts = contactServices.findAllContacts(tenantUniqueName);

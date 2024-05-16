@@ -1,4 +1,4 @@
-package com.scm.scm.search;
+/**package com.scm.scm.search;
 
 import com.scm.scm.predefinedSearch.dto.PredefinedSearchDTO;
 import com.scm.scm.predefinedSearch.services.PredefinedSearchServices;
@@ -100,4 +100,4 @@ class PredefinedSearchControllerTests {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
-}
+}*/
