@@ -11,7 +11,7 @@ const Home = () => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            if (!currentUser) {
+            if (!currentUser || !currentUser.emailVerified) {
                 router.push('/login');
             } else {
                 setUser(currentUser);

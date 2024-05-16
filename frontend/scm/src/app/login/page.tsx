@@ -2,18 +2,21 @@
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase";
-import {useRouter} from "next/navigation";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const router = useRouter();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            router.push("/");
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            if (user && !user.emailVerified) {
+                alert("Please verify your email before logging in.");
+                return;
+            }
+            window.location.href = '/';
         } catch (error) {
             console.error("Error logging in:", error);
         }

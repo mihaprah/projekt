@@ -30,7 +30,7 @@ const Navbar = () => {
         }
     };
 
-    if (!user || pathname === '/login') {
+    if (!user || pathname === '/login' || pathname === '/register' || !user.emailVerified) {
         return null;
     }
 
