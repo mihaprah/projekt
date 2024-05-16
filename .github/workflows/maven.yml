@@ -27,6 +27,8 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
+    - name: Set up Firebase service account key
+      run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}" > serviceAccountKey.json
     - name: Build with Maven
       run: mvn -B package --file backend/scm/pom.xml
     - name: Test with Maven
