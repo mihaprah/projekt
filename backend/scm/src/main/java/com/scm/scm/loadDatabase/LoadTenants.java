@@ -34,11 +34,11 @@ public class LoadTenants {
         mongoTemplate.getDb().drop();
         log.info("Old database dropped.");
 
-        Tenant tenant1 = new Tenant(null, "Acme Corporation", "", "A global leader in anvil production.", "Blue", true, Arrays.asList("user1@example.com", "user2@example.com"), new HashMap<>());
+        Tenant tenant1 = new Tenant(null, "Acme Corporation", "", "A global leader in anvil production.", "Blue", true, Arrays.asList("user1@example.com", "user2@example.com"), new HashMap<>(), new HashMap<>(), Arrays.asList(""));
         tenant1.setTenantUniqueName(tenant1.generateTenantUniqueName(tenant1.getTitle()));
         tenant1.setId(tenant1.generateId(tenant1.getTitle()));
 
-        Tenant tenant2 = new Tenant(null, "Globex Corporation", "", "A secretive multinational corporation.", "Red", true, Arrays.asList("user3@example.com", "user4@example.com"),  new HashMap<>());
+        Tenant tenant2 = new Tenant(null, "Globex Corporation", "", "A secretive multinational corporation.", "Red", true, Arrays.asList("user3@example.com", "user4@example.com"),  new HashMap<>(), new HashMap<>(),  Arrays.asList(""));
         tenant2.setTenantUniqueName(tenant2.generateTenantUniqueName(tenant2.getTitle()));
         tenant2.setId(tenant2.generateId(tenant2.getTitle()));
 
