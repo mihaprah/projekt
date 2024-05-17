@@ -26,7 +26,7 @@ const Login = () => {
 
     return (
         <div className={"flex flex-col items-center justify-center min-h-screen"}>
-            <div className={"flex flex-col items-center justify-center rounded-8 p-10 dark:bg-primary-dark"}>
+            <div className={"flex flex-col items-center justify-center rounded-8 p-10"}>
                 <img className={"w-48 h-auto rounded-8"} src={"/logo-scm.png"} alt={"Logo"}/>
                 <h3 className={"text-xl font-semibold mb-5 dark:text-white dark:pt-6"}>Log in with Email</h3>
                 <form onSubmit={handleLogin} className={"flex flex-col items-center justify-center"}>
@@ -62,16 +62,14 @@ const Login = () => {
                         />
                     </label>
                     <button type="submit"
-                            className={"btn mt-4 btn-sm bg-primary-light border-0 text-white w-20 dark:hover:bg-primary-light rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark"}>Log
+                            className={"btn mt-4 px-6 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark"}>Log
                         in
                     </button>
                 </form>
                 <a href={"/register"} className={"mt-5 link text-primary-light dark:text-white text-xs"}>Do not have an account?
                     Register here!</a>
             </div>
-
         </div>
-
     );
 };
 
