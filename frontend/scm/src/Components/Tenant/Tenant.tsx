@@ -7,7 +7,6 @@ interface Props {
 }
 
 const Tenant: React.FC<Props> = ({tenant}) => (
-
         <div className="card mx-11 shadow-xl m-7 rounded-8">
             <div className="card-body">
                 <h2 className="card-title">{tenant.title}</h2>
@@ -18,7 +17,6 @@ const Tenant: React.FC<Props> = ({tenant}) => (
             <div style={{backgroundColor: tenant.colorCode, height: '50px', width: '100%'}}></div>
             </figure>
         </div>
-
 );
 
 export default Tenant;
