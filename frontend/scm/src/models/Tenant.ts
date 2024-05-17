@@ -1,4 +1,4 @@
-interface Tenant {
+export interface Tenant {
     id: string;
     title: string;
     tenantUniqueName: string;
