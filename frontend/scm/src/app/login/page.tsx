@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase";
+import Cookies from "js-cookie";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -16,6 +17,7 @@ const Login = () => {
                 alert("Please verify your email before logging in.");
                 return;
             }
+            Cookies.set('IdToken', await user.getIdToken());
             window.location.href = '/';
         } catch (error) {
             console.error("Error logging in:", error);
