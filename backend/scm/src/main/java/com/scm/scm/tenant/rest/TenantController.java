@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/tenants")
@@ -134,5 +135,25 @@ public class TenantController {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(tenantServices.addTagsToMultipleContacts(tenantUniqueName, contactIds, tag));
+    }
+
+    @PutMapping(value = "/labels/{tenant_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateLabels(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken, @RequestBody Map<String,String> labels) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
+        }
+        return ResponseEntity.ok(tenantServices.updateLabels(tenantId, labels));
+    }
+
+    @PutMapping(value = "/displayProps/{tenant_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> updateDisplayProps(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken, @RequestBody List<String> displayProps) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
+        }
+        return ResponseEntity.ok(tenantServices.updateDisplayProps(tenantId, displayProps));
     }
 }

@@ -13,9 +13,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -67,6 +68,7 @@ public class TenantServices {
                 if (!mongoTemplateService.createNewTenantCollections(tenant.getTenantUniqueName())) {
                     throw new CustomHttpException("Failed to create tenant collections", 500, ExceptionCause.SERVER_ERROR);
                 }
+                tenant.setLabels(setPredefinedLabels());
                 tenantRepository.save(tenant);
                 log.log(Level.INFO, "Tenant created with id: {0}", tenant.getId());
                 return convertToDTO(tenant);
@@ -231,5 +233,66 @@ public class TenantServices {
             }
         }
         return "Tags added to contacts successfully";
+    }
+
+    private Map<String, String> setPredefinedLabels() {
+        String FILE_PATH = "./src/main/resources/PredefinedLabels.txt";
+        List<String> keys = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                keys.add(line);
+            }
+        } catch (IOException e) {
+            log.log(Level.SEVERE, "Error reading file: {0}", e.getMessage());
+        }
+        Map<String, String> labels = new java.util.HashMap<>();
+        for (String key : keys) {
+            labels.put(key, "");
+        }
+        log.info("Predefined labels set");
+        return labels;
+    }
+
+    public String updateLabels(String tenantId, Map<String, String> newLabels) {
+        Tenant tenant = tenantRepository.findById(tenantId).orElseThrow(() -> new CustomHttpException(ExceptionMessage.TENANT_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR));
+        if (tenant != null) {
+            Map<String, String> currentLabels = tenant.getLabels();
+            currentLabels.putAll(newLabels);
+            tenant.setLabels(currentLabels);
+            tenantRepository.save(tenant);
+            log.log(Level.INFO, "Labels updated for tenant with id: {0}", tenantId);
+            return "Labels updated successfully";
+        } else {
+            throw new CustomHttpException(ExceptionMessage.TENANT_NULL.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
+        }
+    }
+
+    public void addLabels(String tenantUniqueName, Set<String> newKeys) {
+        Tenant tenant = tenantRepository.findByTenantUniqueName(tenantUniqueName);
+        if (tenant != null) {
+            Map<String, String> currentLabels = tenant.getLabels();
+            for (String key : newKeys) {
+                if (!currentLabels.containsKey(key)) continue;
+                currentLabels.put(key, "");
+            }
+            tenant.setLabels(currentLabels);
+            tenantRepository.save(tenant);
+            log.log(Level.INFO, "Labels added for tenant with tenantUniqueName: {0}", tenantUniqueName);
+        } else {
+            throw new CustomHttpException(ExceptionMessage.TENANT_NULL.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
+        }
+    }
+
+    public String updateDisplayProps(String tenantId, List<String> newProps) {
+        Tenant tenant = tenantRepository.findById(tenantId).orElseThrow(() -> new CustomHttpException(ExceptionMessage.TENANT_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR));
+        if (tenant != null) {
+            tenant.setDisplayProps(newProps);
+            tenantRepository.save(tenant);
+            log.log(Level.INFO, "Display properties updated for tenant with id: {0}", tenantId);
+            return "Display properties updated successfully";
+        } else {
+            throw new CustomHttpException(ExceptionMessage.TENANT_NULL.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
+        }
     }
 }

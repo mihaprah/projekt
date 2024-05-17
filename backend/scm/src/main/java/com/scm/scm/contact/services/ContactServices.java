@@ -134,6 +134,7 @@ public class ContactServices {
         contact.setAttributesToString(contact.contactAttributesToString());
         mongoTemplate.save(contact, contact.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
         tenantServices.addTags(contact.getTenantUniqueName(), contact.getTags());
+        tenantServices.addLabels(contact.getTenantUniqueName(), contact.getProps().keySet());
 
         Event event = new Event(contact.getUser(), contact.getId(), EventState.CREATED);
         eventsServices.addEvent(event, contact.getTenantUniqueName());
@@ -175,6 +176,7 @@ public class ContactServices {
             eventsCheck.checkProps(existingContact, contact);
             existingContact.setProps(contact.getProps());
             existingContact.setAttributesToString(existingContact.contactAttributesToString());
+            tenantServices.addLabels(existingContact.getTenantUniqueName(), contact.getProps().keySet());
 
             mongoTemplate.save(existingContact, existingContact.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
             log.log(Level.INFO, String.format("Contact updated with id: %s %s %s ", contact.getId(), FOR_TENANT, contact.getTenantUniqueName()));

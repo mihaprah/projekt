@@ -44,7 +44,7 @@ class TenantServicesTests {
     @BeforeEach
     public void init() throws Exception {
         try (AutoCloseable ac = MockitoAnnotations.openMocks(this)) {
-            tenant = new Tenant("id", "title", "tenantUniqueName", "Short description", "#ff4545", true, new ArrayList<>(users), new HashMap<>(contactTags));
+            tenant = new Tenant("id", "title", "tenantUniqueName", "Short description", "#ff4545", true, new ArrayList<>(users), new HashMap<>(contactTags), new HashMap<>(), Arrays.asList(""));
             tenantDTO = TenantDTO.builder().id("id").title("title").tenantUniqueName("tenantUniqueName").description("Short description1").colorCode("#ff4545").active(true).users(users).contactTags(contactTags).build();
         }
     }

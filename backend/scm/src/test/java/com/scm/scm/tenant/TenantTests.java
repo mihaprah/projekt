@@ -97,7 +97,7 @@ class TenantTests {
                 .contactTags(new HashMap<>())
                 .build();
 
-        String expected = "Tenant(id=id, title=title, tenantUniqueName=uniqueName, description=description, colorCode=#ffffff, active=true, users=[user1, user2], contactTags={})";
+        String expected = "Tenant(id=id, title=title, tenantUniqueName=uniqueName, description=description, colorCode=#ffffff, active=true, users=[user1, user2], contactTags={}, labels=null, displayProps=null)";
         assertEquals(expected, tenant.toString());
     }
 
