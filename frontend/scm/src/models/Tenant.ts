@@ -4,7 +4,9 @@ export interface Tenant {
     tenantUniqueName: string;
     description: string;
     colorCode: string;
-    active: boolean;
+    active?: boolean;
     users: string[];
     contactTags: Record<string, number>;
+    labels: Record<string, string>;
+    displayProps: string[];
 }
