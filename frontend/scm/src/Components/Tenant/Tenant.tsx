@@ -12,7 +12,7 @@ const Tenant: React.FC<Props> = ({tenant}) => {
     const router = useRouter();
 
     return (
-    <div className="card cursor-pointer mx-11 shadow-xl m-7 rounded-8"
+    <div className="card cursor-pointer mx-11 shadow-xl m-7 rounded-8 hover:shadow-2xl hover:scale-105 transition"
          onClick={() => router.push(`/contacts/${tenant.tenantUniqueName}`)}>
         <div className="card-body">
             <h2 className="card-title">{tenant.title}</h2>
