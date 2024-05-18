@@ -295,4 +295,12 @@ public class TenantServices {
             throw new CustomHttpException(ExceptionMessage.TENANT_NULL.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
         }
     }
+
+    public TenantDTO getTenantByUniqueName(String tenantUniqueName) {
+        Tenant tenant = tenantRepository.findByTenantUniqueName(tenantUniqueName);
+        if (tenant == null) {
+            throw new CustomHttpException("Tenant not found", 404, ExceptionCause.USER_ERROR);
+        }
+        return convertToDTO(tenant);
+    }
 }
