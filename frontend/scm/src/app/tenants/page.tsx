@@ -4,9 +4,10 @@ import {Tenant as TenantModel} from "../../models/Tenant";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { redirect } from 'next/navigation'
+
 const fetchTenants = async (IdToken: string): Promise<TenantModel[]> => {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/user`, {
+        const res = await fetch(`http://localhost:8080/tenants/user`, {
             headers: {
                 'userToken': `Bearer ${IdToken}`,
             },
@@ -32,6 +33,7 @@ const fetchTenants = async (IdToken: string): Promise<TenantModel[]> => {
 
 const TenantsPage: React.FC = async () => {
     const IdToken = cookies().get('IdToken')?.value || '';
+
     if (!IdToken) {
         throw new Error('IdToken is not available');
     }
