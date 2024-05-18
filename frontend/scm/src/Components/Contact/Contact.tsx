@@ -1,19 +1,17 @@
+import React from 'react';
 import { Contact as ContactModel } from '../../models/Contact';
 
-interface Props {
+interface ContactProps {
     contact: ContactModel;
 }
 
-const Contact: React.FC<Props> = ({ contact }) => (
-    <div>
-        <h2>{contact.title}</h2>
-        <p>User: {contact.user}</p>
-        <p>Tenant Unique Name: {contact.tenantUniqueName}</p>
-        <p>Comments: {contact.comments}</p>
-        <p>Created At: {contact.createdAt.toString()}</p>
-        <p>Tags: {contact.tags.join(', ')}</p>
-        <p>Props: {JSON.stringify(contact.props)}</p>
-        <p>Attributes To String: {contact.attributesToString}</p>
+const Contact: React.FC<ContactProps> = ({ contact }) => (
+    <div className="card bg-base-100 shadow-xl m-2">
+        <div className="card-body">
+            <h2 className="card-title">{contact.title}</h2>
+            <p><strong>Name:</strong> {contact.props.Name}</p>
+            <p><strong>Created At:</strong> {new Date(contact.createdAt).toLocaleString()}</p>
+        </div>
     </div>
 );
 
