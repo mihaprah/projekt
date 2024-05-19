@@ -271,14 +271,16 @@ public class TenantServices {
     public void addLabels(String tenantUniqueName, Set<String> newKeys) {
         Tenant tenant = tenantRepository.findByTenantUniqueName(tenantUniqueName);
         if (tenant != null) {
-            Map<String, String> currentLabels = tenant.getLabels();
-            for (String key : newKeys) {
-                if (!currentLabels.containsKey(key)) continue;
-                currentLabels.put(key, "");
+            if (tenant.getLabels() != null) {
+                Map<String, String> currentLabels = tenant.getLabels();
+                for (String key : newKeys) {
+                    if (!currentLabels.containsKey(key)) continue;
+                    currentLabels.put(key, "");
+                }
+                tenant.setLabels(currentLabels);
+                tenantRepository.save(tenant);
+                log.log(Level.INFO, "Labels added for tenant with tenantUniqueName: {0}", tenantUniqueName);
             }
-            tenant.setLabels(currentLabels);
-            tenantRepository.save(tenant);
-            log.log(Level.INFO, "Labels added for tenant with tenantUniqueName: {0}", tenantUniqueName);
         } else {
             throw new CustomHttpException(ExceptionMessage.TENANT_NULL.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
         }

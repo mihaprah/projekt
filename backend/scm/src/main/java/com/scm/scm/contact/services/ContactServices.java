@@ -42,7 +42,10 @@ public class ContactServices {
     private static final String FOR_TENANT = " for tenant: ";
 
     @Autowired
-    public ContactServices(MongoTemplate mongoTemplate, MongoTemplateService mongoTemplateService) {
+    public ContactServices(MongoTemplate mongoTemplate, MongoTemplateService mongoTemplateService, EventsServices eventsServices, TenantServices tenantServices, EventsCheck eventsCheck) {
+        this.eventsServices = eventsServices;
+        this.eventsCheck = eventsCheck;
+        this.tenantServices = tenantServices;
         this.mongoTemplate = mongoTemplate;
         this.mongoTemplateService = mongoTemplateService;
     }
