@@ -12,7 +12,7 @@ interface TenantDashboardProps {
 
 const fetchTenants = async (IdToken: string): Promise<TenantModel[]> => {
     try {
-        const res = await fetch(`http://localhost:8080/tenants/user`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/user`, {
             headers: {
                 'userToken': `Bearer ${IdToken}`,
             },
@@ -73,7 +73,7 @@ const TenantsDashboard: React.FC<TenantDashboardProps> = (props) => {
                         [...Array(Math.ceil(tenants.length / 5))].map((_, i) => (
                             <div className="flex" key={i}>
                                 {tenants.slice(i * 5, i * 5 + 5).map((tenant) => (
-                                    <Tenant key={tenant.id} tenant={tenant}/>
+                                    <Tenant key={tenant.id} IdToken={props.IdToken} tenant={tenant}/>
                                 ))}
                             </div>
                         ))

@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { Contact as ContactModel } from '../../../models/Contact';
 import { Tenant as TenantModel } from '../../../models/Tenant';
 import Contacts from "@/Components/Contact/Contacts";
-import {faUsers} from "@fortawesome/free-solid-svg-icons";
+import {faFileArrowDown, faGear, faPen, faPlus, faUsers} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const fetchContacts = async (tenant_unique_name: string, IdToken: string): Promise<ContactModel[]> => {
@@ -53,6 +53,25 @@ const fetchTenant = async (tenant_unique_name: string, IdToken: string): Promise
     }
 };
 
+const fetchNumberContacts = async (IdToken: string, tenantUniqueName: string): Promise<number> => {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/size/${tenantUniqueName}`, {
+            headers: {
+                'userToken': `Bearer ${IdToken}`,
+            },
+        });
+
+        if (!res.ok) {
+            throw new Error(`Error fetching contacts number from a tenant: ${res.statusText}`);
+        }
+
+        return await res.json();
+    } catch (error) {
+        console.error('Failed to fetch number of contacts:', error);
+        return 0;
+    }
+}
+
 const ContactsPage = async (props: { params: { tenant_unique_name: string } }) => {
     const { params } = props;
     const { tenant_unique_name } = params;
@@ -64,32 +83,47 @@ const ContactsPage = async (props: { params: { tenant_unique_name: string } }) =
 
     const contacts = await fetchContacts(tenant_unique_name, IdToken);
     const tenant = await fetchTenant(tenant_unique_name, IdToken);
+    const contactsNumber = await fetchNumberContacts(IdToken, tenant_unique_name);
 
     return (
         <div className="container mx-auto p-4">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between mb-4 ">
                 <div>
-                    <h1 className="text-3xl font-bold text-primary-light">{tenant.title} <span
-                        className="ml-5 mr-2 text-secondary-dark">{contacts.length}</span><FontAwesomeIcon
-                        className="h-6 w-auto mb-0.5 text-accent-dark" icon={faUsers}/>
-                    </h1>
-                    <p className="text-m text-gray-600 mt-1">{tenant.description}</p>
-                    <button type="button"
-                            className="btn mt-2 px-6 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                        Edit Tenant
-                    </button>
+                    <div className={"flex items-center"}>
+                        <h2 className="text-3xl font-semibold text-primary-light">{tenant.title}</h2>
+                        <span className="ml-6 mr-2 text-2xl font-semibold ">{contactsNumber}</span>
+                        <FontAwesomeIcon className="h-5 w-auto mb-0.5 " icon={faUsers}/>
+                    </div>
+                    <p className="text-m text-gray-600 mt-1 break-words max-w-96">{tenant.description}</p>
+                    <div className={"mt-4"}>
+                        <button type="button"
+                                className="btn mr-3 px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                            Edit Tenant
+                            <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faPen} />
+                        </button>
+                        <button type="button"
+                                className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                            Tenant Settings
+                            <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faGear} />
+                        </button>
+                    </div>
                 </div>
-                <div className="flex space-x-2">
+                <div className="flex items-end">
                     <button
-                        className="btn mt-2 px-6 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                        Add new contact
+                        className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                        Add new Contact
+                        <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faPlus}/>
                     </button>
                     <button
-                        className="btn mt-2 px-6 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                        className="btn ml-3 px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
                         Export excel
+                        <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faFileArrowDown} />
                     </button>
                 </div>
             </div>
+            {contactsNumber === 0 && (
+                <p className="text-center text-2xl mx-auto mt-10">No contacts added to this tenant yet.</p>
+            )}
             <Contacts contacts={contacts}/>
         </div>
     );
