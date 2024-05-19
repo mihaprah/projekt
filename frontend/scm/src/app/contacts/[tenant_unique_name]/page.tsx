@@ -53,7 +53,8 @@ const fetchTenant = async (tenant_unique_name: string, IdToken: string): Promise
     }
 };
 
-const ContactsPage = async ({ params, searchParams }: { params: { tenant_unique_name: string }, searchParams: { view?: string } }) => {
+const ContactsPage = async (props: { params: { tenant_unique_name: string } }) => {
+    const { params } = props;
     const { tenant_unique_name } = params;
     const IdToken = cookies().get('IdToken')?.value || '';
 
@@ -63,7 +64,6 @@ const ContactsPage = async ({ params, searchParams }: { params: { tenant_unique_
 
     const contacts = await fetchContacts(tenant_unique_name, IdToken);
     const tenant = await fetchTenant(tenant_unique_name, IdToken);
-    const isGridView = searchParams.view === 'grid';
 
     return (
         <div className="container mx-auto p-4">
