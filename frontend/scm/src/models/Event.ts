@@ -8,7 +8,7 @@ export enum EventState {
     PROP_REMOVED = 'PROP_REMOVED'
 }
 
-interface Event {
+export interface Event {
     id: string;
     user: string;
     contact: string;

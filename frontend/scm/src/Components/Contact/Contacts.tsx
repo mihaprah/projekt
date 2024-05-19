@@ -23,7 +23,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts }) => {
                     <button
                         onClick={() => handleViewDetails(contact.id, contact.tenantUniqueName)}
                         className="btn mt-2 px-4 py-2 bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                        Prikaži vse podatke
+                        Show Details
                     </button>
                 </div>
             ))}

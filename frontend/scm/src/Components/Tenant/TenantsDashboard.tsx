@@ -55,7 +55,7 @@ const TenantsDashboard: React.FC<TenantDashboardProps> = (props) => {
     return (
         <div>
             <div className="flex justify-between items-center">
-                <h1 className="text-3xl mx-10 pt-5 text-secondary-dark font-semibold">Tenants</h1>
+                <h1 className="text-3xl pt-5 text-secondary-dark font-semibold">Tenants</h1>
                 <div className={"mt-4 mx-10"}>
                     <TenantPopup onTenantAdd={() => handleTenantAdd(props.IdToken)} IdToken={props.IdToken} icon={faPlus}
                                  buttonAction={"Add new"} title={"Add new Tenant"}
@@ -63,7 +63,7 @@ const TenantsDashboard: React.FC<TenantDashboardProps> = (props) => {
                                  />
                 </div>
             </div>
-            <div className="ml-7">
+            <div>
                 {tenants.length === 0 ? (
                     <p className="text-center text-2xl mx-auto mt-10">No tenants available!</p>
                 ) : (

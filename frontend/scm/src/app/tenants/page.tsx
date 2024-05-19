@@ -13,7 +13,7 @@ const TenantsPage: React.FC = async () => {
 
 
     return (
-        <div>
+        <div className="container mx-auto p-4">
             <TenantsDashboard IdToken={IdToken} />
         </div>
     );
