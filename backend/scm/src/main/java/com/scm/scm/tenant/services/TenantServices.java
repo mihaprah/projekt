@@ -305,4 +305,12 @@ public class TenantServices {
         }
         return convertToDTO(tenant);
     }
+
+    public int getContactAmount(String tenantUniqueName) {
+        if (tenantUniqueName.isEmpty()) {
+            throw new CustomHttpException("Tenant unique name cannot be empty", 400, ExceptionCause.USER_ERROR);
+        }
+        List<Contact> contacts = mongoTemplate.findAll(Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType());
+        return contacts.size();
+    }
 }

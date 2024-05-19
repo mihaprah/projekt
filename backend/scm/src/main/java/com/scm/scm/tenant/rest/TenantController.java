@@ -167,4 +167,15 @@ public class TenantController {
         }
         return ResponseEntity.ok(tenantServices.updateDisplayProps(tenantId, displayProps));
     }
+
+    @GetMapping(value = "/size/{tenant_unique_name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Integer> getTenantSize(@PathVariable("tenant_unique_name") String tenantUniqueName, @RequestHeader("userToken") String userToken) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToContact(decodedToken.getEmail(), tenantUniqueName)) {
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
+        }
+        int size = tenantServices.getContactAmount(tenantUniqueName);
+        return ResponseEntity.ok(size);
+    }
 }
