@@ -18,6 +18,7 @@ const Home = () => {
                 setUser(currentUser);
                 const idToken = await currentUser.getIdToken();
                 setToken(idToken);
+                router.push(`/tenants`)
             }
         });
         return () => unsubscribe();

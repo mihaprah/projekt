@@ -1,8 +1,8 @@
 import React from 'react';
-import { cookies } from 'next/headers';
-import { Contact as ContactModel } from '../../../models/Contact';
-import { Tenant as TenantModel } from '../../../models/Tenant';
-import Contacts from "@/Components/Contact/Contacts";
+import {cookies} from 'next/headers';
+import {Contact as ContactModel} from '../../../models/Contact';
+import {Tenant as TenantModel} from '../../../models/Tenant';
+import SearchContacts from "@/Components/Search/SearchContacts";
 
 const fetchContacts = async (tenant_unique_name: string, IdToken: string): Promise<ContactModel[]> => {
     try {
@@ -41,10 +41,7 @@ const fetchTenant = async (tenant_unique_name: string, IdToken: string): Promise
             throw new Error(`Error fetching tenant: ${res.statusText}`);
         }
 
-        const tenant = await res.json();
-        console.log(tenant)
-
-        return tenant;
+        return await res.json();
     } catch (error) {
         console.error('Failed to fetch tenant:', error);
         return {} as TenantModel;
@@ -85,13 +82,7 @@ const ContactsPage = async (props: { params: { tenant_unique_name: string } }) =
 
     return (
         <div className="container mx-auto p-4">
-            <Contacts
-                contacts={contacts}
-                tenant={tenant}
-                contactsNumber={contactsNumber}
-                tenantUniqueName={tenant_unique_name}
-                IdToken={IdToken}
-            />
+            <SearchContacts contacts={contacts} tenant={tenant} contactsNumber={contactsNumber} tenantUniqueName={tenant_unique_name} IdToken={IdToken}/>
         </div>
     );
 };

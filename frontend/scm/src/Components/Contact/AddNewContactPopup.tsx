@@ -6,15 +6,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import CreatableSelect from 'react-select/creatable';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {useRouter} from "next/navigation";
 
 interface AddNewContactPopupProps {
     tenantUniqueName: string;
+    onSave: () => void;
 }
 
-const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueName }) => {
+const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueName, onSave }) => {
     const router = useRouter();
     const [showPopup, setShowPopup] = useState(false);
     const [formData, setFormData] = useState<ContactModel>({
@@ -132,6 +133,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
 
             setShowPopup(false);
             toast.success("Contact added successfully!");
+            onSave();
             router.refresh();
         } catch (error) {
             toast.error("Failed to add contact.");

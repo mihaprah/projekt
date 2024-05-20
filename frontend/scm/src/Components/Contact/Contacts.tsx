@@ -4,27 +4,28 @@ import { useRouter } from 'next/navigation';
 import { Contact as ContactModel } from '../../models/Contact';
 import { Tenant as TenantModel } from '../../models/Tenant';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTh, faList, faGear, faUsers, faTrash } from '@fortawesome/free-solid-svg-icons';
-import EditTenantPopup from "@/Components/Tenant/EditTenantPopup";
-import AddNewContactPopup from "@/Components/Contact/AddNewContactPopup";
-import { ToastContainer, toast } from 'react-toastify';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface ContactsProps {
     contacts: ContactModel[];
-    tenant: TenantModel;
-    contactsNumber: number;
     tenantUniqueName: string;
     IdToken: string;
+    view: 'grid' | 'list';
 }
 
-const Contacts: React.FC<ContactsProps> = ({ contacts, tenant, contactsNumber, tenantUniqueName, IdToken }) => {
+const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken, view }) => {
     const router = useRouter();
-    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
     const [selectAll, setSelectAll] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [contactToDelete, setContactToDelete] = useState<string | null>(null);
+    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+    const handleViewDetails = (contactId: string, tenantUniqueName: string) => {
+        router.push(`/contacts/${tenantUniqueName}/${contactId}`);
+    };
 
     useEffect(() => {
         // Check localStorage for the view mode preference
@@ -32,17 +33,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenant, contactsNumber, t
         if (savedViewMode === 'list' || savedViewMode === 'grid') {
             setViewMode(savedViewMode as 'list' | 'grid');
         }
-    }, []);
-
-    const handleViewDetails = (contactId: string, tenantUniqueName: string) => {
-        router.push(`/contacts/${tenantUniqueName}/${contactId}`);
-    };
-
-    const toggleViewMode = () => {
-        const newViewMode = viewMode === 'grid' ? 'list' : 'grid';
-        setViewMode(newViewMode);
-        localStorage.setItem('viewMode', newViewMode);
-    };
+    }, [view]);
 
     const handleSelectContact = (contactId: string) => {
         setSelectedContacts(prevSelected => {
@@ -92,40 +83,9 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenant, contactsNumber, t
 
     return (
         <div>
-            <ToastContainer />
-            <div className="flex justify-between mb-4">
-                <div>
-                    <div className={"flex items-center"}>
-                        <h2 className="text-3xl font-semibold text-primary-light">{tenant.title}</h2>
-                        <span className="ml-6 mr-2 text-2xl font-semibold ">{contactsNumber}</span>
-                        <FontAwesomeIcon className="h-5 w-auto mb-0.5 " icon={faUsers}/>
-                    </div>
-                    <p className="text-m text-gray-600 mt-1 break-words max-w-96">{tenant.description}</p>
-                    <div className="mt-4 flex items-center space-x-3">
-                        <EditTenantPopup tenant={tenant}/>
-                        <button type="button"
-                                className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                            Tenant Settings
-                            <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faGear}/>
-                        </button>
-                    </div>
-                </div>
-                <div className="flex items-end space-x-3">
-                    <AddNewContactPopup tenantUniqueName={tenantUniqueName}/>
-                    <button onClick={toggleViewMode}
-                            className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                        {viewMode === 'grid' ? (
-                            <FontAwesomeIcon icon={faList}/>
-                        ) : (
-                            <FontAwesomeIcon icon={faTh}/>
-                        )}
-                    </button>
-                </div>
-            </div>
-
             {viewMode === 'grid' ? (
                 <div>
-                    <div className="flex items-center mb-2">
+                    <div className="flex items-center mb-3">
                         <input
                             type="checkbox"
                             checked={selectAll}
