@@ -80,10 +80,16 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
         setFormData(prevState => ({ ...prevState, tags }));
     };
 
-    const handlePropsChange = (index: number, selectedOption: any, value: string) => {
+    const handleKeyChange = (index: number, selectedOption: any) => {
         const updatedProps = [...newProps];
         const key = selectedOption ? selectedOption.value : updatedProps[index].key;
-        updatedProps[index] = { key, value };
+        updatedProps[index] = { key, value: updatedProps[index].value };
+        setNewProps(updatedProps);
+    };
+
+    const handleValueChange = (index: number, value: string) => {
+        const updatedProps = [...newProps];
+        updatedProps[index] = { key: updatedProps[index].key, value };
         setNewProps(updatedProps);
     };
 
@@ -201,7 +207,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                     <div key={index} className="flex items-center mb-2">
                                         <CreatableSelect
                                             value={{ label: prop.key, value: prop.key }}
-                                            onChange={(selectedOption) => handlePropsChange(index, selectedOption, prop.value)}
+                                            onChange={(selectedOption) => handleKeyChange(index, selectedOption)}
                                             options={availablePropsKeys.map(key => ({ label: key, value: key }))}
                                             className="flex-1 mr-2"
                                             isClearable
@@ -211,7 +217,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                         <input
                                             type="text"
                                             value={prop.value}
-                                            onChange={(e) => handlePropsChange(index, { value: prop.key }, e.target.value)}
+                                            onChange={(e) => handleValueChange(index, e.target.value)}
                                             className="flex-1 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         />
                                         <button

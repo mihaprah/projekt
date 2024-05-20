@@ -1,5 +1,3 @@
-// src/components/ContactDetails.tsx
-
 "use client";
 
 import React from 'react';
@@ -19,14 +17,14 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({ contact, activityLog, t
         return <div>Loading...</div>;
     }
 
-    let date = new Date(contact.createdAt);
+    let date = contact.createdAt ? new Date(contact.createdAt) : new Date();
     let formattedDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
 
     return (
         <div className="container mx-auto p-4">
             <div className="flex justify-between items-center">
                 <h1 className="text-3xl font-semibold mt-3">{contact.title}</h1>
-                <EditContactPopup contact={contact} />
+                <EditContactPopup contact={contact} tenantUniqueName={tenantUniqueName} />
             </div>
             <div className="flex py-3">
                 {contact.tags.map((tag, index) => (
