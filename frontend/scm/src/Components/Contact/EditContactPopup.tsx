@@ -218,7 +218,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                     name="comments"
                                     value={formData.comments}
                                     onChange={handleChange}
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline min-h-32"
                                 />
                             </div>
                             <div className="mb-4">
@@ -240,7 +240,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                     Properties
                                 </label>
                                 {newProps.map((prop, index) => (
-                                    <div key={index} className="flex items-center mb-2">
+                                    <div key={index} className="flex items-center mb-3">
                                         <CreatableSelect
                                             value={{ label: prop.key, value: prop.key }}
                                             onChange={(selectedOption) => handleKeyChange(index, selectedOption)}
@@ -266,18 +266,18 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                     </div>
                                 ))}
                                 <button type="button" onClick={addNewPropsField}
-                                        className="btn px-4 btn-sm bg-primary-light border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                                        className="mt-2 px-4 border-2 text-primary-light border-primary-light rounded-8 font-semibold hover:scale-105 transition ">
                                     Add Property
                                 </button>
                             </div>
                             <div className="mt-4 flex justify-center items-center">
                                 <button onClick={() => setShowPopup(false)}
-                                        className="btn mt-4 mx-3 px-5 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition">
+                                        className="btn mt-4 mx-1 px-5 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition">
                                     Close Popup
                                 </button>
                                 <button type="button" onClick={handleSave}
-                                        className="btn mt-4 mx-3 px-5 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
-                                    Save
+                                        className="btn mt-4 mx-1 px-5 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
+                                    Save changes
                                 </button>
                             </div>
                         </form>
@@ -292,13 +292,13 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                         <div className="flex justify-end">
                             <button
                                 onClick={() => setShowConfirmation(false)}
-                                className="btn bg-gray-300 text-black mr-2">
+                                className="rounded-8 px-4 py-2 font-semibold bg-gray-300 text-black mr-2 hover:scale-105 transition">
                                 Cancel
                             </button>
                             <button
                                 onClick={handleDelete}
-                                className="btn bg-red-600 text-white">
-                                Delete
+                                className="px-4 bg-danger font-semibold rounded-8 py-2 text-white hover:scale-105 transition">
+                                Delete <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faTrash} />
                             </button>
                         </div>
                     </div>
