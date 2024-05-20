@@ -61,11 +61,11 @@ public class PredefinedSearchController {
         return ResponseEntity.ok(predefinedSearchServices.deletePredefinedSearch(predefinedSearchId));
     }
 
-    @GetMapping(value = "/user/{user}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<PredefinedSearchDTO>> getPredefinedSearchByUser(@PathVariable("user") String user,  @RequestHeader("userToken") String userToken) {
+    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<PredefinedSearchDTO>> getPredefinedSearchByUser(@RequestHeader("userToken") String userToken) {
         FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
 
-        List<PredefinedSearchDTO> predefinedSearches = predefinedSearchServices.getPredefinedSearchByUser(user);
+        List<PredefinedSearchDTO> predefinedSearches = predefinedSearchServices.getPredefinedSearchByUser(decodedToken.getEmail());
         return ResponseEntity.ok(predefinedSearches);
     }
 
