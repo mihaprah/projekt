@@ -116,7 +116,7 @@ public class ContactServices {
         sanitizedContactDTO.setTags(contactDTO.getTags().stream().map(StringEscapeUtils::escapeHtml4).toList());
         sanitizedContactDTO.setProps(contactDTO.getProps().entrySet().stream().collect(Collectors.toMap(entry -> StringEscapeUtils.escapeHtml4(entry.getKey()), entry -> StringEscapeUtils.escapeHtml4(entry.getValue()))));
         sanitizedContactDTO.setAttributesToString(StringEscapeUtils.escapeHtml4(contactDTO.getAttributesToString()));
-
+        sanitizedContactDTO.setCreatedAt(LocalDateTime.now().toString());
         Contact contact = convertToEntity(sanitizedContactDTO);
         if (contact.getTenantUniqueName().isEmpty()) {
             throw new CustomHttpException(ExceptionMessage.TENANT_NAME_EMPTY.getExceptionMessage(), 400, ExceptionCause.USER_ERROR);

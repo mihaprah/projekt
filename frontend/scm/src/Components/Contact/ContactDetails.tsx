@@ -5,6 +5,7 @@ import { Contact as ContactModel } from '@/models/Contact';
 import { Event as EventModel } from '@/models/Event';
 import EventDisplay from '@/Components/Event/EventDisplay';
 import EditContactPopup from './EditContactPopup';
+import {ToastContainer} from "react-toastify";
 
 interface ContactDetailsProps {
     contact: ContactModel;
@@ -72,6 +73,7 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({ contact, activityLog, t
                     )}
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };

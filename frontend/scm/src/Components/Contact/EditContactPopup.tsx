@@ -5,6 +5,8 @@ import { Contact as ContactModel } from '../../models/Contact';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
 import CreatableSelect from 'react-select/creatable';
+import {toast} from "react-toastify";
+import {useRouter} from "next/navigation";
 
 interface EditContactPopupProps {
     contact: ContactModel;
@@ -12,6 +14,7 @@ interface EditContactPopupProps {
 }
 
 const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniqueName }) => {
+    const router = useRouter();
     const [showPopup, setShowPopup] = useState(false);
     const [formData, setFormData] = useState(contact);
 
@@ -129,8 +132,10 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
             console.log('Contact updated:', updatedContact);
 
             setShowPopup(false);
-            window.location.reload();
+            toast.success("Contact saved successfully!")
+            router.refresh();
         } catch (error) {
+            toast.error("Failed to save contact.")
             console.error('Failed to save contact:', error);
         }
     };

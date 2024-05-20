@@ -4,18 +4,27 @@ import React, { useState } from 'react';
 import { Tenant as TenantModel } from '../../models/Tenant';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import CreatableSelect from 'react-select/creatable';
+import {toast} from "react-toastify";
+import {useRouter} from "next/navigation";
 
 interface EditTenantPopupProps {
     tenant: TenantModel;
 }
 
 const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
+    const router = useRouter();
     const [showPopup, setShowPopup] = useState(false);
     const [formData, setFormData] = useState(tenant);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prevState => ({ ...prevState, [name]: value }));
+    };
+
+    const handleUsersChange = (selectedOptions: any) => {
+        const users = selectedOptions ? selectedOptions.map((option: any) => option.value) : [];
+        setFormData(prevState => ({ ...prevState, users }));
     };
 
     const handleSave = async () => {
@@ -37,10 +46,11 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
             console.log('Tenant updated:', updatedTenant);
 
 
-            // Close the popup
             setShowPopup(false);
-            window.location.reload();
+            toast.success("Tenant saved successfully!");
+            router.refresh();
         } catch (error) {
+            toast.error("Failed to save tenant.");
             console.error('Failed to save tenant:', error);
         }
     };
@@ -104,15 +114,14 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="users">
                                     Users
                                 </label>
-                                <input
-                                    type="text"
+                                <CreatableSelect
                                     id="users"
                                     name="users"
-                                    value={formData.users.join(', ')}
-                                    onChange={(e) => setFormData(prevState => ({ ...prevState, users: e.target.value.split(',').map(user => user.trim()) }))}
+                                    isMulti
+                                    value={formData.users.map(user => ({ label: user, value: user }))}
+                                    onChange={handleUsersChange}
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 />
-                                <p className="font-light text-xs mt-1">Separate Users with a comma</p>
                             </div>
                             <div className="mt-4 flex justify-center items-center">
                                 <button onClick={() => setShowPopup(false)}

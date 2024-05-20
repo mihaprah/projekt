@@ -6,13 +6,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import CreatableSelect from 'react-select/creatable';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {useRouter} from "next/navigation";
 
 interface AddNewContactPopupProps {
     tenantUniqueName: string;
 }
 
 const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueName }) => {
+    const router = useRouter();
     const [showPopup, setShowPopup] = useState(false);
     const [formData, setFormData] = useState<ContactModel>({
         id: '',
@@ -108,7 +111,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
             return acc;
         }, {} as { [key: string]: string });
 
-        setFormData(prevState => ({ ...prevState, props: finalProps }));
+        const updatedFormData = { ...formData, props: finalProps };
 
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts`, {
@@ -117,7 +120,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                     'Content-Type': 'application/json',
                     'userToken': `Bearer ${document.cookie.split('IdToken=')[1]}`,
                 },
-                body: JSON.stringify({ ...formData, props: finalProps }),
+                body: JSON.stringify(updatedFormData),
             });
 
             const textResponse = await res.text();
@@ -127,10 +130,11 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                 throw new Error(`Error saving contact: ${res.statusText}`);
             }
 
-            // Zapri popup
             setShowPopup(false);
-            window.location.reload();
+            toast.success("Contact added successfully!");
+            router.refresh();
         } catch (error) {
+            toast.error("Failed to add contact.");
             console.error('Failed to add contact:', error);
         }
     };
