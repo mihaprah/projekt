@@ -178,7 +178,6 @@ useEffect(() => {
                         <div className={"mt-4 justify-center items-center flex"}>
                             <button onClick={() => {
                                 setShowPopup(false);
-                                window.location.reload();
                             }}
                                     className="btn mt-4 mx-3 px-5 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition"
                             >Close Popup
