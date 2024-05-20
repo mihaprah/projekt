@@ -1,8 +1,10 @@
 "use client";
-import {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {PredefinedSearch, PredefinedSearch as SavedSearchesModel} from "@/models/PredefinedSearch";
 import {IconDefinition} from "@fortawesome/fontawesome-svg-core";
+import {faArrowDown, faArrowUp} from "@fortawesome/free-solid-svg-icons";
+import CreatableSelect from "react-select/creatable";
 
 interface SavedSearchesPopupProps {
     icon: IconDefinition;
@@ -19,7 +21,36 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("Error editing search");
     const [alertType, setAlertType] = useState("Error editing search");
+    const [availableTags, setAvailableTags] = useState<string[]>();
 
+useEffect(() => {
+    const fetchTags = async () => {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/unique/${props.savedSearch.onTenant}`, {
+                headers: {
+                    'userToken': `Bearer ${props.IdToken}`,
+                },
+            });
+
+            if (!res.ok) {
+                throw new Error(`Error fetching tags: ${res.statusText}`);
+            }
+
+            const tenant = await res.json();
+            const tags = Object.keys(tenant.contactTags).map(tag => (tag));
+            setAvailableTags(tags);
+        } catch (error) {
+            console.error('Failed to fetch tags:', error);
+        }
+    };
+        fetchTags();
+    }, [props.savedSearch.onTenant, props.IdToken]);
+
+    const handleTagsChange = (selectedOption: any) => {
+        setSavedSearch(values => {
+            return {...values, filter: selectedOption.map((option: any) => option.value)};
+        });
+    };
 
     const handleInputChange = (key: string, newValue: string) => {
         setSavedSearch(values => {
@@ -54,10 +85,6 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
     }
 
     const handleEdit = async (savedSearch: PredefinedSearch, IdToken: string) => {
-        const filter = savedSearch.filter.toString();
-        const filterArray: string[] = filter.split(",");
-        const updatedSearch = {...savedSearch, filter: filterArray};
-
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/predefined_searches`, {
                 method: 'PUT',
@@ -65,7 +92,7 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
                     'Content-Type': 'application/json',
                     'userToken': `Bearer ${IdToken}`,
                 },
-                body: JSON.stringify(updatedSearch),
+                body: JSON.stringify(savedSearch),
             });
             if (!res.ok) {
                 throw new Error(`Error editing search: ${res.statusText}`);
@@ -102,40 +129,57 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
                             <div className={"p-2 justify-between flex flex-col items-start"}>
                                 <label className={"font-normal mb-1"}>Title</label>
                                 <p className={"text-lg font-semibold mb-2"}>
-                                    {savedSearch?.title}
+                                    {savedSearch.title}
                                 </p>
                                 <label className={"font-normal mb-1"}>On Tenant</label>
                                 <p className={"text-lg font-semibold mb-2"}>
-                                    {savedSearch?.onTenant}
+                                    {savedSearch.onTenant}
                                 </p>
                                 <label className={"font-normal mb-1"}>Search query</label>
                                 <input
                                     className={"input input-bordered w-60 mb-2"}
                                     type="text"
-                                    value={savedSearch?.searchQuery}
+                                    value={savedSearch.searchQuery}
                                     onChange={(e) => handleInputChange("searchQuery", e.target.value)}
                                 />
                                 <label className={"font-normal mb-1"}>Orientation</label>
-                                <select
-                                    className={"input input-bordered w-60 mb-2"}
-                                    value={savedSearch?.sortOrientation}
-                                    onChange={(e) => handleInputChange("sortOrientation", e.target.value)}
-                                >
-                                    <option value='ASC'>ASC</option>
-                                    <option value='DESC'>DESC</option>
-                                </select>
+                                <div className="flex items-center mb-2">
+                                    <input
+                                        type="radio"
+                                        id="asc"
+                                        name="orientation"
+                                        value="ASC"
+                                        checked={savedSearch.sortOrientation === 'ASC'}
+                                        onChange={(e) => handleInputChange("sortOrientation", e.target.value)}
+                                    />
+                                    <label className="ml-2" htmlFor="asc">ASC <FontAwesomeIcon className="ml-1" icon={faArrowUp}/> </label>
+                                </div>
+                                <div className="flex items-center mb-2">
+                                    <input
+                                        type="radio"
+                                        id="desc"
+                                        name="orientation"
+                                        value="DESC"
+                                        checked={savedSearch.sortOrientation === 'DESC'}
+                                        onChange={(e) => handleInputChange("sortOrientation", e.target.value)}
+                                    />
+                                    <label className="ml-2" htmlFor="desc">DESC <FontAwesomeIcon className="ml-1" icon={faArrowDown}/> </label>
+                                </div>
                                 <label className={"font-normal mb-1"}>Filter</label>
-                                <textarea
-                                    className={"input input-bordered w-60 mb-2"}
-                                    value={savedSearch.filter}
-                                    onChange={(e) => {
-                                        handleInputChange("filter", e.target.value)
-                                    }}
+                                <CreatableSelect
+                                    isMulti
+                                    value={savedSearch.filter.map(tag => ({label: tag, value: tag}))}
+                                    options={availableTags?.map(tag => ({label: tag, value: tag}))}
+                                    onChange={handleTagsChange}
+                                    className="shadow appearance-none border rounded w-60 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 />
                             </div>
                         )}
                         <div className={"mt-4 justify-center items-center flex"}>
-                            <button onClick={() => setShowPopup(false)}
+                            <button onClick={() => {
+                                setShowPopup(false);
+                                window.location.reload();
+                            }}
                                     className="btn mt-4 mx-3 px-5 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition"
                             >Close Popup
                             </button>

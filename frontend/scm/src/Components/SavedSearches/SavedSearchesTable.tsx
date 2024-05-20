@@ -1,7 +1,7 @@
 "use client";
 import {PredefinedSearch as SavedSearchesModel} from "@/models/PredefinedSearch";
 import React, {useEffect, useState} from "react";
-import {faPen, faPlus, faTrash} from "@fortawesome/free-solid-svg-icons";
+import {faPen, faTrash, faArrowUp, faArrowDown} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import SavedSearchesPopup from "@/Components/SavedSearches/SavedSearchesPopup";
 
@@ -51,14 +51,7 @@ const SavedSearchesTable: React.FC<SavedSearchesTableProps> = (props) => {
 
     return (
         <div className="container mx-auto p-4">
-            <div className="flex justify-between items-center pb-8">
-                <h1 className="text-3xl pt-5 text-secondary-dark font-semibold">Saved searches</h1>
-                <button
-                    className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                    Add new Search
-                    <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faPlus}/>
-                </button>
-            </div>
+            <h1 className="text-3xl pt-5 text-secondary-dark font-semibold mb-5">Saved searches</h1>
         <div className="overflow-x-auto">
             {savedSearches.length === 0 ? (<p className="text-center text-2xl mx-auto mt-10">No saved searches found!</p>
             ) : (
@@ -83,7 +76,13 @@ const SavedSearchesTable: React.FC<SavedSearchesTableProps> = (props) => {
                             <td>{search.title}</td>
                             <td>{search.searchQuery}</td>
                             <td>{search.onTenant}</td>
-                            <td>{search.sortOrientation}</td>
+                                <td>
+                                    {search.sortOrientation}
+                                    {search.sortOrientation === 'ASC' ?
+                                        <FontAwesomeIcon className="ml-1" icon={faArrowUp}/> :
+                                        <FontAwesomeIcon className="ml-1" icon={faArrowDown}/>
+                                    }
+                                </td>
                                 <td>
                                     {search.filter.length > 4
                                         ? `${search.filter.slice(0, 4).join(', ')} + more`
