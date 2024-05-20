@@ -4,7 +4,7 @@ export interface Contact {
     user: string;
     tenantUniqueName: string;
     comments: string;
-    createdAt: Date;
+    createdAt?: Date;
     tags: string[];
     props: Record<string, string>;
     attributesToString: string;

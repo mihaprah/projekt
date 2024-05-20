@@ -3,21 +3,32 @@
 import React, { useState, useEffect } from 'react';
 import { Contact as ContactModel } from '../../models/Contact';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import CreatableSelect from 'react-select/creatable';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
-interface EditContactPopupProps {
-    contact: ContactModel;
+
+interface AddNewContactPopupProps {
     tenantUniqueName: string;
 }
 
-const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniqueName }) => {
+const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueName }) => {
     const [showPopup, setShowPopup] = useState(false);
-    const [formData, setFormData] = useState(contact);
+    const [formData, setFormData] = useState<ContactModel>({
+        id: '',
+        title: '',
+        user: '',
+        tenantUniqueName: tenantUniqueName,
+        comments: '',
+        tags: [],
+        props: {},
+        createdAt: new Date(),
+        attributesToString: ""
+    });
 
     const [availableTags, setAvailableTags] = useState<{ label: string, value: string }[]>([]);
     const [availablePropsKeys, setAvailablePropsKeys] = useState<string[]>([]);
-    const [newProps, setNewProps] = useState<{ key: string, value: string }[]>([]);
+    const [newProps, setNewProps] = useState<{ key: string, value: string }[]>([{ key: '', value: '' }]);
 
     useEffect(() => {
         const fetchTags = async () => {
@@ -64,11 +75,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
 
         fetchTags();
         fetchPropsKeys();
-
-        // Initialize newProps from existing formData.props
-        const propsArray = Object.entries(contact.props).map(([key, value]) => ({ key, value }));
-        setNewProps(propsArray);
-    }, [contact, tenantUniqueName]);
+    }, [tenantUniqueName]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -87,15 +94,13 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
         setNewProps(updatedProps);
     };
 
-    const addNewPropsField = () => {
-        setNewProps([...newProps, { key: '', value: '' }]);
-    };
 
     const removePropsField = (index: number) => {
         const updatedProps = [...newProps];
         updatedProps.splice(index, 1);
         setNewProps(updatedProps);
     };
+
 
     const handleSave = async () => {
         const finalProps = newProps.reduce((acc, { key, value }) => {
@@ -107,7 +112,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
 
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts`, {
-                method: 'PUT',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'userToken': `Bearer ${document.cookie.split('IdToken=')[1]}`,
@@ -115,31 +120,37 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                 body: JSON.stringify({ ...formData, props: finalProps }),
             });
 
+            const textResponse = await res.text();
+            console.log('Raw response:', textResponse);
+
             if (!res.ok) {
                 throw new Error(`Error saving contact: ${res.statusText}`);
             }
 
-            const updatedContact = await res.json();
-            console.log('Contact updated:', updatedContact);
-
+            // Zapri popup
             setShowPopup(false);
             window.location.reload();
         } catch (error) {
-            console.error('Failed to save contact:', error);
+            console.error('Failed to add contact:', error);
         }
+    };
+
+    const addNewPropsField = () => {
+        setNewProps([...newProps, { key: '', value: '' }]);
     };
 
     return (
         <div>
             <button onClick={() => setShowPopup(true)}
-                    className="btn mt-2 px-6 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                Edit Contact <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faEdit} />
+                    className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                Add new Contact
+                <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faPlus} />
             </button>
 
             {showPopup && (
                 <div className="absolute z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-60 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg max-w-3xl w-full">
-                        <h2 className="font-semibold mb-4 text-2xl">Edit Contact</h2>
+                        <h2 className="font-semibold mb-4 text-2xl">Add New Contact</h2>
                         <form>
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
@@ -187,7 +198,6 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                     id="tags"
                                     name="tags"
                                     isMulti
-                                    value={formData.tags.map(tag => ({ label: tag, value: tag }))}
                                     options={availableTags}
                                     onChange={handleTagsChange}
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -200,9 +210,9 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                 {newProps.map((prop, index) => (
                                     <div key={index} className="flex items-center mb-2">
                                         <CreatableSelect
-                                            value={{ label: prop.key, value: prop.key }}
+                                            value={{label: prop.key, value: prop.key}}
                                             onChange={(selectedOption) => handlePropsChange(index, selectedOption, prop.value)}
-                                            options={availablePropsKeys.map(key => ({ label: key, value: key }))}
+                                            options={availablePropsKeys.map(key => ({label: key, value: key}))}
                                             className="flex-1 mr-2"
                                             isClearable
                                             isSearchable
@@ -211,7 +221,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                         <input
                                             type="text"
                                             value={prop.value}
-                                            onChange={(e) => handlePropsChange(index, { value: prop.key }, e.target.value)}
+                                            onChange={(e) => handlePropsChange(index, {value: prop.key}, e.target.value)}
                                             className="flex-1 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         />
                                         <button
@@ -219,7 +229,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                             onClick={() => removePropsField(index)}
                                             className="ml-2 text-gray-500 hover:text-gray-700 focus:outline-none"
                                         >
-                                            <FontAwesomeIcon icon={faTimes} />
+                                            <FontAwesomeIcon icon={faTimes}/>
                                         </button>
                                     </div>
                                 ))}
@@ -246,4 +256,4 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
     );
 };
 
-export default EditContactPopup;
+export default AddNewContactPopup;
