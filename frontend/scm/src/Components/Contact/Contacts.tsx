@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Contact as ContactModel } from '../../models/Contact';
-import { Tenant as TenantModel } from '../../models/Tenant';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
@@ -13,9 +12,10 @@ interface ContactsProps {
     tenantUniqueName: string;
     IdToken: string;
     view: 'grid' | 'list';
+    onDeleted: () => void;
 }
 
-const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken, view }) => {
+const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken, view, onDeleted }) => {
     const router = useRouter();
     const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
     const [selectAll, setSelectAll] = useState(false);
@@ -70,6 +70,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
             }
             toast.success('Contact deleted successfully');
             router.refresh();
+            onDeleted();
         } catch (error) {
             toast.error('Failed to delete contact');
             console.error('Failed to delete contact:', error);

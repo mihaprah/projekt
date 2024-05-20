@@ -135,14 +135,14 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
         localStorage.setItem('viewMode', newViewMode);
     };
 
-    const handleContactAdd = async () => {
+    const handleContactChange = async () => {
         const fetchContacts = await fetchAllContacts(props.tenantUniqueName, props.IdToken);
         setContacts(fetchContacts);
     }
 
     return (
         <>
-            <TenantInfoDisplay tenant={props.tenant} contactsNumber={props.contactsNumber} onSave={handleContactAdd}/>
+            <TenantInfoDisplay tenant={props.tenant} contactsNumber={props.contactsNumber} onSave={handleContactChange}/>
             <div className={"my-3 flex items-center"}>
                 <input type="text" placeholder="Search" className="rounded-8 text-gray-700 border px-3 w-96 mr-3 h-9"
                        onChange={(e) => handleSearchQuery(e.target.value)}/>
@@ -197,6 +197,7 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
                 tenantUniqueName={props.tenantUniqueName}
                 IdToken={props.IdToken}
                 view={viewMode}
+                onDeleted={handleContactChange}
             />
         </>
     );
