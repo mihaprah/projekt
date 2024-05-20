@@ -3,7 +3,7 @@ export enum SortOrientation {
     DESC = 'DESC',
 }
 
-interface PredefinedSearch {
+export interface PredefinedSearch {
     id: string;
     searchQuery: string;
     user: string;
