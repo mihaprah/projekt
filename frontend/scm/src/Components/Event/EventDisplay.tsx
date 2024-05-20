@@ -1,77 +1,67 @@
-import {EventState} from "@/models/Event";
-import {Event} from "@/models/Event";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircle} from "@fortawesome/free-solid-svg-icons";
+import React from 'react';
+import { EventState } from "@/models/Event";
+import { Event } from "@/models/Event";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircle, faTag, faPen, faPlus, faMinus, faCalendarAlt, faClock } from "@fortawesome/free-solid-svg-icons";
 
 interface EventDisplayProps {
     event: Event;
 }
 
-const EventDisplay: React.FC<EventDisplayProps> = (props) => {
-    const date = new Date(props.event.eventTime);
-    let formattedDate = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`;
-    let formattedHours = `${date.getHours()}:${date.getMinutes() < 10 ? '0' : ''}${date.getMinutes()}`;
+const EventDisplay: React.FC<EventDisplayProps> = ({ event }) => {
+    const date = new Date(event.eventTime);
+    let formattedDate = `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}`;
+    let formattedTime = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+
+    const getEventIcon = () => {
+        switch (event.eventState) {
+            case EventState.UPDATED:
+                return faPen;
+            case EventState.TAG_ADD:
+                return faTag;
+            case EventState.TAG_REMOVED:
+                return faTag;
+            case EventState.PROP_ADD:
+                return faPlus;
+            case EventState.PROP_REMOVED:
+                return faMinus;
+            default:
+                return faCircle;
+        }
+    };
+
+    const getEventDescription = () => {
+        switch (event.eventState) {
+            case EventState.UPDATED:
+                return `UPDATED ${event.propKey} from "${event.prevState}" to "${event.currentState}"`;
+            case EventState.TAG_ADD:
+                return `ADDED TAG "${event.currentState}"`;
+            case EventState.TAG_REMOVED:
+                return `REMOVED TAG "${event.prevState}"`;
+            case EventState.PROP_ADD:
+                return `ADDED ATTRIBUTE "${event.propKey}" and set it to "${event.currentState}"`;
+            case EventState.PROP_REMOVED:
+                return `REMOVED ATTRIBUTE "${event.propKey}" with value "${event.prevState}"`;
+            default:
+                return '';
+        }
+    };
 
     return (
-        <div className={"py-1"}>
-            {props.event.eventState === EventState.UPDATED && (
-                <div className={"flex items-center"}>
-                    <FontAwesomeIcon icon={faCircle} className={"m-1 h-2 w-auto"}/>
-                    <p className={"m-1"}>{props.event.user}</p>
-                    <p className={"m-1"}>UPDATED</p>
-                    <p className={"m-1 font-semibold"}>{props.event.propKey}</p>
-                    <p className={"m-1"}>from</p>
-                    <p className={"m-1 font-semibold"}>{props.event.prevState}</p>
-                    <p className={"m-1"}>to</p>
-                    <p className={"m-1 font-semibold"}>{props.event.currentState}</p>
-                    <p className={"m-1"}>at {formattedHours}</p>
-                    <p className={"m-1"}>on {formattedDate}</p>
+        <div className="py-2 border-b last:border-b-0 border-gray-300">
+            <div className="flex items-center">
+                <FontAwesomeIcon icon={getEventIcon()} className="text-primary mr-2 h-4 w-4" />
+                <div className="flex-grow">
+                    <span className="text-gray-700 mr-2">{event.user}</span>
+                    <span className="text-gray-700">{getEventDescription()}</span>
                 </div>
-            )}
-            {props.event.eventState === EventState.TAG_ADD && (
-                <div className={"flex items-center"}>
-                    <FontAwesomeIcon icon={faCircle} className={"m-1 h-2 w-auto"}/>
-                    <p className={"m-1"}>{props.event.user}</p>
-                    <p className={"m-1"}>ADDED TAG</p>
-                    <p className={"m-1 font-semibold"}>{props.event.currentState}</p>
-                    <p className={"m-1"}>at {formattedHours}</p>
-                    <p className={"m-1"}>on {formattedDate}</p>
+                <div className="flex items-center text-gray-500 ml-2">
+                    <FontAwesomeIcon icon={faClock} className="mr-1" />
+                    <span>{formattedTime}</span>
+                    <FontAwesomeIcon icon={faCalendarAlt} className="ml-3 mr-1" />
+                    <span>{formattedDate}</span>
                 </div>
-            )}
-            {props.event.eventState === EventState.TAG_REMOVED && (
-                <div className={"flex items-center"}>
-                    <FontAwesomeIcon icon={faCircle} className={"m-1 h-2 w-auto"}/>
-                    <p className={"m-1"}>{props.event.user}</p>
-                    <p className={"m-1"}>REMOVED TAG</p>
-                    <p className={"m-1 font-semibold"}>{props.event.prevState}</p>
-                    <p className={"m-1"}>at {formattedHours}</p>
-                    <p className={"m-1"}>on {formattedDate}</p>
-                </div>
-            )}
-            {props.event.eventState === EventState.PROP_ADD && (
-                <div className={"flex items-center"}>
-                    <FontAwesomeIcon icon={faCircle} className={"m-1 h-2 w-auto"}/>
-                    <p className={"m-1"}>{props.event.user}</p>
-                    <p className={"m-1"}>ADDED ATTRIBUTE</p>
-                    <p className={"m-1 font-semibold"}>{props.event.propKey}</p>
-                    <p className={"m-1"}>and set it to</p>
-                    <p className={"m-1 font-semibold"}>{props.event.currentState}</p>
-                    <p className={"m-1"}>at {formattedHours}</p>
-                    <p className={"m-1"}>on {formattedDate}</p>
-                </div>
-            )}
-            {props.event.eventState === EventState.PROP_REMOVED && (
-                <div className={"flex items-center"}>
-                    <FontAwesomeIcon icon={faCircle} className={"m-1 h-2 w-auto"}/>
-                    <p className={"m-1"}>{props.event.user}</p>
-                    <p className={"m-1"}>REMOVED ATTRIBUTE</p>
-                    <p className={"m-1 font-semibold"}>{props.event.propKey}</p>
-                    <p className={"m-1"}>and it's value</p>
-                    <p className={"m-1 font-semibold"}>{props.event.prevState}</p>
-                    <p className={"m-1"}>at {formattedHours}</p>
-                    <p className={"m-1"}>on {formattedDate}</p>
-                </div>
-            )}
+            </div>
         </div>
     );
 }

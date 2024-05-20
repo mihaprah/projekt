@@ -3,10 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { Contact as ContactModel } from '../../models/Contact';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTimes, faTrash } from '@fortawesome/free-solid-svg-icons';
 import CreatableSelect from 'react-select/creatable';
-import {toast} from "react-toastify";
-import {useRouter} from "next/navigation";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from "next/navigation";
 
 interface EditContactPopupProps {
     contact: ContactModel;
@@ -16,6 +17,7 @@ interface EditContactPopupProps {
 const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniqueName }) => {
     const router = useRouter();
     const [showPopup, setShowPopup] = useState(false);
+    const [showConfirmation, setShowConfirmation] = useState(false);
     const [formData, setFormData] = useState(contact);
 
     const [availableTags, setAvailableTags] = useState<{ label: string, value: string }[]>([]);
@@ -132,20 +134,49 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
             console.log('Contact updated:', updatedContact);
 
             setShowPopup(false);
-            toast.success("Contact saved successfully!")
+            toast.success("Contact saved successfully!");
             router.refresh();
         } catch (error) {
-            toast.error("Failed to save contact.")
+            toast.error("Failed to save contact.");
             console.error('Failed to save contact:', error);
+        }
+    };
+
+    const handleDelete = async () => {
+        setShowConfirmation(false);
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts/${contact.id}/${tenantUniqueName}`, {
+                method: 'DELETE',
+                headers: {
+                    'userToken': `Bearer ${document.cookie.split('IdToken=')[1]}`,
+                },
+            });
+
+            if (!res.ok) {
+                throw new Error(`Error deleting contact: ${res.statusText}`);
+            }
+            toast.success('Contact deleted successfully');
+            router.push(`/contacts/${tenantUniqueName}`);
+            router.refresh();
+        } catch (error) {
+            toast.error('Failed to delete contact');
+            console.error('Failed to delete contact:', error);
         }
     };
 
     return (
         <div>
-            <button onClick={() => setShowPopup(true)}
-                    className="btn mt-2 px-6 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                Edit Contact <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faEdit} />
-            </button>
+            <ToastContainer />
+            <div className="flex space-x-4">
+                <button onClick={() => setShowPopup(true)}
+                        className="btn mt-2 px-6 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                    Edit Contact <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faEdit} />
+                </button>
+                <button onClick={() => setShowConfirmation(true)}
+                        className="btn mt-2 px-6 btn-sm bg-danger border-0 text-white dark:bg-danger dark:hover:bg-danger rounded-8 font-semibold hover:scale-105 transition hover:bg-danger">
+                    Delete Contact <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faTrash} />
+                </button>
+            </div>
 
             {showPopup && (
                 <div className="absolute z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-60 inset-0">
@@ -250,6 +281,26 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {showConfirmation && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+                    <div className="bg-white p-8 rounded-lg shadow-lg">
+                        <h2 className="text-xl mb-4">Are you sure you want to delete this contact?</h2>
+                        <div className="flex justify-end">
+                            <button
+                                onClick={() => setShowConfirmation(false)}
+                                className="btn bg-gray-300 text-black mr-2">
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                className="btn bg-red-600 text-white">
+                                Delete
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
