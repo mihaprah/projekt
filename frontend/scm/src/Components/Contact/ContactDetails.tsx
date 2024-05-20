@@ -1,17 +1,13 @@
 "use client";
 
-import React, {useState} from 'react';
+import React from 'react';
 import {Contact as ContactModel} from '@/models/Contact';
 import {Event as EventModel} from '@/models/Event';
 import EventDisplay from '@/Components/Event/EventDisplay';
 import EditContactPopup from './EditContactPopup';
-import {toast, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faUser, faPhone, faEnvelope, faClock, faTag, faComment} from "@fortawesome/free-solid-svg-icons";
-import {router} from "next/client";
-import {useRouter} from "next/navigation";
-
+import {faUser, faPhone, faEnvelope, faTag, faComment} from "@fortawesome/free-solid-svg-icons";
 interface ContactDetailsProps {
     contact: ContactModel;
     activityLog: EventModel[];
@@ -28,10 +24,8 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({contact, activityLog, te
 
     return (
         <div>
-            <ToastContainer/>
             <h2 className="container mx-auto pr-6 pb-6 pt-6 text-3xl font-semibold">Contact details</h2>
             <div className="container mx-auto p-6 bg-white shadow-xl rounded-md">
-                <ToastContainer/>
                 <div className="flex justify-between items-center mb-6">
                     <div className="flex items-center space-x-4">
                         <div>
