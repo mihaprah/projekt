@@ -74,12 +74,12 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
                         <div className="flex justify-end">
                             <button
                                 onClick={() => setShowConfirmation(false)}
-                                className="btn bg-gray-300 text-black mr-2">
+                                className="px-4 py-1 rounded-8 bg-gray-300 text-black font-semibold mr-2">
                                 Cancel
                             </button>
                             <button
                                 onClick={handleDeleteTenant}
-                                className="btn bg-red-600 text-white">
+                                className="px-4 py-1 rounded-8 bg-danger font-semibold text-white">
                                 Delete
                             </button>
                         </div>
