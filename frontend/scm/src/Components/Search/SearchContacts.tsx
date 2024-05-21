@@ -162,69 +162,75 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
     return (
         <>
             <TenantInfoDisplay tenant={props.tenant} contactsNumber={props.contactsNumber} onSave={handleContactChange}/>
-            <div className={"my-3 flex items-center"}>
-                <input value={searchQuery} type="text" placeholder="Search" className="rounded-8 text-gray-700 border px-3 w-96 mr-3 h-9"
-                       onChange={(e) => handleSearchQuery(e.target.value)}/>
-                <CreatableSelect
-                    id="tags"
-                    name="tags"
-                    isMulti
-                    value={tags ? tags.map(tag => ({label: tag, value: tag})) : []}
-                    options={availableTags}
-                    onChange={handleTagsChange}
-                    className="rounded-8 w-96 py-2 px-3"
-                />
-                {showAsc ? (
-                    <div>
-                        <button className={"bg-primary-light rounded-l-8 text-white px-4 py-1 items-center"}>
-                            <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faArrowUp}/>
-                        </button>
-                        <button className={"border rounded-r-8 px-4 py-1 mr-3 items-center"}
-                                onClick={() => handleSort(false)}>
-                            <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faArrowDown}/>
-                        </button>
-                    </div>
-                ) : (
-                    <div>
-                        <button className={"border rounded-l-8 px-4 py-1 items-center"}
-                                onClick={() => handleSort(true)}>
-                            <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faArrowUp}/>
-                        </button>
-                        <button className={"bg-primary-light text-white rounded-r-8 px-4 py-1 mr-3 items-center"}>
-                            <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faArrowDown}/>
-                        </button>
-                    </div>
-                )}
+            {contacts.length !== 0 ? (
+                <>
+                    <div className={"my-3 flex items-center"}>
+                        <input value={searchQuery} type="text" placeholder="Search" className="rounded-8 text-gray-700 border px-3 w-96 mr-3 h-9"
+                               onChange={(e) => handleSearchQuery(e.target.value)}/>
+                        <CreatableSelect
+                            id="tags"
+                            name="tags"
+                            isMulti
+                            value={tags ? tags.map(tag => ({label: tag, value: tag})) : []}
+                            options={availableTags}
+                            onChange={handleTagsChange}
+                            className="rounded-8 w-96 py-2 px-3"
+                        />
+                        {showAsc ? (
+                            <div>
+                                <button className={"bg-primary-light rounded-l-8 text-white px-4 py-1 items-center"}>
+                                    <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faArrowUp}/>
+                                </button>
+                                <button className={"border rounded-r-8 px-4 py-1 mr-3 items-center"}
+                                        onClick={() => handleSort(false)}>
+                                    <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faArrowDown}/>
+                                </button>
+                            </div>
+                        ) : (
+                            <div>
+                                <button className={"border rounded-l-8 px-4 py-1 items-center"}
+                                        onClick={() => handleSort(true)}>
+                                    <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faArrowUp}/>
+                                </button>
+                                <button className={"bg-primary-light text-white rounded-r-8 px-4 py-1 mr-3 items-center"}>
+                                    <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faArrowDown}/>
+                                </button>
+                            </div>
+                        )}
 
-                <button
-                    className="btn px-4 mr-3 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark"
-                    onClick={handleSave}>
-                    Save Search
-                    <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faFloppyDisk}/>
-                </button>
-                <button onClick={toggleViewMode}
-                        className="btn mr-3 px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                    {viewMode === 'grid' ? (
-                        <FontAwesomeIcon icon={faList}/>
-                    ) : (
-                        <FontAwesomeIcon icon={faTh}/>
-                    )}
-                </button>
-                {reset && (
-                    <button
-                        onClick={() => handleReset()}
-                        className="text-primary-light hover:text-primary-dark transition">
-                        reset search <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faRotateLeft} />
-                    </button>
-                )}
-            </div>
-            <Contacts
-                contacts={contacts}
-                tenantUniqueName={props.tenantUniqueName}
-                IdToken={props.IdToken}
-                view={viewMode}
-                onDeleted={handleContactChange}
-            />
+                        <button
+                            className="btn px-4 mr-3 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark"
+                            onClick={handleSave}>
+                            Save Search
+                            <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faFloppyDisk}/>
+                        </button>
+                        <button onClick={toggleViewMode}
+                                className="btn mr-3 px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                            {viewMode === 'grid' ? (
+                                <FontAwesomeIcon icon={faList}/>
+                            ) : (
+                                <FontAwesomeIcon icon={faTh}/>
+                            )}
+                        </button>
+                        {reset && (
+                            <button
+                                onClick={() => handleReset()}
+                                className="text-primary-light hover:text-primary-dark transition">
+                                reset search <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faRotateLeft} />
+                            </button>
+                        )}
+                    </div>
+                    <Contacts
+                        contacts={contacts}
+                        tenantUniqueName={props.tenantUniqueName}
+                        IdToken={props.IdToken}
+                        view={viewMode}
+                        onDeleted={handleContactChange}
+                    />
+                </>
+                ) : (
+                <p className="text-center text-2xl mx-auto mt-10">No contacts created yet!</p>
+            )}
         </>
     );
 }

@@ -57,7 +57,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
 
         const fetchPropsKeys = async () => {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts/${tenantUniqueName}`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/unique/${tenantUniqueName}`, {
                     headers: {
                         'userToken': `Bearer ${document.cookie.split('IdToken=')[1]}`,
                     },
@@ -67,9 +67,9 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                     throw new Error(`Error fetching contacts: ${res.statusText}`);
                 }
 
-                const contacts = await res.json();
-                if (contacts.length > 0 && contacts[0].props) {
-                    const propsKeys = Object.keys(contacts[0].props);
+                const tenant = await res.json();
+                if (tenant) {
+                    const propsKeys = Object.keys(tenant.labels);
                     setAvailablePropsKeys(propsKeys);
                 }
             } catch (error) {
@@ -172,19 +172,6 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                                 />
                             </div>
                             <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="user">
-                                    User
-                                </label>
-                                <input
-                                    type="text"
-                                    id="user"
-                                    name="user"
-                                    value={formData.user}
-                                    onChange={handleChange}
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                />
-                            </div>
-                            <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="comments">
                                     Comments
                                 </label>
@@ -193,7 +180,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                                     name="comments"
                                     value={formData.comments}
                                     onChange={handleChange}
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    className="shadow appearance-none border rounded w-full min-h-32 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 />
                             </div>
                             <div className="mb-4">
