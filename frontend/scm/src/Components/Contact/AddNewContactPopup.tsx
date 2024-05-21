@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { Contact as ContactModel } from '../../models/Contact';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import Select from 'react-select';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
+import CreatableSelect from "react-select/creatable";
 
 interface AddNewContactPopupProps {
     tenantUniqueName: string;
@@ -226,7 +226,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="tags">
                                     Tags
                                 </label>
-                                <Select
+                                <CreatableSelect
                                     id="tags"
                                     name="tags"
                                     isMulti
@@ -241,7 +241,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                                 </label>
                                 {newProps.map((prop, index) => (
                                     <div key={index} className="flex items-center mb-3">
-                                        <Select
+                                        <CreatableSelect
                                             value={{label: prop.key, value: prop.key}}
                                             onChange={(selectedOption) => handlePropsChange(index, selectedOption, prop.value)}
                                             options={availablePropsKeys.map(key => ({label: key, value: key}))}
