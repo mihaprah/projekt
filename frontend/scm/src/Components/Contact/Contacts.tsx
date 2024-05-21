@@ -141,7 +141,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
                                 <button
                                     onClick={() => confirmDelete(contact.id)}
                                     className="absolute top-2 right-2 text-red-600 hover:text-red-800 transition">
-                                    <FontAwesomeIcon icon={faTrash} />
+                                    <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faTrash} />
                                 </button>
                             </div>
                         ))}
@@ -194,7 +194,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
                                     <button
                                         onClick={() => confirmDelete(contact.id)}
                                         className="text-red-600 hover:text-red-800 transition ml-4">
-                                        <FontAwesomeIcon icon={faTrash} />
+                                        <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faTrash} />
                                     </button>
                                 </td>
                             </tr>

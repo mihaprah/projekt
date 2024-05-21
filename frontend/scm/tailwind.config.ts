@@ -29,6 +29,7 @@ const config: Config = {
       },
       width: {
         "150px": "150px",
+        "400px": "400px",
         "600px": "600px",
       },
       borderRadius: {

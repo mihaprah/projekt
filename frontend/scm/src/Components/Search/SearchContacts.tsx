@@ -197,9 +197,9 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
                 <button onClick={toggleViewMode}
                         className="btn mr-3 px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
                     {viewMode === 'grid' ? (
-                        <FontAwesomeIcon icon={faList}/>
+                        <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faList}/>
                     ) : (
-                        <FontAwesomeIcon icon={faTh}/>
+                        <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faTh}/>
                     )}
                 </button>
                 {reset && (

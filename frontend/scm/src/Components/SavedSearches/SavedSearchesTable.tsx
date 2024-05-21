@@ -5,6 +5,7 @@ import {faPen, faTrash, faArrowUp, faArrowDown} from "@fortawesome/free-solid-sv
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import SavedSearchesPopup from "@/Components/SavedSearches/SavedSearchesPopup";
 import {ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 interface SavedSearchesTableProps {
     IdToken: string;
@@ -52,8 +53,8 @@ const SavedSearchesTable: React.FC<SavedSearchesTableProps> = (props) => {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-3xl pt-5 text-secondary-dark font-semibold mb-5">Saved searches</h1>
             <ToastContainer />
+            <h1 className="text-3xl pt-5 text-secondary-dark font-semibold mb-5">Saved searches</h1>
         <div className="overflow-x-auto">
             {savedSearches.length === 0 ? (<p className="text-center text-2xl mx-auto mt-10">No saved searches found!</p>
             ) : (
@@ -81,8 +82,8 @@ const SavedSearchesTable: React.FC<SavedSearchesTableProps> = (props) => {
                                 <td>
                                     {search.sortOrientation}
                                     {search.sortOrientation === 'ASC' ?
-                                        <FontAwesomeIcon className="ml-1" icon={faArrowUp}/> :
-                                        <FontAwesomeIcon className="ml-1" icon={faArrowDown}/>
+                                        <FontAwesomeIcon className="ml-1 w-2.5 h-auto" icon={faArrowUp}/> :
+                                        <FontAwesomeIcon className="ml-1 w-2.5 h-auto" icon={faArrowDown}/>
                                     }
                                 </td>
                                 <td>
@@ -92,10 +93,10 @@ const SavedSearchesTable: React.FC<SavedSearchesTableProps> = (props) => {
                                     }
                                 </td>
                                 <td>
-                                    <SavedSearchesPopup icon={faPen} title={"Edit search"} savedSearch={search} IdToken={props.IdToken} onSavedSearchAction={() => handleSavedSearchAction(props.IdToken)} action={"edit"} />
+                                    <SavedSearchesPopup icon={faPen} title={"Edit Search"} savedSearch={search} IdToken={props.IdToken} onSavedSearchAction={() => handleSavedSearchAction(props.IdToken)} action={"edit"} />
                                 </td>
                             <td>
-                                <SavedSearchesPopup icon={faTrash} title={"Delete search"} savedSearch={search} IdToken={props.IdToken} onSavedSearchAction={() => handleSavedSearchAction(props.IdToken)} action={"delete"}/>
+                                <SavedSearchesPopup icon={faTrash} title={"Delete Search"} savedSearch={search} IdToken={props.IdToken} onSavedSearchAction={() => handleSavedSearchAction(props.IdToken)} action={"delete"}/>
                             </td>
                         </tr>
 
