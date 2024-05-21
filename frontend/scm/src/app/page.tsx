@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebase";
+import TenantsDashboard from "@/Components/Tenant/TenantsDashboard";
 
 const Home = () => {
     const [user, setUser] = useState<any>(null);
-    const [token, setToken] = useState<string | null>(null);
+    const [token, setToken] = useState<string | null>("");
     const router = useRouter();
 
     useEffect(() => {
@@ -18,7 +19,6 @@ const Home = () => {
                 setUser(currentUser);
                 const idToken = await currentUser.getIdToken();
                 setToken(idToken);
-                router.push(`/tenants`)
             }
         });
         return () => unsubscribe();
@@ -29,8 +29,8 @@ const Home = () => {
     }
 
     return (
-        <div>
-            <h1>Welcome, {user.email}, token: {token}</h1>
+        <div className="container mx-auto p-4">
+            <TenantsDashboard IdToken={token || ""}/>
         </div>
     );
 };

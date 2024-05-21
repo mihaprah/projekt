@@ -42,7 +42,7 @@ const Navbar = () => {
                     <nav className={"navbar"}>
                         <ul>
                             <li className={"m-2 p-3 rounded-8 hover:bg-primary-dark hover:scale-105 transition hover:shadow dark:hover:bg-primary-light "}>
-                                <Link href={"/tenants"}>
+                                <Link href={"/"}>
                                     <span className={"mr-2 font-semibold"}>Tenants</span>
                                     <FontAwesomeIcon className={"h-5 w-auto ml-1"} icon={faUsersRectangle}/>
                                 </Link>
