@@ -1,6 +1,6 @@
 "use client";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faArrowDown, faArrowUp, faFloppyDisk, faList, faTh} from "@fortawesome/free-solid-svg-icons";
+import {faArrowDown, faArrowUp, faFloppyDisk, faList, faRotateLeft, faTh} from "@fortawesome/free-solid-svg-icons";
 import React, {useEffect, useState} from "react";
 import CreatableSelect from "react-select/creatable";
 import {Contact as ContactModel} from "@/models/Contact";
@@ -73,11 +73,12 @@ const fetchAllContacts = async (tenantUniqueName: string, IdToken: string): Prom
 const SearchContacts: React.FC<SearchContactsProps> = (props) => {
     const [showAsc, setShowAsc] = useState<boolean>(true);
     const [searchQuery, setSearchQuery] = useState<string>("");
-    const [tags, setTags] = useState<string[]>();
+    const [tags, setTags] = useState<string[]>([]);
     const availableTags = Object.keys(props.tenant.contactTags).map(tag => ({ label: tag, value: tag }));
     const [contacts, setContacts] = useState<ContactModel[]>(props.contacts);
     const [search, setSearch] = useState<SearchModel>();
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+    const [reset, setReset] = useState<boolean>(false);
 
     useEffect(() => {
         // Check localStorage for the view mode preference
@@ -97,6 +98,7 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
             filter: tags,
             sortOrientation: sortOrientation,
         };
+        checkForReset(tags, query, sortOrientation);
         setSearch(newSearch);
         return newSearch;
     }
@@ -140,11 +142,28 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
         setContacts(fetchContacts);
     }
 
+    const checkForReset = (tags: string[], query: string, sortOrientation: SortOrientation) => {
+        if (query !== "" || tags.length > 0 || sortOrientation !== SortOrientation.ASC) {
+            setReset(true);
+        } else {
+            setReset(false);
+        }
+    }
+
+    const handleReset = () => {
+        setReset(false);
+        setSearchQuery("");
+        setTags([]);
+        setShowAsc(true);
+        const newSearch = createSearch( [], "", SortOrientation.ASC);
+        handleUpdate(newSearch);
+    }
+
     return (
         <>
             <TenantInfoDisplay tenant={props.tenant} contactsNumber={props.contactsNumber} onSave={handleContactChange}/>
             <div className={"my-3 flex items-center"}>
-                <input type="text" placeholder="Search" className="rounded-8 text-gray-700 border px-3 w-96 mr-3 h-9"
+                <input value={searchQuery} type="text" placeholder="Search" className="rounded-8 text-gray-700 border px-3 w-96 mr-3 h-9"
                        onChange={(e) => handleSearchQuery(e.target.value)}/>
                 <CreatableSelect
                     id="tags"
@@ -184,13 +203,20 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
                     <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faFloppyDisk}/>
                 </button>
                 <button onClick={toggleViewMode}
-                        className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                        className="btn mr-3 px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
                     {viewMode === 'grid' ? (
                         <FontAwesomeIcon icon={faList}/>
                     ) : (
                         <FontAwesomeIcon icon={faTh}/>
                     )}
                 </button>
+                {reset && (
+                    <button
+                        onClick={() => handleReset()}
+                        className="text-primary-light hover:text-primary-dark transition">
+                        reset search <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faRotateLeft} />
+                    </button>
+                )}
             </div>
             <Contacts
                 contacts={contacts}
