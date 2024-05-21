@@ -88,9 +88,11 @@ class TenantDTOTests {
                 .active(true)
                 .users(Arrays.asList("user1", "user2"))
                 .contactTags(new HashMap<>())
+                .labels(new HashMap<>())
+                .displayProps(Arrays.asList("prop1", "prop2"))
                 .build();
 
-        String expected = "TenantDTO(id=id, title=title, tenantUniqueName=uniqueName, description=description, colorCode=#ffffff, active=true, users=[user1, user2], contactTags={})";
+        String expected = "TenantDTO(id=id, title=title, tenantUniqueName=uniqueName, description=description, colorCode=#ffffff, active=true, users=[user1, user2], contactTags={}, labels={}, displayProps=[prop1, prop2])";
         assertEquals(expected, tenantDTO.toString());
     }
 

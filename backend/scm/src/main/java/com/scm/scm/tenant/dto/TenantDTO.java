@@ -21,4 +21,6 @@ public class TenantDTO {
     private boolean active;
     private List<String> users;
     private Map<String, Integer> contactTags;
+    private Map<String, String> labels;
+    private List<String> displayProps;
 }

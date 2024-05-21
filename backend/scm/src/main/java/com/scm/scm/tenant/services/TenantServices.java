@@ -39,6 +39,8 @@ public class TenantServices {
                 .active(tenant.isActive())
                 .users(tenant.getUsers())
                 .contactTags(tenant.getContactTags())
+                .labels(tenant.getLabels())
+                .displayProps(tenant.getDisplayProps())
                 .build();
     }
 
@@ -52,6 +54,8 @@ public class TenantServices {
                 .active(tenantDTO.isActive())
                 .users(tenantDTO.getUsers())
                 .contactTags(tenantDTO.getContactTags())
+                .labels(tenantDTO.getLabels())
+                .displayProps(tenantDTO.getDisplayProps())
                 .build();
     }
 
