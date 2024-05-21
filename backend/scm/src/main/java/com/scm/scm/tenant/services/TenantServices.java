@@ -253,7 +253,7 @@ public class TenantServices {
         }
         Map<String, String> labels = new java.util.HashMap<>();
         for (String key : keys) {
-            labels.put(key, "");
+            labels.put(key, key);
         }
         log.info("Predefined labels set");
         return labels;
@@ -279,8 +279,8 @@ public class TenantServices {
             if (tenant.getLabels() != null) {
                 Map<String, String> currentLabels = tenant.getLabels();
                 for (String key : newKeys) {
-                    if (!currentLabels.containsKey(key)) continue;
-                    currentLabels.put(key, "");
+                    if (currentLabels.containsKey(key)) continue;
+                    currentLabels.put(key, key);
                 }
                 tenant.setLabels(currentLabels);
                 tenantRepository.save(tenant);
