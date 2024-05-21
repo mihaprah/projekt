@@ -5,6 +5,7 @@ import {PredefinedSearch, PredefinedSearch as SavedSearchesModel} from "@/models
 import {IconDefinition} from "@fortawesome/fontawesome-svg-core";
 import {faArrowDown, faArrowUp} from "@fortawesome/free-solid-svg-icons";
 import CreatableSelect from "react-select/creatable";
+import {toast} from "react-toastify";
 
 interface SavedSearchesPopupProps {
     icon: IconDefinition;
@@ -18,9 +19,6 @@ interface SavedSearchesPopupProps {
 const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
     const [showPopup, setShowPopup] = useState(false);
     const [savedSearch, setSavedSearch] = useState(props.savedSearch);
-    const [showAlert, setShowAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState("Error editing search");
-    const [alertType, setAlertType] = useState("Error editing search");
     const [availableTags, setAvailableTags] = useState<string[]>();
 
 useEffect(() => {
@@ -67,18 +65,16 @@ useEffect(() => {
                 }
             });
             if (!res.ok) {
+                toast.error("Error to delete search!");
                 throw new Error(`Error deleting search: ${res.statusText}`);
             }
-            setAlertMessage("Search deleted successfully!");
-            setAlertType("alert-success");
-            setShowAlert(true);
+            toast.success("Search deleted successfully!");
             setTimeout(() => {
                 props.onSavedSearchAction();
                 setShowPopup(false);
-                setShowAlert(false);
-            }, 1500);
-
+            }, 2000);
         } catch (error) {
+            toast.error("Failed to delete search!");
             console.error('Failed to delete search:', error);
         }
 
@@ -97,16 +93,15 @@ useEffect(() => {
             if (!res.ok) {
                 throw new Error(`Error editing search: ${res.statusText}`);
             }
-            setAlertMessage("Search edited successfully!");
-            setAlertType("alert-success");
-            setShowAlert(true);
+
+            toast.success("Search edited successfully!");
             setTimeout(() => {
                 props.onSavedSearchAction();
                 setShowPopup(false);
-                setShowAlert(false);
-            }, 1500);
+            }, 2000);
 
         } catch (error) {
+            toast.error("Failed to edit search!");
             console.error('Failed to edit search:', error);
         }
     }
@@ -191,24 +186,11 @@ useEffect(() => {
                                     className="btn mt-4 mx-3 px-5 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
                                     Save
                                 </button>}
-
                         </div>
                     </div>
-                    {showAlert && (
-                        <div role="alert" className={`${alertType} alert fixed bottom-0 w-full`}>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6"
-                                 fill="none" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <span>{alertMessage}.</span>
-                        </div>
-                    )}
                 </div>
             )}
         </div>
     );
-
 }
-
 export default SavedSearchesPopup;

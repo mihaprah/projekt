@@ -4,6 +4,7 @@ import React, {useEffect, useState} from "react";
 import {faPen, faTrash, faArrowUp, faArrowDown} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import SavedSearchesPopup from "@/Components/SavedSearches/SavedSearchesPopup";
+import {ToastContainer} from "react-toastify";
 
 interface SavedSearchesTableProps {
     IdToken: string;
@@ -52,6 +53,7 @@ const SavedSearchesTable: React.FC<SavedSearchesTableProps> = (props) => {
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-3xl pt-5 text-secondary-dark font-semibold mb-5">Saved searches</h1>
+            <ToastContainer />
         <div className="overflow-x-auto">
             {savedSearches.length === 0 ? (<p className="text-center text-2xl mx-auto mt-10">No saved searches found!</p>
             ) : (
