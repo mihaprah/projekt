@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Contact as ContactModel } from '../../models/Contact';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -22,13 +22,14 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [contactToDelete, setContactToDelete] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [contactsPerPage, setContactsPerPage] = useState(50);
 
     const handleViewDetails = (contactId: string, tenantUniqueName: string) => {
         router.push(`/contacts/${tenantUniqueName}/${contactId}`);
     };
 
     useEffect(() => {
-        // Check localStorage for the view mode preference
         const savedViewMode = localStorage.getItem('viewMode');
         if (savedViewMode === 'list' || savedViewMode === 'grid') {
             setViewMode(savedViewMode as 'list' | 'grid');
@@ -69,8 +70,8 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
                 throw new Error(`Error deleting contact: ${res.statusText}`);
             }
             toast.success('Contact deleted successfully');
-            router.refresh();
             onDeleted();
+            router.refresh();
         } catch (error) {
             toast.error('Failed to delete contact');
             console.error('Failed to delete contact:', error);
@@ -82,8 +83,31 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
         setShowConfirmation(true);
     };
 
+    const indexOfLastContact = currentPage * contactsPerPage;
+    const indexOfFirstContact = indexOfLastContact - contactsPerPage;
+    const currentContacts = contacts.slice(indexOfFirstContact, indexOfLastContact);
+
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
     return (
         <div>
+            <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center">
+                    <label htmlFor="contactsPerPage" className="mr-2">Show:</label>
+                    <select
+                        id="contactsPerPage"
+                        value={contactsPerPage}
+                        onChange={(e) => setContactsPerPage(Number(e.target.value))}
+                        className="form-select"
+                    >
+                        <option value={10}>10</option>
+                        <option value={25}>25</option>
+                        <option value={50}>50</option>
+                        <option value={100}>100</option>
+                    </select>
+                </div>
+            </div>
+
             {viewMode === 'grid' ? (
                 <div>
                     <div className="flex items-center mb-3">
@@ -97,7 +121,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {contacts.map(contact => (
+                        {currentContacts.map(contact => (
                             <div key={contact.id} className="border p-4 rounded shadow relative flex flex-col">
                                 <div className="flex items-center mb-2">
                                     <input
@@ -123,8 +147,6 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
                         ))}
                     </div>
                 </div>
-
-
             ) : (
                 <div className="overflow-x-auto">
                     <table className="min-w-full bg-white">
@@ -147,7 +169,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
                         </tr>
                         </thead>
                         <tbody>
-                        {contacts.map(contact => (
+                        {currentContacts.map(contact => (
                             <tr key={contact.id}>
                                 <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-300">
                                     <input
@@ -181,6 +203,22 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
                     </table>
                 </div>
             )}
+
+            <div className="flex justify-between items-center my-4">
+                <button
+                    onClick={() => paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="btn bg-gray-300 text-black mr-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <FontAwesomeIcon icon={faChevronLeft} /> Previous
+                </button>
+                <span className="text-lg">{`Page ${currentPage} of ${Math.ceil(contacts.length / contactsPerPage)}`}</span>
+                <button
+                    onClick={() => paginate(currentPage + 1)}
+                    disabled={currentPage === Math.ceil(contacts.length / contactsPerPage)}
+                    className="btn bg-gray-300 text-black ml-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Next <FontAwesomeIcon icon={faChevronRight} />
+                </button>
+            </div>
 
             {showConfirmation && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
