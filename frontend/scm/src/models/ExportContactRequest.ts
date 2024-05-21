@@ -1,5 +1,5 @@
-interface ExportContactRequest {
-    user: string;
+export interface ExportContactRequest {
+    userToken: string;
     tenantUniqueName: string;
     tenantId: string;
     contactIds: string[];
