@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { Contact as ContactModel } from '../../models/Contact';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import CreatableSelect from 'react-select/creatable';
+import Select from 'react-select';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface AddNewContactPopupProps {
     tenantUniqueName: string;
@@ -98,13 +98,11 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
         setNewProps(updatedProps);
     };
 
-
     const removePropsField = (index: number) => {
         const updatedProps = [...newProps];
         updatedProps.splice(index, 1);
         setNewProps(updatedProps);
     };
-
 
     const handleSave = async () => {
         const finalProps = newProps.reduce((acc, { key, value }) => {
@@ -145,16 +143,57 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
         setNewProps([...newProps, { key: '', value: '' }]);
     };
 
+    const openPopup = async () => {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts/${tenantUniqueName}`, {
+                headers: {
+                    'userToken': `Bearer ${document.cookie.split('IdToken=')[1]}`,
+                },
+            });
+
+            if (!res.ok) {
+                throw new Error(`Error fetching last contact: ${res.statusText}`);
+            }
+
+            const contacts = await res.json();
+            let propsArray = [{ key: '', value: '' }];
+            if (contacts && contacts.length > 0) {
+                const lastContact = contacts[contacts.length - 1];
+                if (lastContact.props) {
+                    propsArray = Object.entries(lastContact.props).map(([key, value]) => ({ key, value: '' }));
+                }
+            }
+
+            setFormData({
+                id: '',
+                title: '',
+                user: '',
+                tenantUniqueName: tenantUniqueName,
+                comments: '',
+                tags: [],
+                props: {},
+                createdAt: new Date(),
+                attributesToString: ""
+            });
+            setNewProps(propsArray);
+            setShowPopup(true);
+        } catch (error) {
+            console.error('Failed to fetch last contact props:', error);
+        }
+    };
+
+
     return (
         <div>
-            <button onClick={() => setShowPopup(true)}
+            <button onClick={openPopup}
                     className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
                 Add new Contact
-                <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faPlus} />
+                <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faPlus}/>
             </button>
 
             {showPopup && (
-                <div className="absolute z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-60 inset-0">
+                <div
+                    className="absolute z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-60 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg max-w-3xl w-full">
                         <h2 className="font-semibold mb-4 text-2xl">Add New Contact</h2>
                         <form>
@@ -187,7 +226,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="tags">
                                     Tags
                                 </label>
-                                <CreatableSelect
+                                <Select
                                     id="tags"
                                     name="tags"
                                     isMulti
@@ -202,14 +241,14 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                                 </label>
                                 {newProps.map((prop, index) => (
                                     <div key={index} className="flex items-center mb-3">
-                                        <CreatableSelect
+                                        <Select
                                             value={{label: prop.key, value: prop.key}}
                                             onChange={(selectedOption) => handlePropsChange(index, selectedOption, prop.value)}
                                             options={availablePropsKeys.map(key => ({label: key, value: key}))}
                                             className="flex-1 mr-2"
                                             isClearable
                                             isSearchable
-                                            placeholder="Select or create key"
+                                            placeholder="Select key"
                                         />
                                         <input
                                             type="text"
