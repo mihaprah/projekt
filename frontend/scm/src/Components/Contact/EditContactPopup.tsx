@@ -206,6 +206,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                     name="user"
                                     value={formData.user}
                                     onChange={handleChange}
+                                    disabled={true}
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 />
                             </div>

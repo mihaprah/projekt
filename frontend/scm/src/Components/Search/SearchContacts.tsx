@@ -8,6 +8,7 @@ import {Tenant as TenantModel} from "@/models/Tenant";
 import {PredefinedSearch as SearchModel, SortOrientation} from "@/models/PredefinedSearch";
 import Contacts from "@/Components/Contact/Contacts";
 import TenantInfoDisplay from "@/Components/Tenant/TenantInfoDisplay";
+import Select from 'react-select';
 
 interface SearchContactsProps {
     contacts: ContactModel[];
@@ -74,7 +75,7 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
     const [showAsc, setShowAsc] = useState<boolean>(true);
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [tags, setTags] = useState<string[]>([]);
-    const availableTags = Object.keys(props.tenant.contactTags).map(tag => ({ label: tag, value: tag }));
+    const availableTags = Object.keys(props.tenant.contactTags || {}).map(tag => ({ label: tag, value: tag }));
     const [contacts, setContacts] = useState<ContactModel[]>(props.contacts);
     const [search, setSearch] = useState<SearchModel>();
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -167,7 +168,7 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
                     <div className={"my-3 flex items-center"}>
                         <input value={searchQuery} type="text" placeholder="Search" className="rounded-8 text-gray-700 border px-3 w-96 mr-3 h-9"
                                onChange={(e) => handleSearchQuery(e.target.value)}/>
-                        <CreatableSelect
+                        <Select
                             id="tags"
                             name="tags"
                             isMulti

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tenants")
@@ -66,13 +67,18 @@ public class TenantController {
         FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
 
         List<TenantDTO> tenants = tenantServices.getTenantsByUser(decodedToken.getEmail());
-        return ResponseEntity.ok(tenants);
-    }
 
+        List<TenantDTO> activeTenants = tenants.stream()
+                .filter(TenantDTO::isActive)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(activeTenants);
+    }
+    
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TenantDTO> createTenant(@RequestHeader("userToken") String userToken, @RequestBody TenantDTO tenantDTO) {
         FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
-
+        tenantDTO.setActive(true);
         TenantDTO createdTenant = tenantServices.addTenant(tenantDTO);
         return ResponseEntity.ok(createdTenant);
     }
