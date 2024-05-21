@@ -96,7 +96,7 @@ class ContactTests {
 
         String attributesToString = contact.contactAttributesToString();
 
-        assertEquals("testtitle,tag1,tag2,prop1,prop2,", attributesToString);
+        assertEquals("testtitle,tag1,tag2,prop1,prop2,value1,value2,", attributesToString);
     }
 
     @Test

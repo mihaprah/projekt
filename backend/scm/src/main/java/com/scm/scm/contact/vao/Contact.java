@@ -43,7 +43,11 @@ public class Contact {
         for (String prop : this.getProps().keySet()) {
             contactPropsKey.append(prop.toLowerCase()).append(",");
         }
-        return this.title.toLowerCase() + "," + contactTags + contactPropsKey;
+        StringBuilder contactPropsValues = new StringBuilder();
+        for (String prop : this.getProps().values()) {
+            contactPropsValues.append(prop.toLowerCase()).append(",");
+        }
+        return this.title.toLowerCase() + "," + contactTags + contactPropsKey + contactPropsValues;
     }
 
 }
