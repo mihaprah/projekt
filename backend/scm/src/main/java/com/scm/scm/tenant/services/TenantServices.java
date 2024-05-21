@@ -95,6 +95,7 @@ public class TenantServices {
             oldTenant.setDescription(tenant.getDescription());
             oldTenant.setColorCode(tenant.getColorCode());
             oldTenant.setTitle(tenant.getTitle());
+            oldTenant.setUsers(tenant.getUsers());
             tenantRepository.save(oldTenant);
         } else {
             throw new CustomHttpException(ExceptionMessage.TENANT_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR);

@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Tenant as TenantModel } from '../../models/Tenant';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import CreatableSelect from 'react-select/creatable';
 import {toast} from "react-toastify";
 import {useRouter} from "next/navigation";
+import {onAuthStateChanged} from "firebase/auth";
+import {auth} from "@/firebase";
 
 interface EditTenantPopupProps {
     tenant: TenantModel;
@@ -14,6 +16,7 @@ interface EditTenantPopupProps {
 
 const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
     const router = useRouter();
+    const [user, setUser] = useState<any>(null);
     const [showPopup, setShowPopup] = useState(false);
     const [formData, setFormData] = useState(tenant);
 
@@ -24,7 +27,7 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
 
     const handleUsersChange = (selectedOptions: any) => {
         const users = selectedOptions ? selectedOptions.map((option: any) => option.value) : [];
-        if (users.length === 0) {
+        if (users.length === 0 ) {
             toast.error("Error! At least one user is required");
             return;
         }

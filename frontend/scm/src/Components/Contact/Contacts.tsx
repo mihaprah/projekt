@@ -208,15 +208,15 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
                 <button
                     onClick={() => paginate(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="btn bg-gray-300 text-black mr-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <FontAwesomeIcon icon={faChevronLeft} /> Previous
+                    className="px-4 py-2 rounded-8 bg-gray-300 text-black mr-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition">
+                    <FontAwesomeIcon className={"w-2.5 h-auto mr-1"} icon={faChevronLeft} /> Previous
                 </button>
                 <span className="text-lg">{`Page ${currentPage} of ${Math.ceil(contacts.length / contactsPerPage)}`}</span>
                 <button
                     onClick={() => paginate(currentPage + 1)}
                     disabled={currentPage === Math.ceil(contacts.length / contactsPerPage)}
-                    className="btn bg-gray-300 text-black ml-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                    Next <FontAwesomeIcon icon={faChevronRight} />
+                    className="px-4 py-2 rounded-8 bg-gray-300 text-black ml-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition">
+                    Next <FontAwesomeIcon className={"w-2.5 h-auto ml-1"} icon={faChevronRight} />
                 </button>
             </div>
 

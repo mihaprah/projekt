@@ -71,6 +71,7 @@ public class ContactController {
     public ResponseEntity<String> addContact(@RequestHeader("userToken") String userToken, @RequestBody ContactDTO contactDTO) {
         FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
         String sanitizedUserToken = StringEscapeUtils.escapeHtml4(decodedToken.getEmail());
+        contactDTO.setUser(sanitizedUserToken);
 
         if (!userAccessService.hasAccessToContact(sanitizedUserToken, contactDTO.getTenantUniqueName())) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
