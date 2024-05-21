@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebase";
 import TenantsDashboard from "@/Components/Tenant/TenantsDashboard";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Home = () => {
     const [user, setUser] = useState<any>(null);
