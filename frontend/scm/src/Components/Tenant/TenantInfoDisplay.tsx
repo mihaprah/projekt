@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 interface TenantInfoDisplayProps {
     tenant: TenantModel;
     contactsNumber: number;
+    IdToken: string;
     onSave: () => void;
 }
 
@@ -55,7 +56,7 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
                     <p className="text-m text-gray-600 mt-1 break-words max-w-96">{props.tenant.description}</p>
                     <div className="mt-4 flex items-center space-x-3">
                         <EditTenantPopup tenant={props.tenant} />
-                        <TenantSettingsPopup tenant={props.tenant} />
+                        <TenantSettingsPopup tenant={props.tenant} IdToken={props.IdToken}/>
                         <button
                             onClick={() => setShowConfirmation(true)}
                             className="btn px-4 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700">

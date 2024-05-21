@@ -1,5 +1,5 @@
 import { Tenant as TenantModel } from '../../models/Tenant';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faGear} from "@fortawesome/free-solid-svg-icons";
 import {toast} from "react-toastify";
@@ -8,13 +8,39 @@ import CreatableSelect from 'react-select/creatable';
 
 interface TenantSettingsPopupProps {
     tenant: TenantModel;
+    IdToken: string;
+}
+
+const updateLabels = async (labels: any, tenantId: string, IdToken: string) => {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/labels/${tenantId}`, {
+            method: 'PUT',
+            headers: {
+                'userToken': `Bearer ${IdToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(labels)
+        });
+
+        if (!res.ok) {
+            throw new Error(`Error updating labels: ${res.statusText}`);
+        }
+
+    } catch (error) {
+        toast.error("Failed to save tenant settings.");
+        return [];
+    }
 }
 
 
-const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant}) => {
+const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdToken}) => {
     const router = useRouter();
     const [showPopup, setShowPopup] = useState(false);
     const [formData, setFormData] = useState(tenant);
+
+    useEffect(() => {
+        setFormData(tenant);
+    }, [tenant]);
 
     const handleLabelChange = (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
@@ -28,13 +54,12 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant}) => {
     };
     const handleSave = async () => {
         try {
-            console.log(formData);
+            await updateLabels(formData.labels, tenant.id, IdToken);
             setShowPopup(false);
             toast.success("Tenant settings saved successfully!");
             router.refresh();
         } catch (error) {
             toast.error("Failed to save tenant settings.");
-            console.error('Failed to save tenant settings:', error);
         }
     };
 
