@@ -59,7 +59,7 @@ const TenantsDashboard: React.FC<TenantDashboardProps> = (props) => {
                 <div className={"mt-4 mx-10"}>
                     <TenantPopup onTenantAdd={() => handleTenantAdd(props.IdToken)} IdToken={props.IdToken} icon={faPlus}
                                  buttonAction={"Add new"} title={"Add new Tenant"}
-                                 labels={["Title", "Description", "Colour", "Users"]}
+                                 labels={["Title", "Description", "Colour", "Other users"]}
                                  />
                 </div>
             </div>

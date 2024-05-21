@@ -1,5 +1,4 @@
 "use client";
-import styles from './Navbar.module.css';
 import Link from "next/link";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faUsersRectangle, faCircleUser} from "@fortawesome/free-solid-svg-icons";
@@ -38,7 +37,7 @@ const Navbar = () => {
     return (
         <div className={"bg-primary-light flex justify-between text-white dark:bg-primary-dark"}>
             <div className={"flex"}>
-                <img className={styles.logo} src={"/logo-scm.png"} alt={"Logo"}/>
+                <img className={"w-150px"} src={"/logo-scm.png"} alt={"Logo"}/>
                 <div className={"items-center justify-center flex"}>
                     <nav className={"navbar"}>
                         <ul>
@@ -65,7 +64,7 @@ const Navbar = () => {
                         <div tabIndex={0} role="button"
                              className="btn bg-primary-light dark:bg-primary-dark text-white border-none m-1 shadow-none hover:bg-primary-dark hover:scale-105 transition hover:shadow dark:hover:bg-primary-light">
                             <span className={"p-2 font-medium"}>{user.email}</span>
-                            <FontAwesomeIcon className={`${styles.icon} p-2`} icon={faCircleUser} />
+                            <FontAwesomeIcon className={`ml-1 w-5 h-auto p-2`} icon={faCircleUser} />
                         </div>
                         <ul tabIndex={0}
                             className="dropdown-content z-[1] menu p-2 shadow-none rounded-8 w-52 bg-primary-light dark:bg-primary-dark">

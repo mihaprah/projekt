@@ -27,6 +27,10 @@ const config: Config = {
         },
         danger: "#EA3323"
       },
+      width: {
+        "150px": "150px",
+        "600px": "600px",
+      },
       borderRadius: {
         '8': '8px',
       }

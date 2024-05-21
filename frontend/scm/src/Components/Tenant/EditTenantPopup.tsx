@@ -24,6 +24,10 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
 
     const handleUsersChange = (selectedOptions: any) => {
         const users = selectedOptions ? selectedOptions.map((option: any) => option.value) : [];
+        if (users.length === 0) {
+            toast.error("Error! At least one user is required");
+            return;
+        }
         setFormData(prevState => ({ ...prevState, users }));
     };
 
@@ -81,9 +85,10 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
                                     onChange={handleChange}
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 />
+                                <p className={"font-light text-xs mt-1"}>Min 3 letters</p>
                             </div>
                             <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
+                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
                                     Description
                                 </label>
                                 <textarea
@@ -93,9 +98,10 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
                                     onChange={handleChange}
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 />
+                                <p className={"font-light text-xs mt-1"}>Max 50 words</p>
                             </div>
                             <div className="mb-4">
-                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="colorCode">
+                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="colorCode">
                                     Colour
                                 </label>
                                 <select
@@ -125,12 +131,12 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
                             </div>
                             <div className="mt-4 flex justify-center items-center">
                                 <button onClick={() => setShowPopup(false)}
-                                        className="btn mt-4 mx-3 px-5 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition">
+                                        className="btn mt-4 mx-1 px-5 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition">
                                     Close Popup
                                 </button>
                                 <button type="button" onClick={handleSave}
-                                        className="btn mt-4 mx-3 px-5 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
-                                    Save
+                                        className="btn mt-4 mx-1 px-5 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
+                                    Save Tenant
                                 </button>
                             </div>
                         </form>
