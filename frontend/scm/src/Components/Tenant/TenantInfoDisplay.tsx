@@ -1,10 +1,11 @@
 import {ToastContainer} from "react-toastify";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faGear, faUsers} from "@fortawesome/free-solid-svg-icons";
+import {faUsers} from "@fortawesome/free-solid-svg-icons";
 import EditTenantPopup from "@/Components/Tenant/EditTenantPopup";
 import AddNewContactPopup from "@/Components/Contact/AddNewContactPopup";
 import React from "react";
 import {Tenant as TenantModel} from "@/models/Tenant";
+import TenantSettingsPopup from "@/Components/Tenant/TenantSettingsPopup";
 
 interface TenantInfoDisplayProps {
     tenant: TenantModel;
@@ -26,11 +27,7 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
                     <p className="text-m text-gray-600 mt-1 break-words max-w-96">{props.tenant.description}</p>
                     <div className="mt-4 flex items-center space-x-3">
                         <EditTenantPopup tenant={props.tenant}/>
-                        <button type="button"
-                                className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                            Tenant Settings
-                            <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faGear}/>
-                        </button>
+                        <TenantSettingsPopup tenant={props.tenant} />
                     </div>
                 </div>
                 <div className="flex items-end space-x-3">
