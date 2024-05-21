@@ -41,6 +41,7 @@ public class PredefinedSearchController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PredefinedSearchDTO> createPredefinedSearch(@RequestBody PredefinedSearchDTO predefinedSearchDTO,  @RequestHeader("userToken") String userToken) {
         FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+        predefinedSearchDTO.setUser(decodedToken.getEmail());
 
         PredefinedSearchDTO createdPredefinedSearch = predefinedSearchServices.addPredefinedSearch(predefinedSearchDTO);
         return ResponseEntity.ok(createdPredefinedSearch);
