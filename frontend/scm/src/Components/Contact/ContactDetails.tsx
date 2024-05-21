@@ -3,11 +3,12 @@
 import React from 'react';
 import {Contact as ContactModel} from '@/models/Contact';
 import {Event as EventModel} from '@/models/Event';
-import EventDisplay from '@/Components/Event/EventDisplay';
 import EditContactPopup from './EditContactPopup';
 import 'react-toastify/dist/ReactToastify.css';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUser, faPhone, faEnvelope, faTag, faComment} from "@fortawesome/free-solid-svg-icons";
+import EventList from "@/Components/Event/EventDisplay";
+
 interface ContactDetailsProps {
     contact: ContactModel;
     activityLog: EventModel[];
@@ -82,8 +83,8 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({contact, activityLog, te
                 <hr className="border-gray-300 my-4"/>
                 <div className="bg-gray-50 p-6 rounded-8 shadow-sm">
                     <div className="flex items-center">
-                    <FontAwesomeIcon icon={faTag} className="mr-2 mb-4 ml-1 w-3.5 h-auto" />
-                    <h4 className="font-semibold text-lg text-primary mb-4">Tags</h4>
+                        <FontAwesomeIcon icon={faTag} className="mr-2 mb-4 ml-1 w-3.5 h-auto"/>
+                        <h4 className="font-semibold text-lg text-primary mb-4">Tags</h4>
                     </div>
                     <div className="flex flex-wrap gap-2 mb-4">
                         {contact.tags.map((tag, index) => (
@@ -99,9 +100,7 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({contact, activityLog, te
                     {activityLog.length <= 1 ? (
                         <p className="text-gray-700">No changes were made to this contact yet</p>
                     ) : (
-                        activityLog.map((event: EventModel, index: number) => (
-                            <EventDisplay key={index} event={event}/>
-                        ))
+                        <EventList events={activityLog}/>
                     )}
                 </div>
             </div>

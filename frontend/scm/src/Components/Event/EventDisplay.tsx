@@ -66,4 +66,16 @@ const EventDisplay: React.FC<EventDisplayProps> = ({ event }) => {
     );
 }
 
-export default EventDisplay;
+const EventList: React.FC<{ events: Event[] }> = ({ events }) => {
+    const sortedEvents = [...events].sort((a, b) => new Date(b.eventTime).getTime() - new Date(a.eventTime).getTime());
+
+    return (
+        <div>
+            {sortedEvents.map((event) => (
+                <EventDisplay key={event.id} event={event} />
+            ))}
+        </div>
+    );
+}
+
+export default EventList;
