@@ -1,10 +1,11 @@
+"use client";
 import { Tenant as TenantModel } from '../../models/Tenant';
 import React, {useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faGear} from "@fortawesome/free-solid-svg-icons";
 import {toast} from "react-toastify";
 import {useRouter} from "next/navigation";
-import CreatableSelect from 'react-select/creatable';
+import Select from "react-select";
 
 interface TenantSettingsPopupProps {
     tenant: TenantModel;
@@ -87,18 +88,18 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
                         <h4 className={"text-gray-700 font-semibold"}>Display properties</h4>
                         <p className="text-gray-700 text-sm mb-4 mt-1">Choose 4 props to display</p>
                         <form>
-                            <CreatableSelect
+                            <Select
                                 id="displayProps"
                                 name="displayProps"
                                 isMulti
-                                isClearable={false}
+
                                 value={formData.displayProps.map(prop => ({label: prop, value: prop}))}
                                 options={formData.labels && Object.values(formData.labels).map((value) => ({
                                     label: value,
                                     value: value
                                 }))}
                                 onChange={handleDisplayPropsChange}
-                                className="shadow appearance-none border mb-10 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="appearance-none border-0 mb-10 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             />
                             <h4 className={"text-gray-700 font-semibold mb-3"}>Label names</h4>
                             <div className="max-h-80 overflow-auto grid grid-cols-3 gap-2">
