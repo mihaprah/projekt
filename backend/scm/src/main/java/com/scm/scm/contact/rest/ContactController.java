@@ -106,12 +106,11 @@ public class ContactController {
 
     @PostMapping("/export")
     public ResponseEntity<byte[]> exportContacts(@RequestBody ExportContactRequest request) {
-
-        if (request == null || request.getUser() == null || request.getTenantUniqueName() == null || request.getTenantId() == null) {
+        if (request == null || request.getUserToken() == null || request.getTenantUniqueName() == null || request.getTenantId() == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
-        String user = StringEscapeUtils.escapeHtml4(request.getUser());
+        String user = StringEscapeUtils.escapeHtml4(request.getUserToken());
         String tenantUniqueName = StringEscapeUtils.escapeHtml4(request.getTenantUniqueName());
         String tenantId = StringEscapeUtils.escapeHtml4(request.getTenantId());
         List<String> contactIds = request.getContactIds().stream()

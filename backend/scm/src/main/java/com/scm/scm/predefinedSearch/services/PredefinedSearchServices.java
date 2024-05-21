@@ -79,6 +79,7 @@ public class PredefinedSearchServices {
             oldPredefinedSearch.setOnTenant(predefinedSearch.getOnTenant());
             oldPredefinedSearch.setTitle(predefinedSearch.getTitle());
             oldPredefinedSearch.setFilter(predefinedSearch.getFilter());
+            oldPredefinedSearch.setSortOrientation(predefinedSearch.getSortOrientation());
             predefinedSearchRepository.save(oldPredefinedSearch);
         } else {
             throw new CustomHttpException(ExceptionMessage.SEARCH_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR);
