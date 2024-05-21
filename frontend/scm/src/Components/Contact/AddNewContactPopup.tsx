@@ -214,7 +214,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                                     Properties
                                 </label>
                                 {newProps.map((prop, index) => (
-                                    <div key={index} className="flex items-center mb-2">
+                                    <div key={index} className="flex items-center mb-3">
                                         <CreatableSelect
                                             value={{label: prop.key, value: prop.key}}
                                             onChange={(selectedOption) => handlePropsChange(index, selectedOption, prop.value)}
@@ -240,18 +240,18 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                                     </div>
                                 ))}
                                 <button type="button" onClick={addNewPropsField}
-                                        className="btn px-4 btn-sm bg-primary-light border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                                        className="mt-2 px-4 py-1 border-1px text-primary-light border-primary-light rounded-8 font-normal hover:scale-105 transition">
                                     Add Property
                                 </button>
                             </div>
                             <div className="mt-4 flex justify-center items-center">
                                 <button onClick={() => setShowPopup(false)}
-                                        className="btn mt-4 mx-3 px-5 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition">
+                                        className="mt-4 mx-1 px-4 py-1 bg-danger text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition">
                                     Close Popup
                                 </button>
                                 <button type="button" onClick={handleSave}
-                                        className="btn mt-4 mx-3 px-5 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
-                                    Save
+                                        className="mt-4 mx-1 px-4 py-1 bg-primary-light text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
+                                    Add Contact
                                 </button>
                             </div>
                         </form>

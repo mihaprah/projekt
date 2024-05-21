@@ -33,6 +33,9 @@ const config: Config = {
       },
       borderRadius: {
         '8': '8px',
+      },
+      borderWidth: {
+        '1px': '1px',
       }
     },
   },

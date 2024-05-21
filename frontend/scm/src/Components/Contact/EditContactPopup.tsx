@@ -266,7 +266,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                     </div>
                                 ))}
                                 <button type="button" onClick={addNewPropsField}
-                                        className="mt-2 px-4 border-2 text-primary-light border-primary-light rounded-8 font-semibold hover:scale-105 transition ">
+                                        className="mt-2 px-4 py-1 border-1px text-primary-light border-primary-light rounded-8 font-normal hover:scale-105 transition">
                                     Add Property
                                 </button>
                             </div>
