@@ -51,7 +51,7 @@ const ContactPage = async ({ params }: { params: { tenant_unique_name: string, c
     const activityLog: EventModel[] = await fetchActivityLog(contact_id, IdToken, tenant_unique_name);
 
     return (
-        <ContactDetails contact={contact} activityLog={activityLog} tenantUniqueName={tenant_unique_name} />
+        <ContactDetails contact={contact} activityLog={activityLog} tenantUniqueName={tenant_unique_name} IdToken={IdToken}/>
     );
 };
 
