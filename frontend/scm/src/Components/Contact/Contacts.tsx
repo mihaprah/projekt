@@ -130,9 +130,9 @@ const Contacts: React.FC<ContactsProps> = ({
                             type="checkbox"
                             checked={selectAll}
                             onChange={handleSelectAll}
-                            className="form-checkbox h-5 w-5 text-primary-light transition duration-150 ease-in-out"
+                            className="form-checkbox h-4 w-4 text-primary-light rounded-8 duration-150 ease-in-out hover:scale-105 transition"
                         />
-                        <span className="ml-2 text-xl">Select all</span>
+                        <span className="ml-2 text-md">Select all</span>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
                         {currentContacts.map(contact => (
@@ -149,7 +149,7 @@ const Contacts: React.FC<ContactsProps> = ({
                                         onChange={(e) => {
                                             handleSelectContact(contact.id);
                                         }}
-                                        className="form-checkbox h-7 w-7 text-primary-light transition duration-150 ease-in-out"
+                                        className="form-checkbox h-5 w-5 text-primary-light transition duration-150 ease-in-out hover:scale-105"
                                     />
                                     <button
                                         onClick={(e) => {
@@ -160,23 +160,11 @@ const Contacts: React.FC<ContactsProps> = ({
                                         <FontAwesomeIcon className="w-5 h-5" icon={faTrash}/>
                                     </button>
                                 </div>
-                                <div className="text-center mb-6">
-                                    {contact.props.name && displayProps.includes('name') && (
-                                        <h2 className="text-xl font-bold mb-1.5">{contact.props.name}</h2>
-                                    )}
-                                    {contact.props.email && displayProps.includes('email') && (
-                                        <p className="mb-1.5">{contact.props.email}</p>
-                                    )}
-                                    {contact.props.phoneNumber && displayProps.includes('phoneNumber') && (
-                                        <p className="mb-1.5">{contact.props.phoneNumber}</p>
-                                    )}
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-6 text-center justify-center">
-                                    {displayProps.filter(prop => prop !== 'name' && prop !== 'email' && prop !== 'phoneNumber').map(prop => (
-                                        <div key={prop}>
-                                            <strong>{tenant.labels[prop]}</strong>
-                                            <p>{contact.props[prop]}</p>
+                                <div className="grid grid-cols-3 gap-x-4 gap-y-2 mb-6">
+                                    {displayProps.map(prop => (
+                                        <div key={prop} className={"p-2"}>
+                                            <strong className={"break-words"}>{tenant.labels[prop]}</strong>
+                                            <p className={"break-words"}>{contact.props[prop] || "/"}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -205,7 +193,7 @@ const Contacts: React.FC<ContactsProps> = ({
                                         type="checkbox"
                                         checked={selectAll}
                                         onChange={handleSelectAll}
-                                        className="form-checkbox h-5 w-5 text-primary-light transition duration-150 ease-in-out"
+                                        className="form-checkbox h-4 w-4 hover:scale-105 text-primary-light transition duration-150 ease-in-out"
                                     />
                                 </div>
                             </th>
@@ -220,13 +208,13 @@ const Contacts: React.FC<ContactsProps> = ({
                         </thead>
                         <tbody>
                         {currentContacts.map(contact => (
-                            <tr key={contact.id}>
+                            <tr key={contact.id} className={"hover:bg-gray-100"}>
                                 <td className="px-3 py-4 whitespace-no-wrap border-b border-gray-300">
                                     <input
                                         type="checkbox"
                                         checked={selectedContacts.includes(contact.id)}
                                         onChange={() => handleSelectContact(contact.id)}
-                                        className="form-checkbox h-5 w-5 text-primary-light transition duration-150 ease-in-out"
+                                        className="form-checkbox h-4 w-4 hover:scale-105 text-primary-light transition duration-150 ease-in-out"
                                     />
                                 </td>
                                 {displayProps.map(prop => (
@@ -257,15 +245,15 @@ const Contacts: React.FC<ContactsProps> = ({
                 <button
                     onClick={() => paginate(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="px-4 py-2 rounded-8 bg-gray-300 text-black mr-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition">
+                    className="px-4 py-1 rounded-8 bg-gray-300 text-black mr-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition">
                     <FontAwesomeIcon className={"w-2.5 h-auto mr-1"} icon={faChevronLeft}/> Previous
                 </button>
                 <span
-                    className="text-lg">{`Page ${currentPage} of ${Math.ceil(contacts.length / contactsPerPage)}`}</span>
+                    className="text-md">{`Page ${currentPage} of ${Math.ceil(contacts.length / contactsPerPage)}`}</span>
                 <button
                     onClick={() => paginate(currentPage + 1)}
                     disabled={currentPage === Math.ceil(contacts.length / contactsPerPage)}
-                    className="px-4 py-2 rounded-8 bg-gray-300 text-black ml-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition">
+                    className="px-4 py-1 rounded-8 bg-gray-300 text-black ml-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition">
                     Next <FontAwesomeIcon className={"w-2.5 h-auto ml-1"} icon={faChevronRight}/>
                 </button>
             </div>

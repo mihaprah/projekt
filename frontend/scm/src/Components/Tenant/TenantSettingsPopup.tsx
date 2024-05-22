@@ -95,6 +95,10 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
 
     const handleDisplayPropsChange = (selectedOptions: ReadonlyArray<{ label: string, value: string }>) => {
         const selectedProps = selectedOptions.map(option => option.value);
+        if (selectedProps.length > 9) {
+            toast.error("You can only select up to 9 properties to display.");
+            return;
+        }
         setFormData(prevState => ({ ...prevState, displayProps: selectedProps }));
     };
 
@@ -118,7 +122,7 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
                     <div className="bg-white p-10 rounded-8 shadow-lg max-w-5xl w-full">
                         <h2 className="font-semibold mb-4 text-2xl">Tenant Settings</h2>
                         <h4 className={"text-gray-700 font-semibold"}>Display properties</h4>
-                        <p className="text-gray-700 text-sm mb-4 mt-1">Choose 4 props to display</p>
+                        <p className="text-gray-700 text-sm mb-4 mt-1">Choose up to 9 props to display</p>
                         <form>
                             <Select
                                 id="displayProps"

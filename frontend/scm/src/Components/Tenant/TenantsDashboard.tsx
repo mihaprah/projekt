@@ -56,7 +56,7 @@ const TenantsDashboard: React.FC<TenantDashboardProps> = (props) => {
         <div>
             <div className="flex justify-between items-center">
                 <h1 className="text-3xl pt-5 text-secondary-dark font-semibold">Tenants</h1>
-                <div className={"mt-4 mx-10"}>
+                <div className={"mt-4"}>
                     <TenantPopup onTenantAdd={() => handleTenantAdd(props.IdToken)} IdToken={props.IdToken} icon={faPlus}
                                  buttonAction={"Add new"} title={"Add new Tenant"}
                                  labels={["Title", "Description", "Colour", "Other users"]}
@@ -70,13 +70,11 @@ const TenantsDashboard: React.FC<TenantDashboardProps> = (props) => {
                     tenants.length === 1 ? (
                         redirect(`http://localhost:3000/contacts/${tenants[0].tenantUniqueName}`)
                     ) : (
-                        [...Array(Math.ceil(tenants.length / 5))].map((_, i) => (
-                            <div className="flex" key={i}>
-                                {tenants.slice(i * 5, i * 5 + 5).map((tenant) => (
-                                    <Tenant key={tenant.id} IdToken={props.IdToken} tenant={tenant}/>
-                                ))}
-                            </div>
-                        ))
+                        <div className="grid grid-cols-5 gap-x-4 gap-y-2 mb-6">
+                            {tenants.map((tenant) => (
+                                <Tenant key={tenant.id} IdToken={props.IdToken} tenant={tenant}/>
+                            ))}
+                        </div>
                     )
                 )}
             </div>

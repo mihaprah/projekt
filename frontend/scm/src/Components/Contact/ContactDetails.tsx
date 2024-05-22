@@ -11,12 +11,14 @@ import EventList from "@/Components/Event/EventDisplay";
 import {toast} from "react-toastify";
 import {useRouter} from 'next/navigation';
 import {Tenant as TenantModel} from '@/models/Tenant';
+import Link from "next/link";
 
 interface ContactDetailsProps {
     contact: ContactModel;
     activityLog: EventModel[];
     tenantUniqueName: string;
     IdToken: string;
+    tenantTitle: string;
 }
 
 const fetchTenant = async (tenantUniqueName: string, IdToken: string) => {
@@ -38,7 +40,7 @@ const fetchTenant = async (tenantUniqueName: string, IdToken: string) => {
     }
 }
 
-const ContactDetails: React.FC<ContactDetailsProps> = ({contact, activityLog, tenantUniqueName, IdToken}) => {
+const ContactDetails: React.FC<ContactDetailsProps> = ({contact, activityLog, tenantUniqueName, IdToken, tenantTitle}) => {
     const router = useRouter();
     const [tenant, setTenant] = useState<TenantModel>();
 
@@ -53,13 +55,25 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({contact, activityLog, te
     }
 
     return (
-        <div>
-            <div className="container mx-auto pr-6 pb-6 pt-6 flex items-center">
+        <div className={"container mx-auto p-6"}>
+            <div className={"container mx-auto flex items-center"}>
                 <FontAwesomeIcon
                     icon={faArrowLeft}
                     className="text-primary-light mr-4 cursor-pointer w-3.5 h-auto"
                     onClick={() => router.back()}
                 />
+                <div className="text-sm breadcrumbs mx-2">
+                    <ul className={"text-gray-500"}>
+                        <li><Link
+                            href={"/"}>Tenants</Link></li>
+                        <li><Link
+                            href={`/contacts/${tenantUniqueName}`}>{tenantTitle}</Link></li>
+                        <li><Link
+                            href={"#"}>{contact.title}</Link></li>
+                    </ul>
+                </div>
+            </div>
+            <div className="container mx-auto pr-6 pb-6 pt-2 flex items-center">
                 <h2 className="text-3xl font-semibold">Contact details</h2>
             </div>
             <div className="container mx-auto p-6 bg-white shadow-xl rounded-8">
@@ -71,45 +85,49 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({contact, activityLog, te
                     </div>
                     <EditContactPopup contact={contact} tenantUniqueName={tenantUniqueName}/>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-8 shadow-sm mb-2">
-                    <div className="flex items-center justify-around">
-                        {contact.props.name && (
-                            <div className="flex flex-col items-center">
-                                <div className={"flex items-center"}>
-                                    <FontAwesomeIcon icon={faUser} className="text-primary mr-3 ml-1 w-3.5 h-auto"/>
-                                    <h4 className="font-semibold text-lg text-primary">{tenant?.labels["name"]}</h4>
+                {(contact.props.fullName || contact.props.phoneNumber || contact.props.email) && (
+                    <div className="bg-gray-50 p-4 rounded-8 shadow-sm mb-2">
+                        <div className="flex items-center justify-around">
+                            {contact.props.fullName && (
+                                <div className="flex flex-col items-center">
+                                    <div className={"flex items-center"}>
+                                        <FontAwesomeIcon icon={faUser} className="text-primary mr-3 ml-1 w-3.5 h-auto"/>
+                                        <h4 className="font-semibold text-lg text-primary">{tenant?.labels["fullName"]}</h4>
+                                    </div>
+                                    <div className={"flex"}>
+                                        <p className="mt-1 mr-0.5 text-gray-700">{contact.props.fullName}</p>
+                                    </div>
                                 </div>
-                                <div className={"flex"}>
-                                    <p className="mt-1 mr-0.5 text-gray-700">{contact.props.name}</p>
-                                    <p className="mt-1 ml-0.5 text-gray-700">{contact.props.lastname}</p>
+                            )}
+                            {contact.props.phoneNumber && (
+                                <div className="flex flex-col items-center">
+                                    <div className={"flex items-center"}>
+                                        <FontAwesomeIcon icon={faPhone}
+                                                         className="text-primary mr-3 ml-1 w-3.5 h-auto"/>
+                                        <h4 className="font-semibold text-lg text-primary">{tenant?.labels["phoneNumber"]}</h4>
+                                    </div>
+                                    <p className="mt-1 text-gray-700">{contact.props.phoneNumber}</p>
                                 </div>
-                            </div>
-                        )}
-                        {contact.props.phoneNumber && (
-                            <div className="flex flex-col items-center">
-                                <div className={"flex items-center"}>
-                                    <FontAwesomeIcon icon={faPhone} className="text-primary mr-3 ml-1 w-3.5 h-auto"/>
-                                    <h4 className="font-semibold text-lg text-primary">{tenant?.labels["phoneNumber"]}</h4>
+                            )}
+                            {contact.props.email && (
+                                <div className="flex flex-col items-center">
+                                    <div className={"flex items-center"}>
+                                        <FontAwesomeIcon icon={faEnvelope}
+                                                         className="text-primary mr-3 ml-1 w-3.5 h-auto"/>
+                                        <h4 className="font-semibold text-lg text-primary">{tenant?.labels["email"]}</h4>
+                                    </div>
+                                    <p className="mt-1 text-gray-700">{contact.props.email}</p>
                                 </div>
-                                <p className="mt-1 text-gray-700">{contact.props.phoneNumber}</p>
-                            </div>
-                        )}
-                        {contact.props.email && (
-                            <div className="flex flex-col items-center">
-                                <div className={"flex items-center"}>
-                                    <FontAwesomeIcon icon={faEnvelope} className="text-primary mr-3 ml-1 w-3.5 h-auto"/>
-                                    <h4 className="font-semibold text-lg text-primary">{tenant?.labels["email"]}</h4>
-                                </div>
-                                <p className="mt-1 text-gray-700">{contact.props.email}</p>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
+
                 {contact.props && (
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mb-4">
                             {Object.entries(contact.props).map(([name, value], index) => (
-                                name !== "name" && name !== "phoneNumber" && name !== "email" && (
+                                name !== "fullName" && name !== "phoneNumber" && name !== "email" && (
                                     <div key={index} className="bg-gray-50 p-4 rounded-8 shadow-sm">
                                         <h4 className="font-semibold text-lg text-primary">{tenant?.labels[name]}</h4>
                                         <p className="mt-1 text-gray-700">{value}</p>

@@ -73,12 +73,10 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
         };
         saveTenant(newTenant, props.IdToken).then(() => {
             toast.success("Tenant saved successfully!");
-            setTimeout(() => {
-                props.onTenantAdd();
-                setShowPopup(false);
-                setInputValues(Array(props.labels.length).fill(''));
-                setUsers([]);
-            }, 2000);
+            props.onTenantAdd();
+            setShowPopup(false);
+            setInputValues(Array(props.labels.length).fill(''));
+            setUsers([]);
         });
     }
 
@@ -120,7 +118,7 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
         <div>
             <ToastContainer />
             <button onClick={() => setShowPopup(true)}
-                className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                className="px-4 py-1 bg-primary-light text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
                 {props.buttonAction} <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={props.icon}/>
             </button>
 

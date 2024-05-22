@@ -9,6 +9,7 @@ import TenantSettingsPopup from "@/Components/Tenant/TenantSettingsPopup";
 import React, { useState } from "react";
 import {Tenant as TenantModel} from "@/models/Tenant";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface TenantInfoDisplayProps {
     tenant: TenantModel;
@@ -51,15 +52,28 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
             <div className="flex justify-between mb-4">
                 <div>
                     <div className={"flex items-center"}>
-                        {props.numberOfTenants> 1 && (
+                        {props.numberOfTenants > 1 && (
                             <div className="flex items-center mb-4">
                                 <FontAwesomeIcon
                                     icon={faArrowLeft}
-                                    className="text-primary-light mr-4 mt-4 cursor-pointer w-3.5 h-auto"
-                                    onClick={() => {router.push("/"); router.refresh();}}
+                                    className="text-primary-light mr-4 mt-4 cursor-pointer w-3.5 h-auto hover:scale-105 transition"
+                                    onClick={() => {
+                                        router.push("/");
+                                        router.refresh();
+                                    }}
                                 />
                             </div>
                         )}
+                        <div className="text-sm breadcrumbs mx-2">
+                            <ul className={"text-gray-500"}>
+                                <li><Link
+                                    href={"/"}>Tenants</Link></li>
+                                <li><Link
+                                    href={"#"}>{props.tenant.title}</Link></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div className={"flex items-center"}>
                         <h2 className="text-3xl font-semibold text-primary-light">{props.tenant.title}</h2>
                         <span className="ml-6 mr-2 text-2xl font-semibold ">{props.contactsNumber}</span>
                         <FontAwesomeIcon className="h-5 w-auto mb-0.5 " icon={faUsers} />

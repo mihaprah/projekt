@@ -62,54 +62,58 @@ const SavedSearchesTable: React.FC<SavedSearchesTableProps> = (props) => {
         <div className="container mx-auto p-4">
             <ToastContainer />
             <h1 className="text-3xl pt-5 text-secondary-dark font-semibold mb-5">Saved searches</h1>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto shadow-xl">
             {savedSearches.length === 0 ? (<p className="text-center text-2xl mx-auto mt-10">No saved searches found!</p>
             ) : (
-                <table className="table border">
-                    <thead className="text-secondary-dark">
-                    <tr>
-                        <th></th>
-                        <th>Title</th>
-                        <th>Search query</th>
-                        <th>On Tenant</th>
-                        <th>Orientation</th>
-                        <th>Filter</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-
-                    {savedSearches.map((search, index) => (
-                            <tr key={search.id}>
-                            <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{index + 1}</td>
-                            <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{search.title}</td>
-                            <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{search.searchQuery}</td>
-                            <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{search.onTenant}</td>
-                                <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>
-                                    {search.sortOrientation}
-                                    {search.sortOrientation === 'ASC' ?
-                                        <FontAwesomeIcon className="ml-1 w-2.5 h-auto" icon={faArrowUp}/> :
-                                        <FontAwesomeIcon className="ml-1 w-2.5 h-auto" icon={faArrowDown}/>
-                                    }
-                                </td>
-                                <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>
-                                    {search.filter.length > 4
-                                        ? `${search.filter.slice(0, 4).join(', ')} + more`
-                                        : search.filter.join(', ')
-                                    }
-                                </td>
-                                <td>
-                                    <SavedSearchesPopup icon={faPen} title={"Edit Search"} savedSearch={search} IdToken={props.IdToken} onSavedSearchAction={() => handleSavedSearchAction(props.IdToken)} action={"edit"} />
-                                </td>
-                            <td>
-                                <SavedSearchesPopup icon={faTrash} title={"Delete Search"} savedSearch={search} IdToken={props.IdToken} onSavedSearchAction={() => handleSavedSearchAction(props.IdToken)} action={"delete"}/>
-                            </td>
+                <div className={"bg-white shadow-xl p-6 rounded-8"}>
+                    <table className="table rounded-8 bg-gray-50 ">
+                        <thead className="text-secondary-dark">
+                        <tr>
+                            <th></th>
+                            <th>Title</th>
+                            <th>Search query</th>
+                            <th>On Tenant</th>
+                            <th>Orientation</th>
+                            <th>Filter</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
+                        </thead>
+                        <tbody>
 
-                    ))}
-                    </tbody>
-                </table>
+                        {savedSearches.map((search, index) => (
+                            <tr key={search.id} className={"hover:bg-gray-100 rounded-8"}>
+                                <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{index + 1}</td>
+                                <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{search.title}</td>
+                                <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{search.searchQuery || "/"}</td>
+                                <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{search.onTenant}</td>
+                                    <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>
+                                        {search.sortOrientation}
+                                        {search.sortOrientation === 'ASC' ?
+                                            <FontAwesomeIcon className="ml-1 w-2.5 h-auto" icon={faArrowUp}/> :
+                                            <FontAwesomeIcon className="ml-1 w-2.5 h-auto" icon={faArrowDown}/>
+                                        }
+                                    </td>
+                                    <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>
+                                        {search.filter.length === 0
+                                            ? '/'
+                                            : search.filter.length > 4
+                                                ? `${search.filter.slice(0, 4).join(', ')} + more`
+                                                : search.filter.join(', ')
+                                        }
+                                    </td>
+                                    <td>
+                                        <SavedSearchesPopup icon={faPen} title={"Edit Search"} savedSearch={search} IdToken={props.IdToken} onSavedSearchAction={() => handleSavedSearchAction(props.IdToken)} action={"edit"} />
+                                    </td>
+                                <td>
+                                    <SavedSearchesPopup icon={faTrash} title={"Delete Search"} savedSearch={search} IdToken={props.IdToken} onSavedSearchAction={() => handleSavedSearchAction(props.IdToken)} action={"delete"}/>
+                                </td>
+                            </tr>
+
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
             )}
         </div>
         </div>

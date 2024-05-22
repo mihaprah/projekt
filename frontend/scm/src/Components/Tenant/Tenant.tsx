@@ -39,10 +39,10 @@ const Tenant: React.FC<TenantProps> = (props) => {
             setContactsNumber(numberOfContacts);
         };
         fetch();
-    }, [props.IdToken]);
+    }, [props.IdToken, props.tenant.tenantUniqueName]);
 
     return (
-    <div className="card cursor-pointer mx-3 shadow-xl m-7 rounded-8 hover:shadow-2xl w-96 hover:scale-105 transition"
+    <div className="card cursor-pointer mx-3 shadow-xl m-7 rounded-8 hover:shadow-2xl hover:scale-105 transition"
          onClick={() => router.push(`/contacts/${props.tenant.tenantUniqueName}`)}>
         <div className="card-body">
             <h2 className="card-title">{props.tenant.title}</h2>
