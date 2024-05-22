@@ -1,13 +1,13 @@
 "use client";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUsers, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {faUsers, faTrash, faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import EditTenantPopup from "@/Components/Tenant/EditTenantPopup";
 import AddNewContactPopup from "@/Components/Contact/AddNewContactPopup";
 import TenantSettingsPopup from "@/Components/Tenant/TenantSettingsPopup";
 import React, { useState } from "react";
-import { Tenant as TenantModel } from "@/models/Tenant";
+import {Tenant as TenantModel} from "@/models/Tenant";
 import { useRouter } from "next/navigation";
 
 interface TenantInfoDisplayProps {
@@ -15,11 +15,13 @@ interface TenantInfoDisplayProps {
     contactsNumber: number;
     IdToken: string;
     onSave: () => void;
+    numberOfTenants: number;
 }
 
 const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
     const router = useRouter();
     const [showConfirmation, setShowConfirmation] = useState(false);
+
 
     const handleDeleteTenant = async () => {
         try {
@@ -49,6 +51,15 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
             <div className="flex justify-between mb-4">
                 <div>
                     <div className={"flex items-center"}>
+                        {props.numberOfTenants> 1 && (
+                            <div className="flex items-center mb-4">
+                                <FontAwesomeIcon
+                                    icon={faArrowLeft}
+                                    className="text-primary-light mr-4 mt-4 cursor-pointer w-3.5 h-auto"
+                                    onClick={() => {router.push("/"); router.refresh();}}
+                                />
+                            </div>
+                        )}
                         <h2 className="text-3xl font-semibold text-primary-light">{props.tenant.title}</h2>
                         <span className="ml-6 mr-2 text-2xl font-semibold ">{props.contactsNumber}</span>
                         <FontAwesomeIcon className="h-5 w-auto mb-0.5 " icon={faUsers} />

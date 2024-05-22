@@ -6,9 +6,10 @@ import {Event as EventModel} from '@/models/Event';
 import EditContactPopup from './EditContactPopup';
 import 'react-toastify/dist/ReactToastify.css';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faUser, faPhone, faEnvelope, faTag, faComment} from "@fortawesome/free-solid-svg-icons";
+import {faUser, faPhone, faEnvelope, faTag, faComment, faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 import EventList from "@/Components/Event/EventDisplay";
 import {toast} from "react-toastify";
+import {useRouter} from 'next/navigation';
 import {Tenant as TenantModel} from '@/models/Tenant';
 
 interface ContactDetailsProps {
@@ -28,16 +29,17 @@ const fetchTenant = async (tenantUniqueName: string, IdToken: string) => {
         });
 
         if (!res.ok) {
-            throw new Error(`Error deleting contact: ${res.statusText}`);
+            throw new Error(`Error fetching tenant: ${res.statusText}`);
         }
         return await res.json();
     } catch (error) {
         toast.error('Failed to get tenant');
-        console.error('Failed to delete contact:', error);
+        console.error('Failed to get tenant:', error);
     }
 }
 
 const ContactDetails: React.FC<ContactDetailsProps> = ({contact, activityLog, tenantUniqueName, IdToken}) => {
+    const router = useRouter();
     const [tenant, setTenant] = useState<TenantModel>();
 
     useEffect(() => {
@@ -52,7 +54,14 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({contact, activityLog, te
 
     return (
         <div>
-            <h2 className="container mx-auto pr-6 pb-6 pt-6 text-3xl font-semibold">Contact details</h2>
+            <div className="container mx-auto pr-6 pb-6 pt-6 flex items-center">
+                <FontAwesomeIcon
+                    icon={faArrowLeft}
+                    className="text-primary-light mr-4 cursor-pointer w-3.5 h-auto"
+                    onClick={() => router.back()}
+                />
+                <h2 className="text-3xl font-semibold">Contact details</h2>
+            </div>
             <div className="container mx-auto p-6 bg-white shadow-xl rounded-8">
                 <div className="flex justify-between items-center mb-6">
                     <div className="flex items-center space-x-4">

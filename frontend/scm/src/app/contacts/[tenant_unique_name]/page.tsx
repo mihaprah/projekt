@@ -67,6 +67,26 @@ const fetchNumberContacts = async (IdToken: string, tenantUniqueName: string): P
     }
 }
 
+const fetchNumberOfTenantsOnUser = async (IdToken: string): Promise<TenantModel[]> => {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/user`, {
+            headers: {
+                'userToken': `Bearer ${IdToken}`,
+            },
+        });
+
+        if (!res.ok) {
+            throw new Error(`Error fetching number of tenants on user: ${res.statusText}`);
+        }
+
+        return await res.json();
+    } catch (error) {
+        console.error('Failed to fetch number of tenants on user:', error);
+        return [];
+    }
+
+}
+
 const ContactsPage = async (props: { params: { tenant_unique_name: string } }) => {
     const { params } = props;
     const { tenant_unique_name } = params;
@@ -79,10 +99,11 @@ const ContactsPage = async (props: { params: { tenant_unique_name: string } }) =
     const contacts = await fetchContacts(tenant_unique_name, IdToken);
     const tenant = await fetchTenant(tenant_unique_name, IdToken);
     const contactsNumber = await fetchNumberContacts(IdToken, tenant_unique_name);
+    const tenants = await fetchNumberOfTenantsOnUser(IdToken);
 
     return (
         <div className="container mx-auto p-4">
-            <SearchContacts contacts={contacts} tenant={tenant} contactsNumber={contactsNumber} tenantUniqueName={tenant_unique_name} IdToken={IdToken}/>
+            <SearchContacts contacts={contacts} tenant={tenant} contactsNumber={contactsNumber} tenantUniqueName={tenant_unique_name} IdToken={IdToken} numberOfTenants={tenants.length}/>
         </div>
     );
 };

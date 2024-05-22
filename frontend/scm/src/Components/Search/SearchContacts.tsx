@@ -16,6 +16,7 @@ interface SearchContactsProps {
     contactsNumber: number;
     tenantUniqueName: string;
     IdToken: string;
+    numberOfTenants: number;
 }
 
 const fetchFilteredContacts = async (search: SearchModel, IdToken: string, tenantUniqueName: string): Promise<ContactModel[]> => {
@@ -159,7 +160,7 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
     return (
         <>
             <TenantInfoDisplay tenant={props.tenant} contactsNumber={props.contactsNumber} IdToken={props.IdToken}
-                               onSave={handleContactChange}/>
+                               onSave={handleContactChange} numberOfTenants={props.numberOfTenants}/>
             <div className={"my-3 flex items-center"}>
                 <input value={searchQuery} type="text" placeholder="Search"
                        className="rounded-8 text-gray-700 border-1px px-3 w-96 mr-3 h-9"
