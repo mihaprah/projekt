@@ -22,7 +22,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
 
     const [availableTags, setAvailableTags] = useState<{ label: string, value: string }[]>([]);
     const [availablePropsKeys, setAvailablePropsKeys] = useState<string[]>([]);
-    const [newProps, setNewProps] = useState<{ key: string, value: string }[]>([]);
+    const [newProps, setNewProps] = useState<{ key: string, value: string }[]>([{ key: '', value: '' }]);
 
     useEffect(() => {
         const fetchTags = async () => {
@@ -47,19 +47,19 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
 
         const fetchPropsKeys = async () => {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts/${tenantUniqueName}`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/unique/${tenantUniqueName}`, {
                     headers: {
                         'userToken': `Bearer ${document.cookie.split('IdToken=')[1]}`,
                     },
                 });
 
                 if (!res.ok) {
-                    throw new Error(`Error fetching contacts: ${res.statusText}`);
+                    throw new Error(`Error fetching props keys: ${res.statusText}`);
                 }
 
-                const contacts = await res.json();
-                if (contacts.length > 0 && contacts[0].props) {
-                    const propsKeys = Object.keys(contacts[0].props);
+                const tenant = await res.json();
+                if (tenant) {
+                    const propsKeys = Object.keys(tenant.labels);
                     setAvailablePropsKeys(propsKeys);
                 }
             } catch (error) {
@@ -72,7 +72,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
 
         // Initialize newProps from existing formData.props
         const propsArray = Object.entries(contact.props).map(([key, value]) => ({ key, value }));
-        setNewProps(propsArray);
+        setNewProps([...propsArray, { key: '', value: '' }]);
     }, [contact, tenantUniqueName]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -106,6 +106,10 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
         const updatedProps = [...newProps];
         updatedProps.splice(index, 1);
         setNewProps(updatedProps);
+    };
+
+    const getFilteredPropsOptions = () => {
+        return availablePropsKeys.filter(key => !newProps.some(prop => prop.key === key)).map(key => ({ label: key, value: key }));
     };
 
     const handleSave = async () => {
@@ -245,7 +249,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                         <CreatableSelect
                                             value={{ label: prop.key, value: prop.key }}
                                             onChange={(selectedOption) => handleKeyChange(index, selectedOption)}
-                                            options={availablePropsKeys.map(key => ({ label: key, value: key }))}
+                                            options={getFilteredPropsOptions()}
                                             className="flex-1 mr-2"
                                             isClearable
                                             isSearchable

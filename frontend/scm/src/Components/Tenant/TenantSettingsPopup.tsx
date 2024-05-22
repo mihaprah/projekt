@@ -12,6 +12,7 @@ interface TenantSettingsPopupProps {
     IdToken: string;
 }
 
+
 const updateLabels = async (labels: any, tenantId: string, IdToken: string) => {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/labels/${tenantId}`, {
@@ -33,8 +34,30 @@ const updateLabels = async (labels: any, tenantId: string, IdToken: string) => {
     }
 }
 
+const updateDisplayProps = async (displayProps: string[], tenantId: string, IdToken: string) => {
+    console.log(displayProps);
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/displayProps/${tenantId}`, {
+            method: 'PUT',
+            headers: {
+                'userToken': `Bearer ${IdToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(displayProps)
+        });
 
-const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdToken}) => {
+        if (!res.ok) {
+            throw new Error(`Error updating display props: ${res.statusText}`);
+        }
+
+    } catch (error) {
+        toast.error("Failed to save display properties.");
+        return [];
+    }
+}
+
+
+const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdToken }) => {
     const router = useRouter();
     const [showPopup, setShowPopup] = useState(false);
     const [formData, setFormData] = useState(tenant);
@@ -53,13 +76,16 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
             }
         }));
     };
+
     const handleSave = async () => {
         try {
             await updateLabels(formData.labels, tenant.id, IdToken);
+            await updateDisplayProps(formData.displayProps, tenant.id, IdToken);
             setShowPopup(false);
             toast.success("Tenant settings saved successfully!");
             router.refresh();
         } catch (error) {
+            console.log(error);
             toast.error("Failed to save tenant settings.");
         }
     };
@@ -71,6 +97,12 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
             const selectedProps = selectedOptions.map(option => option.value);
             setFormData(prevState => ({ ...prevState, displayProps: selectedProps }));
         }
+    };
+
+    const getFilteredPropsOptions = () => {
+        return Object.entries(formData.labels)
+            .filter(([key]) => !formData.displayProps.includes(key))
+            .map(([key, value]) => ({ label: value, value: key }));
     };
 
     return (
@@ -92,12 +124,11 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
                                 id="displayProps"
                                 name="displayProps"
                                 isMulti
-
-                                value={formData.displayProps.map(prop => ({label: prop, value: prop}))}
-                                options={formData.labels && Object.values(formData.labels).map((value) => ({
-                                    label: value,
-                                    value: value
+                                value={formData.displayProps.map(prop => ({
+                                    label: formData.labels[prop],
+                                    value: prop
                                 }))}
+                                options={getFilteredPropsOptions()}
                                 onChange={handleDisplayPropsChange}
                                 className="appearance-none border-0 mb-10 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             />

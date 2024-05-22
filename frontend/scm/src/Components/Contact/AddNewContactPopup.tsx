@@ -143,6 +143,10 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
         setNewProps([...newProps, { key: '', value: '' }]);
     };
 
+    const getFilteredPropsOptions = () => {
+        return availablePropsKeys.filter(key => !newProps.some(prop => prop.key === key)).map(key => ({ label: key, value: key }));
+    };
+
     const openPopup = async () => {
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts/${tenantUniqueName}`, {
@@ -244,7 +248,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                                         <CreatableSelect
                                             value={{label: prop.key, value: prop.key}}
                                             onChange={(selectedOption) => handlePropsChange(index, selectedOption, prop.value)}
-                                            options={availablePropsKeys.map(key => ({label: key, value: key}))}
+                                            options={getFilteredPropsOptions()}
                                             className="flex-1 mr-2"
                                             isClearable
                                             isSearchable

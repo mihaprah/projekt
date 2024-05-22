@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {Tenant} from "@/models/Tenant";
 
 interface ContactsProps {
     contacts: ContactModel[];
@@ -13,9 +14,11 @@ interface ContactsProps {
     IdToken: string;
     view: 'grid' | 'list';
     onDeleted: () => void;
+    displayProps: string[];
+    tenant: Tenant;
 }
 
-const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken, view, onDeleted }) => {
+const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken, view, onDeleted, displayProps, tenant }) => {
     const router = useRouter();
     const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
     const [selectAll, setSelectAll] = useState(false);
@@ -107,7 +110,6 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
                     </select>
                 </div>
             </div>
-
             {viewMode === 'grid' ? (
                 <div>
                     <div className="flex items-center mb-3">
@@ -132,7 +134,12 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
                                     />
                                     <h2 className="text-xl font-bold ml-2">{contact.title}</h2>
                                 </div>
-                                <p>{contact.props.Name}</p>
+                                {displayProps.map(prop => (
+                                    <div key={prop}>
+                                        <strong>{tenant.labels[prop]}: </strong>
+                                        <p>{contact.props[prop]}</p>
+                                    </div>
+                                ))}
                                 <button
                                     onClick={() => handleViewDetails(contact.id, contact.tenantUniqueName)}
                                     className="text-primary-light hover:text-primary-dark transition mt-2">
@@ -163,8 +170,12 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
                                     <span className="ml-2">Select all</span>
                                 </div>
                             </th>
-                            <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">Title</th>
-                            <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">Name</th>
+                            {displayProps.map(prop => (
+                                <th key={prop}
+                                    className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                                    {tenant.labels[prop]}
+                                </th>
+                            ))}
                             <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider"></th>
                         </tr>
                         </thead>
@@ -179,12 +190,11 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
                                         className="form-checkbox h-5 w-5 text-primary-light transition duration-150 ease-in-out"
                                     />
                                 </td>
-                                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-300">
-                                    <div className="text-sm leading-5 text-gray-800">{contact.title}</div>
-                                </td>
-                                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-300">
-                                    <div className="text-sm leading-5 text-gray-800">{contact.props.Name}</div>
-                                </td>
+                                {displayProps.map(prop => (
+                                    <td key={prop} className="px-6 py-4 whitespace-no-wrap border-b border-gray-300">
+                                        <div className="text-sm leading-5 text-gray-800">{contact.props[prop]}</div>
+                                    </td>
+                                ))}
                                 <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-300">
                                     <button
                                         onClick={() => handleViewDetails(contact.id, contact.tenantUniqueName)}
@@ -194,7 +204,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
                                     <button
                                         onClick={() => confirmDelete(contact.id)}
                                         className="text-red-600 hover:text-red-800 transition ml-4">
-                                        <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faTrash} />
+                                        <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faTrash}/>
                                     </button>
                                 </td>
                             </tr>
@@ -203,20 +213,20 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
                     </table>
                 </div>
             )}
-
             <div className="flex justify-between items-center my-4">
                 <button
                     onClick={() => paginate(currentPage - 1)}
                     disabled={currentPage === 1}
                     className="px-4 py-2 rounded-8 bg-gray-300 text-black mr-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition">
-                    <FontAwesomeIcon className={"w-2.5 h-auto mr-1"} icon={faChevronLeft} /> Previous
+                    <FontAwesomeIcon className={"w-2.5 h-auto mr-1"} icon={faChevronLeft}/> Previous
                 </button>
-                <span className="text-lg">{`Page ${currentPage} of ${Math.ceil(contacts.length / contactsPerPage)}`}</span>
+                <span
+                    className="text-lg">{`Page ${currentPage} of ${Math.ceil(contacts.length / contactsPerPage)}`}</span>
                 <button
                     onClick={() => paginate(currentPage + 1)}
                     disabled={currentPage === Math.ceil(contacts.length / contactsPerPage)}
                     className="px-4 py-2 rounded-8 bg-gray-300 text-black ml-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition">
-                    Next <FontAwesomeIcon className={"w-2.5 h-auto ml-1"} icon={faChevronRight} />
+                    Next <FontAwesomeIcon className={"w-2.5 h-auto ml-1"} icon={faChevronRight}/>
                 </button>
             </div>
 

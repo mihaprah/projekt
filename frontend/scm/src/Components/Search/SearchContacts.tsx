@@ -220,7 +220,10 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
                     IdToken={props.IdToken}
                     view={viewMode}
                     onDeleted={handleContactChange}
+                    displayProps={props.tenant.displayProps}
+                    tenant={props.tenant}
                 />
+
             ) : (
                 <p className="text-center text-2xl mx-auto mt-10">No contacts created yet!</p>
             )}
