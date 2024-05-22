@@ -104,7 +104,7 @@ public class ContactController {
         return ResponseEntity.ok(contactServices.deleteContact(cleanTenantUniqueName, cleanId));
     }
 
-    @PostMapping("/export")
+    @PostMapping(value = "/export", consumes = MediaType.APPLICATION_JSON_VALUE , produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<byte[]> exportContacts(@RequestBody ExportContactRequest request, @RequestHeader("userToken") String userToken) {
         FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
         String sanitizedUserToken = StringEscapeUtils.escapeHtml4(decodedToken.getEmail());

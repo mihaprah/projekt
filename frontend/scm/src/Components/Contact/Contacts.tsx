@@ -7,10 +7,12 @@ import { faTrash, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {Tenant} from "@/models/Tenant";
+import ContactExportPopup from "@/Components/Contact/ContactExportPopup";
 
 interface ContactsProps {
     contacts: ContactModel[];
     tenantUniqueName: string;
+    tenantId: string;
     IdToken: string;
     view: 'grid' | 'list';
     onDeleted: () => void;
@@ -18,7 +20,7 @@ interface ContactsProps {
     tenant: Tenant;
 }
 
-const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken, view, onDeleted, displayProps, tenant }) => {
+const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName,tenantId, IdToken, view, onDeleted, displayProps, tenant }) => {
     const router = useRouter();
     const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
     const [selectAll, setSelectAll] = useState(false);
@@ -109,6 +111,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName, IdToken
                         <option value={100}>100</option>
                     </select>
                 </div>
+                <ContactExportPopup IdToken={IdToken} tenantUniqueName={tenantUniqueName} tenantId={tenantId} contactIds={selectedContacts} />
             </div>
             {viewMode === 'grid' ? (
                 <div>
