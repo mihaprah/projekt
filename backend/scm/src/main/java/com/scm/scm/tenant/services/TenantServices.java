@@ -1,6 +1,8 @@
 package com.scm.scm.tenant.services;
 
 import com.scm.scm.contact.vao.Contact;
+import com.scm.scm.predefinedSearch.dao.PredefinedSearchRepository;
+import com.scm.scm.predefinedSearch.vao.PredefinedSearch;
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.exceptions.ExceptionCause;
 import com.scm.scm.support.exceptions.ExceptionMessage;
@@ -25,6 +27,7 @@ import java.util.logging.Logger;
 public class TenantServices {
 
     private TenantRepository tenantRepository;
+    private PredefinedSearchRepository predefinedSearchRepository;
     private MongoTemplateService mongoTemplateService;
     private MongoTemplate mongoTemplate;
     private static final Logger log = Logger.getLogger(TenantServices.class.toString());
@@ -112,6 +115,10 @@ public class TenantServices {
         if (tenant != null) {
             tenant.setActive(false);
             tenantRepository.save(tenant);
+
+            List <PredefinedSearch> searches = predefinedSearchRepository.findByOnTenant(tenant.getTenantUniqueName());
+            predefinedSearchRepository.deleteAll(searches);
+
             return "Tenant successfully deactivated";
         } else {
             throw new CustomHttpException(ExceptionMessage.TENANT_NULL.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
