@@ -42,10 +42,12 @@ const Register = () => {
                         });
                     }
                 } catch (error) {
-                    console.error(error);
+                    setLoading(false);
+                    toast.error("Something went wrong. Please try again.");
                 }
             } else {
-                console.error(error);
+                setLoading(false);
+                toast.error("Something went wrong. Please try again.");
             }
         }
     };
