@@ -1,10 +1,10 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Contact as ContactModel } from '../../models/Contact';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { toast } from 'react-toastify';
+import React, {useState, useEffect} from 'react';
+import {useRouter} from 'next/navigation';
+import {Contact as ContactModel} from '../../models/Contact';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faTrash, faChevronLeft, faChevronRight, faInfo} from '@fortawesome/free-solid-svg-icons';
+import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {Tenant} from "@/models/Tenant";
 import ContactExportPopup from "@/Components/Contact/ContactExportPopup";
@@ -20,7 +20,16 @@ interface ContactsProps {
     tenant: Tenant;
 }
 
-const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName,tenantId, IdToken, view, onDeleted, displayProps, tenant }) => {
+const Contacts: React.FC<ContactsProps> = ({
+                                               contacts,
+                                               tenantUniqueName,
+                                               tenantId,
+                                               IdToken,
+                                               view,
+                                               onDeleted,
+                                               displayProps,
+                                               tenant
+                                           }) => {
     const router = useRouter();
     const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
     const [selectAll, setSelectAll] = useState(false);
@@ -111,7 +120,8 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName,tenantId
                         <option value={100}>100</option>
                     </select>
                 </div>
-                <ContactExportPopup IdToken={IdToken} tenantUniqueName={tenantUniqueName} tenantId={tenantId} contactIds={selectedContacts} />
+                <ContactExportPopup IdToken={IdToken} tenantUniqueName={tenantUniqueName} tenantId={tenantId}
+                                    contactIds={selectedContacts}/>
             </div>
             {viewMode === 'grid' ? (
                 <div>
@@ -124,68 +134,94 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName,tenantId
                         />
                         <span className="ml-2 text-xl">Select all</span>
                     </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
                         {currentContacts.map(contact => (
-                            <div key={contact.id} className="border p-4 rounded shadow relative flex flex-col">
-                                <div className="flex items-center mb-2">
+                            <div
+                                key={contact.id}
+                                className="border p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-200 relative flex flex-col cursor-pointer"
+                                onClick={() => handleViewDetails(contact.id, contact.tenantUniqueName)}
+                            >
+                                <div className="flex justify-between items-start mb-5">
                                     <input
                                         type="checkbox"
                                         checked={selectedContacts.includes(contact.id)}
-                                        onChange={() => handleSelectContact(contact.id)}
-                                        className="form-checkbox h-5 w-5 text-primary-light transition duration-150 ease-in-out"
+                                        onClick={(e) => e.stopPropagation()}
+                                        onChange={(e) => {
+                                            handleSelectContact(contact.id);
+                                        }}
+                                        className="form-checkbox h-7 w-7 text-primary-light transition duration-150 ease-in-out"
                                     />
-                                    <h2 className="text-xl font-bold ml-2">{contact.title}</h2>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            confirmDelete(contact.id);
+                                        }}
+                                        className="text-red-600 hover:text-red-800 transition">
+                                        <FontAwesomeIcon className="w-5 h-5" icon={faTrash}/>
+                                    </button>
                                 </div>
-                                {displayProps.map(prop => (
-                                    <div key={prop}>
-                                        <strong>{tenant.labels[prop]}: </strong>
-                                        <p>{contact.props[prop]}</p>
-                                    </div>
-                                ))}
-                                <button
-                                    onClick={() => handleViewDetails(contact.id, contact.tenantUniqueName)}
-                                    className="text-primary-light hover:text-primary-dark transition mt-2">
-                                    Show Details
-                                </button>
-                                <button
-                                    onClick={() => confirmDelete(contact.id)}
-                                    className="absolute top-2 right-2 text-red-600 hover:text-red-800 transition">
-                                    <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faTrash} />
-                                </button>
+                                <div className="text-center mb-6">
+                                    {contact.props.name && displayProps.includes('name') && (
+                                        <h2 className="text-xl font-bold mb-1.5">{contact.props.name}</h2>
+                                    )}
+                                    {contact.props.email && displayProps.includes('email') && (
+                                        <p className="mb-1.5">{contact.props.email}</p>
+                                    )}
+                                    {contact.props.phoneNumber && displayProps.includes('phoneNumber') && (
+                                        <p className="mb-1.5">{contact.props.phoneNumber}</p>
+                                    )}
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-6 text-center justify-center">
+                                    {displayProps.filter(prop => prop !== 'name' && prop !== 'email' && prop !== 'phoneNumber').map(prop => (
+                                        <div key={prop}>
+                                            <strong>{tenant.labels[prop]}</strong>
+                                            <p>{contact.props[prop]}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="flex justify-center flex-wrap gap-2">
+                                    {contact.tags && contact.tags.map((tag, index) => (
+                                        <span key={index}
+                                              className="bg-white text-primary-light border border-primary-light text-sm font-medium px-3 py-1.5 rounded-8">
+                            {tag}
+                        </span>
+                                    ))}
+                                </div>
                             </div>
                         ))}
                     </div>
                 </div>
+
+
             ) : (
                 <div className="overflow-x-auto">
                     <table className="min-w-full bg-white">
                         <thead>
                         <tr>
-                            <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
-                                <div className="flex items-center">
-                                    <input
+                            <th className="px-3 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                                <div className="flex items-center w-5 h-5">
+                                <input
                                         type="checkbox"
                                         checked={selectAll}
                                         onChange={handleSelectAll}
                                         className="form-checkbox h-5 w-5 text-primary-light transition duration-150 ease-in-out"
                                     />
-                                    <span className="ml-2">Select all</span>
                                 </div>
                             </th>
                             {displayProps.map(prop => (
                                 <th key={prop}
-                                    className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
+                                    className="px-3 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider">
                                     {tenant.labels[prop]}
                                 </th>
                             ))}
-                            <th className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider"></th>
+                            <th className="px-3 py-3 border-b-2 border-gray-300 text-left leading-4 text-gray-600 tracking-wider"></th>
                         </tr>
                         </thead>
                         <tbody>
                         {currentContacts.map(contact => (
                             <tr key={contact.id}>
-                                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-300">
+                                <td className="px-3 py-4 whitespace-no-wrap border-b border-gray-300">
                                     <input
                                         type="checkbox"
                                         checked={selectedContacts.includes(contact.id)}
@@ -194,15 +230,15 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName,tenantId
                                     />
                                 </td>
                                 {displayProps.map(prop => (
-                                    <td key={prop} className="px-6 py-4 whitespace-no-wrap border-b border-gray-300">
+                                    <td key={prop} className="px-3 py-4 whitespace-no-wrap border-b border-gray-300">
                                         <div className="text-sm leading-5 text-gray-800">{contact.props[prop]}</div>
                                     </td>
                                 ))}
-                                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-300">
+                                <td className="px-3 py-5 whitespace-no-wrap border-b border-gray-300 text-right flex items-center">
                                     <button
                                         onClick={() => handleViewDetails(contact.id, contact.tenantUniqueName)}
-                                        className="text-primary-light hover:text-primary-dark transition">
-                                        Show Details
+                                        className="text-primary-light hover:text-primary-dark transition relative group">
+                                        <FontAwesomeIcon icon={faInfo} className="mr-2"/>
                                     </button>
                                     <button
                                         onClick={() => confirmDelete(contact.id)}
@@ -216,6 +252,7 @@ const Contacts: React.FC<ContactsProps> = ({ contacts, tenantUniqueName,tenantId
                     </table>
                 </div>
             )}
+
             <div className="flex justify-between items-center my-4">
                 <button
                     onClick={() => paginate(currentPage - 1)}

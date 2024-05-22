@@ -60,7 +60,10 @@ const updateDisplayProps = async (displayProps: string[], tenantId: string, IdTo
 const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdToken }) => {
     const router = useRouter();
     const [showPopup, setShowPopup] = useState(false);
-    const [formData, setFormData] = useState(tenant);
+    const [formData, setFormData] = useState({
+        ...tenant,
+        displayProps: tenant.displayProps.length ? tenant.displayProps : ['name', 'phoneNumber', 'email']
+    });
 
     useEffect(() => {
         setFormData(tenant);
@@ -91,13 +94,10 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
     };
 
     const handleDisplayPropsChange = (selectedOptions: ReadonlyArray<{ label: string, value: string }>) => {
-        if (selectedOptions.length > 4) {
-            toast.error('You can select a maximum of 4 props.');
-        } else {
-            const selectedProps = selectedOptions.map(option => option.value);
-            setFormData(prevState => ({ ...prevState, displayProps: selectedProps }));
-        }
+        const selectedProps = selectedOptions.map(option => option.value);
+        setFormData(prevState => ({ ...prevState, displayProps: selectedProps }));
     };
+
 
     const getFilteredPropsOptions = () => {
         return Object.entries(formData.labels)
