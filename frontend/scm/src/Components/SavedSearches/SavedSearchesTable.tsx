@@ -6,6 +6,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import SavedSearchesPopup from "@/Components/SavedSearches/SavedSearchesPopup";
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import {useRouter} from "next/navigation";
+import {PredefinedSearch as SearchModel} from "@/models/PredefinedSearch";
 
 interface SavedSearchesTableProps {
     IdToken: string;
@@ -38,6 +40,7 @@ const fetchSearches = async (IdToken: string): Promise<SavedSearchesModel[]> => 
 
 const SavedSearchesTable: React.FC<SavedSearchesTableProps> = (props) => {
     const [savedSearches, setSavedSearches] = useState<SavedSearchesModel[]>([]);
+    const router = useRouter();
 
     useEffect(()=> {
         const fetch = async () => {
@@ -46,6 +49,10 @@ const SavedSearchesTable: React.FC<SavedSearchesTableProps> = (props) => {
         };
         fetch();
     }, [props.IdToken]);
+
+    const handleSearchClick = (search: SearchModel) => {
+        router.push(`/contacts/${search.onTenant}/search/${search.id}`)
+    }
 
     const handleSavedSearchAction = async (IdToken: string) => {
         setSavedSearches(await fetchSearches(IdToken));
@@ -75,18 +82,18 @@ const SavedSearchesTable: React.FC<SavedSearchesTableProps> = (props) => {
 
                     {savedSearches.map((search, index) => (
                             <tr key={search.id}>
-                            <td>{index + 1}</td>
-                            <td>{search.title}</td>
-                            <td>{search.searchQuery}</td>
-                            <td>{search.onTenant}</td>
-                                <td>
+                            <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{index + 1}</td>
+                            <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{search.title}</td>
+                            <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{search.searchQuery}</td>
+                            <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{search.onTenant}</td>
+                                <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>
                                     {search.sortOrientation}
                                     {search.sortOrientation === 'ASC' ?
                                         <FontAwesomeIcon className="ml-1 w-2.5 h-auto" icon={faArrowUp}/> :
                                         <FontAwesomeIcon className="ml-1 w-2.5 h-auto" icon={faArrowDown}/>
                                     }
                                 </td>
-                                <td>
+                                <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>
                                     {search.filter.length > 4
                                         ? `${search.filter.slice(0, 4).join(', ')} + more`
                                         : search.filter.join(', ')

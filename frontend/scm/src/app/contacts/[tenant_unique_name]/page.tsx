@@ -1,8 +1,10 @@
+
 import React from 'react';
 import {cookies} from 'next/headers';
 import {Contact as ContactModel} from '../../../models/Contact';
 import {Tenant as TenantModel} from '../../../models/Tenant';
 import SearchContacts from "@/Components/Search/SearchContacts";
+import 'react-toastify/dist/ReactToastify.css';
 
 const fetchContacts = async (tenant_unique_name: string, IdToken: string): Promise<ContactModel[]> => {
     try {
@@ -87,9 +89,9 @@ const fetchNumberOfTenantsOnUser = async (IdToken: string): Promise<TenantModel[
 
 }
 
-const ContactsPage = async (props: { params: { tenant_unique_name: string } }) => {
+const ContactsPage = async (props: { params: { tenant_unique_name: string, search_id: string } }) => {
     const { params } = props;
-    const { tenant_unique_name } = params;
+    const { tenant_unique_name, search_id } = params;
     const IdToken = cookies().get('IdToken')?.value || '';
 
     if (!IdToken) {
@@ -103,7 +105,7 @@ const ContactsPage = async (props: { params: { tenant_unique_name: string } }) =
 
     return (
         <div className="container mx-auto p-4">
-            <SearchContacts contacts={contacts} tenant={tenant} contactsNumber={contactsNumber} tenantUniqueName={tenant_unique_name} IdToken={IdToken} numberOfTenants={tenants.length}/>
+            <SearchContacts contacts={contacts} tenant={tenant} contactsNumber={contactsNumber} tenantUniqueName={tenant_unique_name} IdToken={IdToken} numberOfTenants={tenants.length} searchId={search_id}/>
         </div>
     );
 };

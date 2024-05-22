@@ -9,6 +9,7 @@ import Contacts from "@/Components/Contact/Contacts";
 import TenantInfoDisplay from "@/Components/Tenant/TenantInfoDisplay";
 import Select from 'react-select';
 import AddSavedSearchPopup from "@/Components/SavedSearches/AddSavedSearchPopup";
+import {useRouter} from "next/navigation";
 
 interface SearchContactsProps {
     contacts: ContactModel[];
@@ -17,6 +18,7 @@ interface SearchContactsProps {
     tenantUniqueName: string;
     IdToken: string;
     numberOfTenants: number;
+    searchId?: string;
 }
 
 const fetchFilteredContacts = async (search: SearchModel, IdToken: string, tenantUniqueName: string): Promise<ContactModel[]> => {
@@ -72,6 +74,25 @@ const fetchAllContacts = async (tenantUniqueName: string, IdToken: string): Prom
     }
 }
 
+const fetchSearch = async (IdToken: string, searchId: string): Promise<SearchModel> => {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/predefined_searches/${searchId}`, {
+            headers: {
+                'userToken': `Bearer ${IdToken}`,
+            },
+        });
+        if (!res.ok) {
+            throw new Error(`Error fetching predefined search: ${res.statusText}`);
+        }
+        const search = await res.json();
+
+        return search as SearchModel;
+    } catch (error) {
+        console.error('Failed to fetch predefined searches:', error);
+        return {} as SearchModel;
+    }
+}
+
 const SearchContacts: React.FC<SearchContactsProps> = (props) => {
     const [showAsc, setShowAsc] = useState<boolean>(true);
     const [searchQuery, setSearchQuery] = useState<string>("");
@@ -81,6 +102,9 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
     const [search, setSearch] = useState<SearchModel>();
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [reset, setReset] = useState<boolean>(false);
+    const [save, setSave] = useState<boolean>(false);
+    const router = useRouter();
+
 
     useEffect(() => {
         // Check localStorage for the view mode preference
@@ -88,7 +112,22 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
         if (savedViewMode === 'list' || savedViewMode === 'grid') {
             setViewMode(savedViewMode as 'list' | 'grid');
         }
-    }, []);
+        if(props.searchId) {
+            setPredefinedSearch();
+        }
+    },[props.tenantUniqueName, props.searchId]);
+
+    const setPredefinedSearch = () => {
+        setReset(true);
+        fetchSearch(props.IdToken, props.searchId!).then(searchModel => {
+            setTags(searchModel.filter);
+            setSearchQuery(searchModel.searchQuery);
+            setShowAsc(searchModel.sortOrientation === SortOrientation.ASC);
+
+            setSearch(searchModel);
+            handleUpdate(searchModel);
+        });
+    }
 
     const createSearch = (tags: string[], query: string, sortOrientation: SortOrientation) => {
         const newSearch: SearchModel = {
@@ -143,12 +182,18 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
     const checkForReset = (tags: string[], query: string, sortOrientation: SortOrientation) => {
         if (query !== "" || tags.length > 0 || sortOrientation !== SortOrientation.ASC) {
             setReset(true);
+            setSave(true);
         } else {
             setReset(false);
+            setSave(false);
         }
     }
 
     const handleReset = () => {
+        if(props.searchId)  {
+            router.push(`/contacts/${props.tenantUniqueName}`)
+            return;
+        }
         setReset(false);
         setSearchQuery("");
         setTags([]);
@@ -203,9 +248,13 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
                         <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faTh}/>
                     )}
                 </button>
-                {reset && (
+                {save && (
                     <>
                         <AddSavedSearchPopup search={search} IdToken={props.IdToken}/>
+                    </>
+                )}
+                {reset && (
+                    <>
                         <button
                             onClick={() => handleReset()}
                             className="text-primary-light hover:text-primary-dark transition">
