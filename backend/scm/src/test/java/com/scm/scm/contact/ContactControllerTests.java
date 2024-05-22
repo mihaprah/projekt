@@ -172,26 +172,38 @@ class ContactControllerTests {
 
     @Test
     void testExportContactsBadRequest() {
+        String userToken = "Bearer token";
+        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
+        when(mockToken.getEmail()).thenReturn("test@example.com");
+        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
         ExportContactRequest request = null;
-        ResponseEntity<byte[]> response = contactController.exportContacts(request);
+        ResponseEntity<byte[]> response = contactController.exportContacts(request, userToken);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
     void testExportContactsAccessDenied() {
-        ExportContactRequest request = new ExportContactRequest("user", "tenantUniqueName", "tenantId", List.of("contactId"));
+        String userToken = "Bearer token";
+        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
+        when(mockToken.getEmail()).thenReturn("test@example.com");
+        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
+        ExportContactRequest request = new ExportContactRequest("tenantUniqueName", "tenantId", List.of("contactId"));
         when(userAccessService.hasAccessToTenant("user", "tenantId")).thenReturn(false);
-        ResponseEntity<byte[]> response = contactController.exportContacts(request);
+        ResponseEntity<byte[]> response = contactController.exportContacts(request, userToken);
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
     @Test
     void testExportContactsInternalServerError() {
-        ExportContactRequest request = new ExportContactRequest("user", "tenantUniqueName", "tenantId", List.of("contactId"));
-        when(userAccessService.hasAccessToTenant("user", "tenantId")).thenReturn(true);
-        when(userAccessService.hasAccessToContact("user", "tenantUniqueName")).thenReturn(true);
+        String userToken = "Bearer token";
+        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
+        when(mockToken.getEmail()).thenReturn("test@example.com");
+        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
+        ExportContactRequest request = new ExportContactRequest( "tenantUniqueName", "tenantId", List.of("contactId"));
+        when(userAccessService.hasAccessToTenant(mockToken.getEmail(), "tenantId")).thenReturn(true);
+        when(userAccessService.hasAccessToContact(mockToken.getEmail(), "tenantUniqueName")).thenReturn(true);
         when(exportContactExcel.exportContacts("tenantUniqueName", List.of("contactId"))).thenThrow(IllegalArgumentException.class);
-        ResponseEntity<byte[]> response = contactController.exportContacts(request);
+        ResponseEntity<byte[]> response = contactController.exportContacts(request, userToken);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 

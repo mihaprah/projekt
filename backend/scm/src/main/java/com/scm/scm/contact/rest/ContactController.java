@@ -105,19 +105,21 @@ public class ContactController {
     }
 
     @PostMapping("/export")
-    public ResponseEntity<byte[]> exportContacts(@RequestBody ExportContactRequest request) {
-        if (request == null || request.getUserToken() == null || request.getTenantUniqueName() == null || request.getTenantId() == null) {
+    public ResponseEntity<byte[]> exportContacts(@RequestBody ExportContactRequest request, @RequestHeader("userToken") String userToken) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+        String sanitizedUserToken = StringEscapeUtils.escapeHtml4(decodedToken.getEmail());
+
+        if (request == null || sanitizedUserToken == null || request.getTenantUniqueName() == null || request.getTenantId() == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
-        String user = StringEscapeUtils.escapeHtml4(request.getUserToken());
         String tenantUniqueName = StringEscapeUtils.escapeHtml4(request.getTenantUniqueName());
         String tenantId = StringEscapeUtils.escapeHtml4(request.getTenantId());
         List<String> contactIds = request.getContactIds().stream()
                 .map(StringEscapeUtils::escapeHtml4)
                 .toList();
 
-        if(!userAccessService.hasAccessToTenant(user, tenantId) || !userAccessService.hasAccessToContact(user, tenantUniqueName)) {
+        if(!userAccessService.hasAccessToTenant(sanitizedUserToken, tenantId) || !userAccessService.hasAccessToContact(sanitizedUserToken, tenantUniqueName)) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
 

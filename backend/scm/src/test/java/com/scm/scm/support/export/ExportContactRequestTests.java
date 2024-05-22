@@ -12,9 +12,8 @@ class ExportContactRequestTests {
 
     @Test
     void testGettersAndSetters() {
-        ExportContactRequest request = new ExportContactRequest("user1", "uniqueName", "123", (Arrays.asList("contact1", "contact2")));
+        ExportContactRequest request = new ExportContactRequest( "uniqueName", "123", (Arrays.asList("contact1", "contact2")));
 
-        assertEquals("user1", request.getUserToken());
         assertEquals("uniqueName", request.getTenantUniqueName());
         assertEquals("123", request.getTenantId());
         assertEquals(Arrays.asList("contact1", "contact2"), request.getContactIds());
@@ -22,8 +21,8 @@ class ExportContactRequestTests {
 
     @Test
     void testEqualsAndHashCode() {
-        ExportContactRequest request1 = new ExportContactRequest("user1", "uniqueName", "123", Arrays.asList("contact1", "contact2"));
-        ExportContactRequest request2 = new ExportContactRequest("user1", "uniqueName", "123", Arrays.asList("contact1", "contact2"));
+        ExportContactRequest request1 = new ExportContactRequest("uniqueName", "123", Arrays.asList("contact1", "contact2"));
+        ExportContactRequest request2 = new ExportContactRequest( "uniqueName", "123", Arrays.asList("contact1", "contact2"));
 
         assertTrue(request1.equals(request2) && request2.equals(request1));
         assertEquals(request1.hashCode(), request2.hashCode());
@@ -31,8 +30,8 @@ class ExportContactRequestTests {
 
     @Test
     void testToString() {
-        ExportContactRequest request = new ExportContactRequest("user1", "uniqueName", "123", Arrays.asList("contact1", "contact2"));
-        String expectedString = "ExportContactRequest(userToken=user1, tenantUniqueName=uniqueName, tenantId=123, contactIds=[contact1, contact2])";
+        ExportContactRequest request = new ExportContactRequest("uniqueName", "123", Arrays.asList("contact1", "contact2"));
+        String expectedString = "ExportContactRequest(tenantUniqueName=uniqueName, tenantId=123, contactIds=[contact1, contact2])";
 
         assertEquals(expectedString, request.toString());
     }

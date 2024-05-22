@@ -9,7 +9,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class ExportContactRequest {
-    private String userToken;
     private String tenantUniqueName;
     private String tenantId;
     private List<String> contactIds = new ArrayList<>();
