@@ -1,6 +1,8 @@
 package com.scm.scm.tenant;
 
 
+import com.scm.scm.predefinedSearch.dao.PredefinedSearchRepository;
+import com.scm.scm.predefinedSearch.vao.PredefinedSearch;
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.mongoTemplate.MongoTemplateService;
 import com.scm.scm.tenant.dao.TenantRepository;
@@ -40,6 +42,9 @@ class TenantServicesTests {
     private final List<String> users = Arrays.asList("user1", "user2", "user3");
 
     private final Map<String, Integer> contactTags = Map.of("tag1", 1, "tag2", 2, "tag3", 3);
+
+    @Mock
+    private PredefinedSearchRepository predefinedSearchRepository;
 
     @BeforeEach
     public void init() throws Exception {
@@ -103,14 +108,22 @@ class TenantServicesTests {
 
     @Test
     void testDeactivateTenant() {
-        when(tenantRepository.findById(anyString())).thenReturn(Optional.of(tenant));
-        when(tenantRepository.save(any(Tenant.class))).thenReturn(tenant);
+        String tenantId = "1";
+        tenant.setTenantUniqueName("uniqueName");
+        List<PredefinedSearch> predefinedSearches = new ArrayList<>();
 
-        String result = tenantServices.deactivateTenant("1");
+        when(tenantRepository.findById(tenantId)).thenReturn(Optional.of(tenant));
+        when(tenantRepository.save(any(Tenant.class))).thenReturn(tenant);
+        when(predefinedSearchRepository.findByOnTenant(tenant.getTenantUniqueName())).thenReturn(predefinedSearches);
+        doNothing().when(predefinedSearchRepository).deleteAll(predefinedSearches);
+
+        String result = tenantServices.deactivateTenant(tenantId);
 
         assertEquals("Tenant successfully deactivated", result);
-        verify(tenantRepository, times(1)).findById(anyString());
+        verify(tenantRepository, times(1)).findById(tenantId);
         verify(tenantRepository, times(1)).save(any(Tenant.class));
+        verify(predefinedSearchRepository, times(1)).findByOnTenant(tenant.getTenantUniqueName());
+        verify(predefinedSearchRepository, times(1)).deleteAll(predefinedSearches);
     }
 
     @Test
