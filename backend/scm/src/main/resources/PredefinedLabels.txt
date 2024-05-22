@@ -1,5 +1,4 @@
-name
-lastname
+fullName
 phoneNumber
 email
 address
