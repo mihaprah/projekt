@@ -76,6 +76,7 @@ public class TenantServices {
                     throw new CustomHttpException("Failed to create tenant collections", 500, ExceptionCause.SERVER_ERROR);
                 }
                 tenant.setLabels(setPredefinedLabels());
+                tenant.setDisplayProps(List.of("fullName", "phoneNumber", "email"));
                 tenantRepository.save(tenant);
                 log.log(Level.INFO, "Tenant created with id: {0}", tenant.getId());
                 return convertToDTO(tenant);
