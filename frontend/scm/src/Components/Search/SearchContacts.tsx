@@ -277,7 +277,12 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
                 />
 
             ) : (
-                <p className="text-center text-2xl mx-auto mt-10">No contacts created yet!</p>
+                <div className="flex flex-col h-screen">
+                    <div className="flex-grow flex items-center justify-center">
+                        <p className="text-xl mb-24">No contacts created yet!</p>
+                    </div>
+                    <div className="flex-grow"></div>
+                </div>
             )}
 
         </>
