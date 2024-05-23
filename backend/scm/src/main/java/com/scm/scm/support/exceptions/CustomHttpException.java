@@ -1,7 +1,9 @@
 package com.scm.scm.support.exceptions;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class CustomHttpException extends RuntimeException {
     private final int httpStatusCode;
