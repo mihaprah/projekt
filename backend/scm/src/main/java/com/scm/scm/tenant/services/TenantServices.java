@@ -26,6 +26,7 @@ public class TenantServices {
     private PredefinedSearchRepository predefinedSearchRepository;
     private MongoTemplateService mongoTemplateService;
     private MongoTemplate mongoTemplate;
+
     private static final Logger log = Logger.getLogger(TenantServices.class.toString());
 
     private TenantDTO convertToDTO(Tenant tenant) {
