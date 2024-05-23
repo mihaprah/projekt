@@ -5,7 +5,6 @@ import com.scm.scm.events.services.EventsServices;
 import com.scm.scm.events.vao.Event;
 import com.scm.scm.events.vao.EventState;
 import com.scm.scm.support.exceptions.CustomHttpException;
-import com.scm.scm.support.mongoTemplate.CollectionType;
 import com.scm.scm.support.mongoTemplate.MongoTemplateService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

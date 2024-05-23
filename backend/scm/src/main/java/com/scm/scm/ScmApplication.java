@@ -10,6 +10,7 @@ public class ScmApplication {
 	public String DATABASE_NAME = System.getenv("DATABASE_NAME");
 	public String DATABASE_USERNAME = System.getenv("DATABASE_USERNAME");
 	public String DATABASE_PASSWORD = System.getenv("DATABASE_PASSWORD");
+	public String DATABASE_PORT = System.getenv("DATABASE_PORT");
 
 
 	public static void main(String[] args) {
