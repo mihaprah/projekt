@@ -1,17 +1,17 @@
 "use client";
+
 import { Tenant as TenantModel } from '../../models/Tenant';
-import React, {useEffect, useState} from "react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faGear} from "@fortawesome/free-solid-svg-icons";
-import {toast} from "react-toastify";
-import {useRouter} from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGear } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 import Select from "react-select";
 
 interface TenantSettingsPopupProps {
     tenant: TenantModel;
     IdToken: string;
 }
-
 
 const updateLabels = async (labels: any, tenantId: string, IdToken: string) => {
     try {
@@ -56,18 +56,24 @@ const updateDisplayProps = async (displayProps: string[], tenantId: string, IdTo
     }
 }
 
-
 const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdToken }) => {
     const router = useRouter();
     const [showPopup, setShowPopup] = useState(false);
     const [formData, setFormData] = useState({
         ...tenant,
-        displayProps: tenant.displayProps.length ? tenant.displayProps : ['name', 'phoneNumber', 'email']
+        displayProps: tenant.displayProps && tenant.displayProps.length ? tenant.displayProps : ['name', 'phoneNumber', 'email']
     });
 
     useEffect(() => {
-        setFormData(tenant);
-    }, [tenant]);
+        if (!tenant.displayProps || !tenant.displayProps.length) {
+            router.push('/404');
+        } else {
+            setFormData({
+                ...tenant,
+                displayProps: tenant.displayProps
+            });
+        }
+    }, [tenant, router]);
 
     const handleLabelChange = (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
@@ -101,7 +107,6 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
         }
         setFormData(prevState => ({ ...prevState, displayProps: selectedProps }));
     };
-
 
     const getFilteredPropsOptions = () => {
         return Object.entries(formData.labels)

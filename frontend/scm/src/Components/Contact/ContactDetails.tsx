@@ -46,12 +46,17 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({contact, activityLog, te
 
     useEffect(() => {
         fetchTenant(tenantUniqueName, IdToken).then(tenant => {
-            setTenant(tenant);
+            if (!tenant) {
+                router.push('/404');
+            } else {
+                setTenant(tenant);
+            }
         });
-    }, [tenantUniqueName, IdToken]);
+    }, [tenantUniqueName, IdToken, router]);
 
-    if (!contact) {
-        return <div>Loading...</div>;
+    if (!contact || !contact.props) {
+        router.push('/404');
+        return null;
     }
 
     return (
