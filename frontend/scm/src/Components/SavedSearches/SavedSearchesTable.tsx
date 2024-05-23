@@ -8,6 +8,7 @@ import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {useRouter} from "next/navigation";
 import {PredefinedSearch as SearchModel} from "@/models/PredefinedSearch";
+import Loading from "@/app/loading";
 
 interface SavedSearchesTableProps {
     IdToken: string;
@@ -40,14 +41,17 @@ const fetchSearches = async (IdToken: string): Promise<SavedSearchesModel[]> => 
 
 const SavedSearchesTable: React.FC<SavedSearchesTableProps> = (props) => {
     const [savedSearches, setSavedSearches] = useState<SavedSearchesModel[]>([]);
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
 
     useEffect(()=> {
         const fetch = async () => {
-            const fetchedSavedSearches = await fetchSearches(props.IdToken);
-            setSavedSearches(fetchedSavedSearches);
+            return await fetchSearches(props.IdToken);
         };
-        fetch();
+        fetch().then((fetchedSavedSearches) => {
+            setSavedSearches(fetchedSavedSearches);
+            setLoading(false);
+        });
     }, [props.IdToken]);
 
     const handleSearchClick = (search: SearchModel) => {
@@ -59,63 +63,76 @@ const SavedSearchesTable: React.FC<SavedSearchesTableProps> = (props) => {
     }
 
     return (
-        <div className="container mx-auto p-4">
-            <ToastContainer />
-            <h1 className="text-3xl pt-5 text-secondary-dark font-semibold mb-5">Saved searches</h1>
-        <div className="overflow-x-auto shadow-xl">
-            {savedSearches.length === 0 ? (<p className="text-center text-2xl mx-auto mt-10">No saved searches found!</p>
-            ) : (
-                <div className={"bg-white shadow-xl p-6 rounded-8"}>
-                    <table className="table rounded-8 bg-gray-50 ">
-                        <thead className="text-secondary-dark">
-                        <tr>
-                            <th></th>
-                            <th>Title</th>
-                            <th>Search query</th>
-                            <th>On Tenant</th>
-                            <th>Orientation</th>
-                            <th>Filter</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
-                        </tr>
-                        </thead>
-                        <tbody>
+        <div>
+            {loading ? (
+            <Loading />
+        ) : (
+            <div className="container mx-auto p-4">
+                <ToastContainer />
+                <h1 className="text-3xl pt-5 text-secondary-dark font-semibold mb-5">Saved searches</h1>
 
-                        {savedSearches.map((search, index) => (
-                            <tr key={search.id} className={"hover:bg-gray-100 rounded-8"}>
-                                <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{index + 1}</td>
-                                <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{search.title}</td>
-                                <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{search.searchQuery || "/"}</td>
-                                <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{search.onTenant}</td>
-                                    <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>
-                                        {search.sortOrientation}
-                                        {search.sortOrientation === 'ASC' ?
-                                            <FontAwesomeIcon className="ml-1 w-2.5 h-auto" icon={faArrowUp}/> :
-                                            <FontAwesomeIcon className="ml-1 w-2.5 h-auto" icon={faArrowDown}/>
-                                        }
-                                    </td>
-                                    <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>
-                                        {search.filter.length === 0
-                                            ? '/'
-                                            : search.filter.length > 4
-                                                ? `${search.filter.slice(0, 4).join(', ')} + more`
-                                                : search.filter.join(', ')
-                                        }
-                                    </td>
-                                    <td>
-                                        <SavedSearchesPopup icon={faPen} title={"Edit Search"} savedSearch={search} IdToken={props.IdToken} onSavedSearchAction={() => handleSavedSearchAction(props.IdToken)} action={"edit"} />
-                                    </td>
-                                <td>
-                                    <SavedSearchesPopup icon={faTrash} title={"Delete Search"} savedSearch={search} IdToken={props.IdToken} onSavedSearchAction={() => handleSavedSearchAction(props.IdToken)} action={"delete"}/>
-                                </td>
-                            </tr>
+                {savedSearches.length === 0 ? (
+                    <div className="flex flex-col h-screen">
+                        <div className="flex-grow flex items-center justify-center">
+                            <p className="text-xl mb-24">No searches have been saved yet!</p>
+                        </div>
+                        <div className="flex-grow"></div>
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto shadow-xl">
+                        <div className={"bg-white shadow-xl p-6 rounded-8"}>
+                            <table className="table rounded-8 bg-gray-50 ">
+                                <thead className="text-secondary-dark">
+                                <tr>
+                                    <th></th>
+                                    <th>Title</th>
+                                    <th>Search query</th>
+                                    <th>On Tenant</th>
+                                    <th>Orientation</th>
+                                    <th>Filter</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody>
 
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
-        </div>
+                                {savedSearches.map((search, index) => (
+                                    <tr key={search.id} className={"hover:bg-gray-100 rounded-8"}>
+                                        <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{index + 1}</td>
+                                        <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{search.title}</td>
+                                        <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{search.searchQuery || "/"}</td>
+                                        <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>{search.onTenant}</td>
+                                        <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>
+                                            {search.sortOrientation}
+                                            {search.sortOrientation === 'ASC' ?
+                                                <FontAwesomeIcon className="ml-1 w-2.5 h-auto" icon={faArrowUp}/> :
+                                                <FontAwesomeIcon className="ml-1 w-2.5 h-auto" icon={faArrowDown}/>
+                                            }
+                                        </td>
+                                        <td className="cursor-pointer" onClick={() => handleSearchClick(search)}>
+                                            {search.filter.length === 0
+                                                ? '/'
+                                                : search.filter.length > 4
+                                                    ? `${search.filter.slice(0, 4).join(', ')} + more`
+                                                    : search.filter.join(', ')
+                                            }
+                                        </td>
+                                        <td>
+                                            <SavedSearchesPopup icon={faPen} title={"Edit Search"} savedSearch={search} IdToken={props.IdToken} onSavedSearchAction={() => handleSavedSearchAction(props.IdToken)} action={"edit"} />
+                                        </td>
+                                        <td>
+                                            <SavedSearchesPopup icon={faTrash} title={"Delete Search"} savedSearch={search} IdToken={props.IdToken} onSavedSearchAction={() => handleSavedSearchAction(props.IdToken)} action={"delete"}/>
+                                        </td>
+                                    </tr>
+
+                                ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
+            </div>
+        )}
         </div>
     );
 }

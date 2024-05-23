@@ -5,6 +5,7 @@ import {Contact as ContactModel} from '../../../models/Contact';
 import {Tenant as TenantModel} from '../../../models/Tenant';
 import SearchContacts from "@/Components/Search/SearchContacts";
 import 'react-toastify/dist/ReactToastify.css';
+import {redirect} from "next/navigation";
 
 const fetchContacts = async (tenant_unique_name: string, IdToken: string): Promise<ContactModel[]> => {
     try {
@@ -95,7 +96,7 @@ const ContactsPage = async (props: { params: { tenant_unique_name: string, searc
     const IdToken = cookies().get('IdToken')?.value || '';
 
     if (!IdToken) {
-        return <p>IdToken is not available</p>;
+        redirect('/login');
     }
 
     const contacts = await fetchContacts(tenant_unique_name, IdToken);

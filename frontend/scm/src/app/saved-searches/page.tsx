@@ -1,13 +1,14 @@
 import {cookies} from "next/headers";
 import SavedSearchesTable from "@/Components/SavedSearches/SavedSearchesTable";
 import React from "react";
+import {redirect} from "next/navigation";
 
 
 const SavedSearchesPage: React.FC = async () => {
     const IdToken = cookies().get('IdToken')?.value || '';
 
     if (!IdToken) {
-        throw new Error('IdToken is not available');
+        redirect('/login');
     }
 
 

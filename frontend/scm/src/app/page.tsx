@@ -8,8 +8,7 @@ import TenantsDashboard from "@/Components/Tenant/TenantsDashboard";
 import 'react-toastify/dist/ReactToastify.css';
 
 const Home = () => {
-    const [user, setUser] = useState<any>(null);
-    const [token, setToken] = useState<string | null>("");
+    const [IdToken, setIdToken] = useState<string | null>("");
     const router = useRouter();
 
     useEffect(() => {
@@ -17,21 +16,20 @@ const Home = () => {
             if (!currentUser) {
                 router.push('/login');
             } else {
-                setUser(currentUser);
                 const idToken = await currentUser.getIdToken();
-                setToken(idToken);
+                if(idToken === "" || idToken === null){
+                    router.push('/login');
+                }
+                setIdToken(idToken);
             }
         });
         return () => unsubscribe();
     }, [router]);
 
-    if (!user) {
-        return <div>Loading...</div>
-    }
 
     return (
         <div className="container mx-auto p-4">
-            <TenantsDashboard IdToken={token || ""}/>
+            <TenantsDashboard IdToken={IdToken || ""}/>
         </div>
     );
 };

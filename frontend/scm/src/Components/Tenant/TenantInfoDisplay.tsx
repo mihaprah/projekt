@@ -1,7 +1,7 @@
 "use client";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faUsers, faTrash, faArrowLeft} from "@fortawesome/free-solid-svg-icons";
+import {faUsers, faTrash, faArrowLeft, faPlus} from "@fortawesome/free-solid-svg-icons";
 import { ToastContainer, toast } from "react-toastify";
 import EditTenantPopup from "@/Components/Tenant/EditTenantPopup";
 import AddNewContactPopup from "@/Components/Contact/AddNewContactPopup";
@@ -10,6 +10,8 @@ import React, { useState } from "react";
 import {Tenant as TenantModel} from "@/models/Tenant";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import TenantPopup from "@/Components/Tenant/TenantPopup";
+
 
 interface TenantInfoDisplayProps {
     tenant: TenantModel;
@@ -18,6 +20,7 @@ interface TenantInfoDisplayProps {
     onSave: () => void;
     numberOfTenants: number;
 }
+
 
 const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
     const router = useRouter();
@@ -45,6 +48,9 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
             console.error('Failed to deactivate tenant:', error);
         }
     };
+    const handleTenantAdd = async () => {
+        router.push('/');
+    }
 
     return (
         <div>
@@ -71,6 +77,12 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
                                 <li><Link
                                     href={"#"}>{props.tenant.title}</Link></li>
                             </ul>
+                        </div>
+                        <div className="ml-5">
+                        <TenantPopup onTenantAdd={() => handleTenantAdd()} IdToken={props.IdToken} icon={faPlus}
+                                     buttonAction={"Tenant"} title={"Add new Tenant"}
+                                     labels={["Title", "Description", "Colour", "Other users"]}
+                        />
                         </div>
                     </div>
                     <div className={"flex items-center"}>

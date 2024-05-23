@@ -118,8 +118,8 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
         <div>
             <ToastContainer />
             <button onClick={() => setShowPopup(true)}
-                className="px-4 py-1 bg-primary-light text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                {props.buttonAction} <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={props.icon}/>
+                    className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                    {props.buttonAction} <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={props.icon}/>
             </button>
 
             {showPopup && (

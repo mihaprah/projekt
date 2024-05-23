@@ -6,6 +6,7 @@ import { Contact as ContactModel } from '@/models/Contact';
 import { Event as EventModel } from '@/models/Event';
 import ContactDetails from '@/Components/Contact/ContactDetails';
 import { Tenant as TenantModel } from '@/models/Tenant';
+import {redirect} from "next/navigation";
 
 const fetchContact = async (contactId: string, IdToken: string, tenant_unique_name: string): Promise<ContactModel> => {
     try {
@@ -71,6 +72,10 @@ const ContactPage = async ({ params }: { params: { tenant_unique_name: string, c
     const contact = await fetchContact(contact_id, IdToken, tenant_unique_name);
     const activityLog: EventModel[] = await fetchActivityLog(contact_id, IdToken, tenant_unique_name);
     const tenant: TenantModel = await fetchTenant(tenant_unique_name, IdToken);
+
+    if (!IdToken) {
+        redirect('/login');
+    }
 
     return (
         <ContactDetails contact={contact} activityLog={activityLog} tenantUniqueName={tenant_unique_name} IdToken={IdToken} tenantTitle={tenant.title}/>

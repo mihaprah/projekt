@@ -5,7 +5,7 @@ import { auth } from "@/firebase";
 import Cookies from "js-cookie";
 import {toast, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import {FirebaseError} from "firebase-admin";
 import Link from "next/link";
 import {checkEmail, checkIfEmpty, checkPassword} from "@/utils/UserValidation";

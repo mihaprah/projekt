@@ -35,10 +35,11 @@ const Tenant: React.FC<TenantProps> = (props) => {
 
     useEffect(() => {
         const fetch = async () => {
-            const numberOfContacts = await fetchNumberContacts(props.IdToken, props.tenant.tenantUniqueName);
-            setContactsNumber(numberOfContacts);
+            return await fetchNumberContacts(props.IdToken, props.tenant.tenantUniqueName);
         };
-        fetch();
+        fetch().then((contactsNum) => {
+            setContactsNumber(contactsNum)
+        });
     }, [props.IdToken, props.tenant.tenantUniqueName]);
 
     return (

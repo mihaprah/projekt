@@ -1,7 +1,7 @@
 "use client";
 import TenantPopup from "@/Components/Tenant/TenantPopup";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
-import {redirect} from "next/navigation";
+import {useRouter} from "next/navigation";
 import Tenant from "@/Components/Tenant/Tenant";
 import {Tenant as TenantModel} from "@/models/Tenant";
 import React, {useEffect, useState} from "react";
@@ -41,13 +41,17 @@ const fetchTenants = async (IdToken: string): Promise<TenantModel[]> => {
 const TenantsDashboard: React.FC<TenantDashboardProps> = (props) => {
     const [tenants, setTenants] = useState<TenantModel[]>([]);
     const [loading, setLoading] = useState(true);
+    const router = useRouter();
 
     useEffect(() => {
         const fetch = async () => {
             return await fetchTenants(props.IdToken);
         };
-        fetch().then((tenant) => {
-            setTenants(tenant)
+        fetch().then((tenantsArray) => {
+            setTenants(tenantsArray)
+            if(tenantsArray.length === 1){
+                router.push(`/contacts/${tenantsArray[0].tenantUniqueName}`);
+            }
             setLoading(false);
         });
     }, [props.IdToken]);
@@ -67,7 +71,7 @@ const TenantsDashboard: React.FC<TenantDashboardProps> = (props) => {
                         <div className={"mt-4"}>
                             <TenantPopup onTenantAdd={() => handleTenantAdd(props.IdToken)} IdToken={props.IdToken}
                                          icon={faPlus}
-                                         buttonAction={"Add new"} title={"Add new Tenant"}
+                                         buttonAction={"Tenant"} title={"Add new Tenant"}
                                          labels={["Title", "Description", "Colour", "Other users"]}
                             />
                         </div>
@@ -80,16 +84,12 @@ const TenantsDashboard: React.FC<TenantDashboardProps> = (props) => {
                                 </div>
                                 <div className="flex-grow"></div>
                             </div>
-                        ) : (
-                            tenants.length === 1 ? (
-                                redirect(`http://localhost:3000/contacts/${tenants[0].tenantUniqueName}`)
-                            ) : (
-                                <div className="grid grid-cols-5 gap-x-4 gap-y-2 mb-6">
-                                    {tenants.map((tenant) => (
-                                        <Tenant key={tenant.id} IdToken={props.IdToken} tenant={tenant}/>
-                                    ))}
-                                </div>
-                            )
+                        )  : (
+                            <div className="grid grid-cols-5 gap-x-4 gap-y-2 mb-6">
+                                {tenants.map((tenant) => (
+                                    <Tenant key={tenant.id} IdToken={props.IdToken} tenant={tenant}/>
+                                ))}
+                            </div>
                         )}
                     </div>
                 </div>
