@@ -212,8 +212,8 @@ const Contacts: React.FC<ContactsProps> = ({
                                     </button>
                                 </div>
                                 <div className="text-center mb-6">
-                                    {contact.props.name && displayProps.includes('name') && (
-                                        <h2 className="text-xl font-bold mb-1.5">{contact.props.name}</h2>
+                                    {contact.props.fullName && displayProps.includes('fullName') && (
+                                        <h2 className="text-xl font-bold mb-1.5">{contact.props.fullName}</h2>
                                     )}
                                     {contact.props.email && displayProps.includes('email') && (
                                         <a href={`mailto:${contact.props.email}`}
@@ -228,7 +228,7 @@ const Contacts: React.FC<ContactsProps> = ({
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-6 text-center justify-center">
-                                    {displayProps.filter(prop => prop !== 'name' && prop !== 'email' && prop !== 'phoneNumber' && contact.props[prop]).map(prop => (
+                                    {displayProps.filter(prop => prop !== 'fullName' && prop !== 'email' && prop !== 'phoneNumber' && contact.props[prop]).map(prop => (
                                         <div key={prop}>
                                             <strong>{tenant.labels[prop]}</strong>
                                             <p>{contact.props[prop]}</p>

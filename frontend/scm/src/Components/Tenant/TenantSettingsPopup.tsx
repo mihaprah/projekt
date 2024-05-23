@@ -61,7 +61,7 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
     const [showPopup, setShowPopup] = useState(false);
     const [formData, setFormData] = useState({
         ...tenant,
-        displayProps: tenant.displayProps && tenant.displayProps.length ? tenant.displayProps : ['name', 'phoneNumber', 'email']
+        displayProps: tenant.displayProps ? tenant.displayProps : ['fullName', 'phoneNumber', 'email']
     });
 
     useEffect(() => {

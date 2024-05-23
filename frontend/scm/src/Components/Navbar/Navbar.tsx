@@ -7,6 +7,7 @@ import {usePathname} from 'next/navigation';
 import {onAuthStateChanged, signOut} from "firebase/auth";
 import {auth} from "@/firebase";
 import Cookies from "js-cookie";
+import Image from "next/image";
 
 
 const Navbar = () => {
@@ -37,7 +38,7 @@ const Navbar = () => {
     return (
         <div className={"bg-primary-light flex justify-between text-white dark:bg-primary-dark"}>
             <div className={"flex"}>
-                <img className={"w-150px"} src={"/logo-scm.png"} alt={"Logo"}/>
+                <Image width={700} height={700} className={"w-150px"} src={"/logo-scm.png"} alt={"Logo"}/>
                 <div className={"items-center justify-center flex"}>
                     <nav className={"navbar"}>
                         <ul>
