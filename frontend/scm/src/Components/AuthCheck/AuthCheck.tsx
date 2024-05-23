@@ -5,6 +5,7 @@ import { useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from "@/firebase";
 import { onAuthStateChanged, getIdTokenResult, User } from 'firebase/auth';
+import Cookies from 'js-cookie'; // Dodamo js-cookie za upravljanje cookijev
 
 interface AuthCheckProps {
     children: ReactNode;
@@ -21,10 +22,10 @@ const AuthCheck: React.FC<AuthCheckProps> = ({ children }) => {
 
             try {
                 const tokenResult = await getIdTokenResult(user);
-                const token = localStorage.getItem("IdToken");
+                const token = Cookies.get("IdToken"); // Preveri token iz cookija
 
                 if (!token) {
-                    console.log("No token found in localStorage.");
+                    console.log("No token found in cookies.");
                     return false;
                 }
 
@@ -48,9 +49,9 @@ const AuthCheck: React.FC<AuthCheckProps> = ({ children }) => {
         };
 
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            const token = localStorage.getItem("IdToken");
+            const token = Cookies.get("IdToken"); // Preveri token iz cookija
             if (!token) {
-                console.log("No token found in localStorage, redirecting to login.");
+                console.log("No token found in cookies, redirecting to login.");
                 router.push('/login');
                 return;
             }

@@ -22,9 +22,11 @@ export default function RootLayout({
         <ClientOnly>
             <Suspense fallback={<Loading />}>
                 <Navbar />
+                <AuthCheck>
                     <Suspense fallback={<Loading />}>
                         {children}
                     </Suspense>
+                </AuthCheck>
             </Suspense>
         </ClientOnly>
         </body>
