@@ -1,9 +1,0 @@
-fullName
-phoneNumber
-email
-address
-company
-nationality
-position
-workPhone
-linkedIn

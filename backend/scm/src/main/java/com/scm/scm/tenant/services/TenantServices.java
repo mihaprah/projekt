@@ -14,10 +14,6 @@ import com.scm.scm.tenant.vao.Tenant;
 import lombok.AllArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -76,7 +72,6 @@ public class TenantServices {
                     throw new CustomHttpException("Failed to create tenant collections", 500, ExceptionCause.SERVER_ERROR);
                 }
                 tenant.setLabels(setPredefinedLabels());
-                tenant.setDisplayProps(List.of("fullName", "phoneNumber", "email"));
                 tenantRepository.save(tenant);
                 log.log(Level.INFO, "Tenant created with id: {0}", tenant.getId());
                 return convertToDTO(tenant);
@@ -249,18 +244,19 @@ public class TenantServices {
     }
 
     private Map<String, String> setPredefinedLabels() {
-        String FILE_PATH = "./src/main/resources/PredefinedLabels.txt";
-        List<String> keys = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                keys.add(line);
-            }
-        } catch (IOException e) {
-            log.log(Level.SEVERE, "Error reading file: {0}", e.getMessage());
-        }
+        List<String> predefinedLabels = Arrays.asList(
+                "fullName",
+                "phoneNumber",
+                "email",
+                "address",
+                "company",
+                "nationality",
+                "position",
+                "workPhone",
+                "linkedIn"
+        );
         Map<String, String> labels = new java.util.HashMap<>();
-        for (String key : keys) {
+        for (String key : predefinedLabels) {
             labels.put(key, key);
         }
         log.info("Predefined labels set");
