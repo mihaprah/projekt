@@ -65,13 +65,8 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
     });
 
     useEffect(() => {
-        if (!tenant.displayProps || !tenant.displayProps.length) {
+        if (!tenant.id) {
             router.push('/404');
-        } else {
-            setFormData({
-                ...tenant,
-                displayProps: tenant.displayProps
-            });
         }
     }, [tenant, router]);
 
