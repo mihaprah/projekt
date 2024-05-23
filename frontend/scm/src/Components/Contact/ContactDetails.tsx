@@ -116,7 +116,11 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({contact, activityLog, te
                                                          className="text-primary mr-3 ml-1 w-3.5 h-auto"/>
                                         <h4 className="font-semibold text-lg text-primary">{tenant?.labels["email"]}</h4>
                                     </div>
-                                    <p className="mt-1 text-gray-700">{contact.props.email}</p>
+                                    <a href={`mailto:${contact.props.email}`}
+                                       onClick={(e) => e.stopPropagation()}
+                                       className="mt-1 text-primary-light hover:underline">
+                                        {contact.props.email}
+                                    </a>
                                 </div>
                             )}
                         </div>
