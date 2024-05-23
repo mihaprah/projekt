@@ -1,6 +1,6 @@
 import {toast, ToastContainer} from "react-toastify";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import React, { useState} from "react";
+import React, {useEffect, useState} from "react";
 import {faFloppyDisk} from "@fortawesome/free-solid-svg-icons";
 import {PredefinedSearch as SearchModel, SortOrientation} from "@/models/PredefinedSearch";
 
@@ -31,10 +31,38 @@ const addSavedSearch = async (search: SearchModel, IdToken: string): Promise<voi
     }
 }
 
+const updateSavedSearch = async (search: SearchModel, IdToken: string): Promise<void> => {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/predefined_searches`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'userToken': `Bearer ${IdToken}`,
+            },
+            body: JSON.stringify(search),
+        });
+        if (!res.ok) {
+            throw new Error(`Error updating search: ${res.statusText}`);
+        } else {
+            toast.success("Search updated successfully!");
+        }
+    } catch (error) {
+        toast.error("Failed to update search!");
+        console.error('Failed to update search:', error);
+    }
+}
+
+
 const AddSavedSearchPopup: React.FC<AddSavedSearchPopupProps> = (props) => {
     const [showPopup, setShowPopup] = useState(false);
     const [title, setTitle] = useState<string>("");
 
+
+    useEffect(() => {
+        if (props.search?.title) {
+            setTitle(props.search.title);
+        }
+    }, [props.search?.title]);
 
     const handleSave = async () => {
         if (!title) {
@@ -42,9 +70,16 @@ const AddSavedSearchPopup: React.FC<AddSavedSearchPopupProps> = (props) => {
             return;
         }
         props.search!.title = title;
-        addSavedSearch(props.search!, props.IdToken).then(() => {
-            setShowPopup(false);
-        });
+        if(props.search?.id) {
+            updateSavedSearch(props.search!, props.IdToken).then(() => {
+                setShowPopup(false);
+            });
+        }else {
+            addSavedSearch(props.search!, props.IdToken).then(() => {
+                setShowPopup(false);
+            });
+        }
+
     };
 
     const handleTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,14 +91,15 @@ const AddSavedSearchPopup: React.FC<AddSavedSearchPopupProps> = (props) => {
             <ToastContainer/>
             <button onClick={() => setShowPopup(true)}
                     className="btn mr-3 px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                Save Search <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={faFloppyDisk}/>
+                {props.search?.id ? 'Update Search' : 'Save Search'} <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"}
+                                                                                      icon={faFloppyDisk}/>
             </button>
 
             {showPopup && (
                 <div
                     className="absolute z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-60 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg w-600px">
-                        <h2 className={"font-semibold mb-4 text-2xl"}>Save Search</h2>
+                        <h2 className={"font-semibold mb-4 text-2xl"}> {props.search?.id ? 'Update Search' : 'Save Search'}</h2>
                         <div className={"flex flex-col"}>
                         <div className={"my-3"}>
                             <label className={"font-semibold mb-1"}>Title</label>
@@ -102,7 +138,7 @@ const AddSavedSearchPopup: React.FC<AddSavedSearchPopupProps> = (props) => {
                             </button>
                             <button onClick={() => handleSave()}
                                     className="btn  mt-4 mx-1 px-5 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
-                                Save Search
+                                {props.search?.id ? 'Update Search' : 'Save Search'}
                             </button>
                         </div>
                     </div>

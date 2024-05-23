@@ -119,6 +119,7 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
 
     const setPredefinedSearch = () => {
         setReset(true);
+        setSave(true);
         fetchSearch(props.IdToken, props.searchId!).then(searchModel => {
             setTags(searchModel.filter);
             setSearchQuery(searchModel.searchQuery);
@@ -129,13 +130,13 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
         });
     }
 
-    const createSearch = (tags: string[], query: string, sortOrientation: SortOrientation) => {
+    const createSearch = (tags: string[], query: string, sortOrientation: SortOrientation, id?: string, user?: string, title?: string) => {
         const newSearch: SearchModel = {
-            id: "",
+            id: id || "",
             searchQuery: query || "",
-            user: "",
+            user: user || "",
             onTenant: props.tenant.tenantUniqueName,
-            title: "",
+            title: title || "",
             filter: tags,
             sortOrientation: sortOrientation,
         };
@@ -147,20 +148,20 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
     const handleTagsChange = async (selectedOptions: any) => {
         const tags = selectedOptions ? selectedOptions.map((option: any) => option.value) : [];
         setTags(tags);
-        const newSearch = createSearch(tags, searchQuery, showAsc ? SortOrientation.ASC : SortOrientation.DESC);
+        const newSearch = createSearch(tags, searchQuery, showAsc ? SortOrientation.ASC : SortOrientation.DESC, search?.id, search?.user, search?.title);
         handleUpdate(newSearch);
     };
 
     const handleSearchQuery = (query : string) => {
         setSearchQuery(query);
-        const newSearch = createSearch(tags || [], query, showAsc ? SortOrientation.ASC : SortOrientation.DESC);
+        const newSearch = createSearch(tags || [], query, showAsc ? SortOrientation.ASC : SortOrientation.DESC, search?.id, search?.user, search?.title);
         handleUpdate(newSearch);
     }
 
     const handleSort = (bool: boolean) => {
         setShowAsc(bool);
-        const newSearch = createSearch(tags || [], searchQuery, bool ? SortOrientation.ASC : SortOrientation.DESC);
-        handleUpdate(newSearch);
+        const newSearch = createSearch(tags || [], searchQuery, bool ? SortOrientation.ASC : SortOrientation.DESC, search?.id, search?.user, search?.title);
+        handleUpdate(newSearch)
     }
 
     const handleUpdate = async (search: SearchModel) => {
@@ -250,7 +251,7 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
                 </button>
                 {save && (
                     <>
-                        <AddSavedSearchPopup search={search} IdToken={props.IdToken}/>
+                        <AddSavedSearchPopup search={search} IdToken={props.IdToken} />
                     </>
                 )}
                 {reset && (
