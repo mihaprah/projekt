@@ -88,7 +88,7 @@ class ContactControllerTests {
         when(mockToken.getEmail()).thenReturn("test@example.com");
         when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
         when(userAccessService.hasAccessToContact(mockToken.getEmail(), tenantUniqueName)).thenReturn(true);
-        when(contactServices.findAllContacts(tenantUniqueName)).thenReturn(contacts);
+        when(contactServices.findAllContacts(tenantUniqueName, false)).thenReturn(contacts);
 
         ResponseEntity<List<ContactDTO>> response = contactController.getContacts(tenantUniqueName, userToken);
 

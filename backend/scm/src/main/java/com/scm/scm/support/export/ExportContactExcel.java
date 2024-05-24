@@ -37,7 +37,7 @@ public class ExportContactExcel {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
         String currentDateTime = dateFormat.format(new Date());
 
-        List<ContactDTO> contacts = contactServices.findAllContacts(tenantUniqueName);
+        List<ContactDTO> contacts = contactServices.findAllContacts(tenantUniqueName, false);
 
         if (!contactIds.isEmpty()) {
             contacts = contacts.stream()

@@ -63,9 +63,25 @@ public class ContactController {
         if (!userAccessService.hasAccessToContact(decodedToken.getEmail(), tenantUniqueName)) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
-        List<ContactDTO> contacts = contactServices.findAllContacts(tenantUniqueName);
+        List<ContactDTO> contacts = contactServices.findAllContacts(tenantUniqueName, false);
         return ResponseEntity.ok(contacts);
     }
+
+    @GetMapping( "/{tenant_unique_name}/deleted")
+    public ResponseEntity<List<ContactDTO>> getDeletedContacts(@PathVariable(name = "tenant_unique_name") String tenantUniqueName, @RequestHeader("userToken") String userToken) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToContact(decodedToken.getEmail(), tenantUniqueName)) {
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
+        }
+        List<ContactDTO> contacts = contactServices.findAllContacts(tenantUniqueName, true);
+        return ResponseEntity.ok(contacts);
+    }
+
+
+
+
+
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addContact(@RequestHeader("userToken") String userToken, @RequestBody ContactDTO contactDTO) {

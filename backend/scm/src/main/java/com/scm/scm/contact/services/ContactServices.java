@@ -93,12 +93,20 @@ public class ContactServices {
         return convertToDTO(contact);
     }
 
-    public List<ContactDTO> findAllContacts(String tenantUniqueName) {
+    public List<ContactDTO> findAllContacts(String tenantUniqueName, boolean deleted) {
         if (tenantUniqueName.isEmpty()) {
             throw new CustomHttpException(ExceptionMessage.TENANT_NAME_EMPTY.getExceptionMessage(), 400, ExceptionCause.USER_ERROR);
         }
         if (!mongoTemplateService.collectionExists(tenantUniqueName + CollectionType.MAIN.getCollectionType())) {
             throw new CustomHttpException(ExceptionMessage.COLLECTION_NOT_EXIST.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
+        }
+        if (deleted && !mongoTemplateService.collectionExists(tenantUniqueName + CollectionType.DELETED.getCollectionType())) {
+            throw new CustomHttpException(ExceptionMessage.COLLECTION_NOT_EXIST.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
+        }
+        if(deleted){
+            log.log(Level.INFO, "All deleted contacts found for tenant: {0}", tenantUniqueName);
+            List<Contact> contacts = mongoTemplate.findAll(Contact.class, tenantUniqueName + CollectionType.DELETED.getCollectionType());
+            return contacts.stream().map(this::convertToDTO).toList();
         }
         log.log(Level.INFO, "All contacts found for tenant: {0}", tenantUniqueName);
         List<Contact> contacts = mongoTemplate.findAll(Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType());

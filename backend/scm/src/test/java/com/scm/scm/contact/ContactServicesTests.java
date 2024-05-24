@@ -92,7 +92,7 @@ class ContactServicesTests {
         when(mongoTemplateService.collectionExists(anyString())).thenReturn(true);
         when(mongoTemplate.findAll(eq(Contact.class), anyString())).thenReturn(Arrays.asList(contact1, contact2));
 
-        List<ContactDTO> result = contactServices.findAllContacts("tenantUniqueName");
+        List<ContactDTO> result = contactServices.findAllContacts("tenantUniqueName", false);
 
         assertEquals(2, result.size());
         verify(mongoTemplateService, times(1)).collectionExists(anyString());

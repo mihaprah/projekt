@@ -47,7 +47,7 @@ class ExportContactExcelTests {
         ContactDTO contact1 = new ContactDTO(contactId1, "Title1", "User1", "Tenant1", "Comments1", "2022-01-01", List.of("Tag1"), Collections.emptyMap(), "Attributes1");
         ContactDTO contact2 = new ContactDTO(contactId2, "Title2", "User2", "Tenant2", "Comments2", "2022-01-02", List.of("Tag2"), Collections.emptyMap(), "Attributes2");
         List<ContactDTO> contacts = List.of(contact1, contact2);
-        when(contactServices.findAllContacts("Tenant")).thenReturn(contacts);
+        when(contactServices.findAllContacts("Tenant", false)).thenReturn(contacts);
 
         ResponseEntity<byte[]> response = exportContactExcel.exportContacts("Tenant", List.of(contactId1, contactId2));
 
@@ -57,7 +57,7 @@ class ExportContactExcelTests {
 
     @Test
     void testExportContactsNoContacts() {
-        when(contactServices.findAllContacts("Tenant")).thenReturn(Collections.emptyList());
+        when(contactServices.findAllContacts("Tenant", false)).thenReturn(Collections.emptyList());
 
         ResponseEntity<byte[]> response = exportContactExcel.exportContacts("Tenant", List.of("1"));
 
