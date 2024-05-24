@@ -1,14 +1,12 @@
 "use client";
 
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import { Tenant as TenantModel } from '../../models/Tenant';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import CreatableSelect from 'react-select/creatable';
 import {toast} from "react-toastify";
 import {useRouter} from "next/navigation";
-import {onAuthStateChanged} from "firebase/auth";
-import {auth} from "@/firebase";
 
 interface EditTenantPopupProps {
     tenant: TenantModel;
@@ -16,7 +14,6 @@ interface EditTenantPopupProps {
 
 const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
     const router = useRouter();
-    const [user, setUser] = useState<any>(null);
     const [showPopup, setShowPopup] = useState(false);
     const [formData, setFormData] = useState(tenant);
 
@@ -73,7 +70,7 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
 
             {showPopup && (
                 <div className="absolute z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-60 inset-0">
-                    <div className="bg-white p-10 rounded-8 shadow-lg max-w-3xl w-full">
+                    <div className="bg-white p-10 rounded-8 shadow-lg max-w-3xl w-full my-10 overflow-auto">
                         <h2 className="font-semibold mb-4 text-2xl">Edit Tenant</h2>
                         <form>
                             <div className="mb-4">

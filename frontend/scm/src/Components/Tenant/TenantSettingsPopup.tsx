@@ -119,7 +119,7 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
 
             {showPopup && (
                 <div className="absolute z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-60 inset-0">
-                    <div className="bg-white p-10 rounded-8 shadow-lg max-w-5xl w-full">
+                    <div className="bg-white p-10 rounded-8 shadow-lg max-w-5xl w-full my-10 overflow-auto">
                         <h2 className="font-semibold mb-4 text-2xl">Tenant Settings</h2>
                         <h4 className={"text-gray-700 font-semibold"}>Display properties</h4>
                         <p className="text-gray-700 text-sm mb-4 mt-1">Choose up to 9 props to display</p>
@@ -137,7 +137,7 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
                                 className="appearance-none border-0 mb-10 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             />
                             <h4 className={"text-gray-700 font-semibold mb-3"}>Label names</h4>
-                            <div className="max-h-80 overflow-auto grid grid-cols-3 gap-2">
+                            <div className="max-h-80 grid grid-cols-3 gap-2">
                                 {formData.labels && Object.entries(formData.labels).map(([key, value], index) => (
                                     <div key={index} className="mb-4 flex justify-end items-center">
                                         <label className="block text-gray-700 text-sm font-semibold mr-5"

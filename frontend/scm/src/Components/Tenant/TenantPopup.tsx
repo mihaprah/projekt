@@ -124,7 +124,7 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
 
             {showPopup && (
                 <div className="absolute z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-60 inset-0">
-                    <div className="bg-white p-10 rounded-8 shadow-lg w-600px">
+                    <div className="bg-white p-10 rounded-8 shadow-lg w-full max-w-3xl my-10 overflow-auto">
                         <h2 className={"font-semibold mb-4 text-2xl"}>{props.title}</h2>
                         {props.labels.map((label, index) => (
                             <div key={index} className={"p-2 justify-between flex flex-col items-start"}>
