@@ -17,9 +17,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class ExportContactExcel {
@@ -42,7 +42,7 @@ public class ExportContactExcel {
         if (!contactIds.isEmpty()) {
             contacts = contacts.stream()
                     .filter(contact -> contactIds.contains(contact.getId()))
-                    .toList();
+                    .collect(Collectors.toList());
         }
 
         if (contacts.isEmpty()) {
@@ -53,29 +53,55 @@ public class ExportContactExcel {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Contacts");
 
+        Set<String> allTags = new HashSet<>();
+        Set<String> allProps = new HashSet<>();
+
+        for (ContactDTO contact : contacts) {
+            allTags.addAll(contact.getTags());
+            allProps.addAll(contact.getProps().keySet());
+        }
+
+        List<String> sortedTags = new ArrayList<>(allTags);
+        List<String> sortedProps = new ArrayList<>(allProps);
+        Collections.sort(sortedTags);
+        Collections.sort(sortedProps);
+
         Row headerRow = sheet.createRow(0);
-        headerRow.createCell(0).setCellValue("Id");
-        headerRow.createCell(1).setCellValue("Title");
-        headerRow.createCell(2).setCellValue("User");
-        headerRow.createCell(3).setCellValue("TenantUniqueName");
-        headerRow.createCell(4).setCellValue("Comments");
-        headerRow.createCell(5).setCellValue("CreatedAt");
-        headerRow.createCell(6).setCellValue("Tags");
-        headerRow.createCell(7).setCellValue("Props");
-        headerRow.createCell(8).setCellValue("AttributesToString");
+        int colIdx = 0;
+        headerRow.createCell(colIdx++).setCellValue("Id");
+        headerRow.createCell(colIdx++).setCellValue("Title");
+        headerRow.createCell(colIdx++).setCellValue("User");
+        headerRow.createCell(colIdx++).setCellValue("TenantUniqueName");
+        headerRow.createCell(colIdx++).setCellValue("Comments");
+        headerRow.createCell(colIdx++).setCellValue("CreatedAt");
+
+        for (String tag : sortedTags) {
+            headerRow.createCell(colIdx++).setCellValue(tag);
+        }
+
+        for (String prop : sortedProps) {
+            headerRow.createCell(colIdx++).setCellValue(prop);
+        }
 
         for (int i = 0; i < contacts.size(); i++) {
             ContactDTO contact = contacts.get(i);
             Row row = sheet.createRow(i + 1);
-            row.createCell(0).setCellValue(contact.getId());
-            row.createCell(1).setCellValue(contact.getTitle());
-            row.createCell(2).setCellValue(contact.getUser());
-            row.createCell(3).setCellValue(contact.getTenantUniqueName());
-            row.createCell(4).setCellValue(contact.getComments());
-            row.createCell(5).setCellValue(contact.getCreatedAt());
-            row.createCell(6).setCellValue(contact.getTags().toString());
-            row.createCell(7).setCellValue(contact.getProps().toString());
-            row.createCell(8).setCellValue(contact.getAttributesToString());
+            int cellIdx = 0;
+            row.createCell(cellIdx++).setCellValue(contact.getId());
+            row.createCell(cellIdx++).setCellValue(contact.getTitle());
+            row.createCell(cellIdx++).setCellValue(contact.getUser());
+            row.createCell(cellIdx++).setCellValue(contact.getTenantUniqueName());
+            row.createCell(cellIdx++).setCellValue(contact.getComments());
+            row.createCell(cellIdx++).setCellValue(contact.getCreatedAt().toString());
+
+            for (String tag : sortedTags) {
+                row.createCell(cellIdx++).setCellValue(contact.getTags().contains(tag) ? "true" : "false");
+            }
+
+            for (String prop : sortedProps) {
+                String propValue = contact.getProps().getOrDefault(prop, "/");
+                row.createCell(cellIdx++).setCellValue(propValue);
+            }
         }
 
         byte[] bytes;
