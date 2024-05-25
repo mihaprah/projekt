@@ -3,6 +3,8 @@ package com.scm.scm.support.export;
 import com.scm.scm.contact.dto.ContactDTO;
 import com.scm.scm.contact.services.ContactServices;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -42,7 +44,7 @@ public class ExportContactExcel {
         if (!contactIds.isEmpty()) {
             contacts = contacts.stream()
                     .filter(contact -> contactIds.contains(contact.getId()))
-                    .collect(Collectors.toList());
+                    .toList();
         }
 
         if (contacts.isEmpty()) {
@@ -68,41 +70,74 @@ public class ExportContactExcel {
 
         Row headerRow = sheet.createRow(0);
         int colIdx = 0;
-        headerRow.createCell(colIdx++).setCellValue("Id");
-        headerRow.createCell(colIdx++).setCellValue("Title");
-        headerRow.createCell(colIdx++).setCellValue("User");
-        headerRow.createCell(colIdx++).setCellValue("TenantUniqueName");
-        headerRow.createCell(colIdx++).setCellValue("Comments");
-        headerRow.createCell(colIdx++).setCellValue("CreatedAt");
-
-        for (String tag : sortedTags) {
-            headerRow.createCell(colIdx++).setCellValue(tag);
-        }
 
         for (String prop : sortedProps) {
             headerRow.createCell(colIdx++).setCellValue(prop);
         }
 
+        for (String tag : sortedTags) {
+            headerRow.createCell(colIdx++).setCellValue(tag);
+        }
+
+        headerRow.createCell(colIdx++).setCellValue("Comments");
+
+        // Set header row style
+        CellStyle headerStyle = workbook.createCellStyle();
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setColor(IndexedColors.WHITE.getIndex());
+        headerStyle.setFont(headerFont);
+
+        XSSFColor blueColor = new XSSFColor(new java.awt.Color(0, 123, 255), null);
+        headerStyle.setFillForegroundColor(blueColor);
+        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        for (Cell cell : headerRow) {
+            cell.setCellStyle(headerStyle);
+        }
+
+        // Create alternating row style with light gray color
+        CellStyle evenRowStyle = workbook.createCellStyle();
+        XSSFColor lightGrayColor = new XSSFColor(new java.awt.Color(220, 220, 220), null);
+        evenRowStyle.setFillForegroundColor(lightGrayColor);
+        evenRowStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        CellStyle defaultCellStyle = workbook.createCellStyle();
+        defaultCellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+        defaultCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
         for (int i = 0; i < contacts.size(); i++) {
             ContactDTO contact = contacts.get(i);
             Row row = sheet.createRow(i + 1);
             int cellIdx = 0;
-            row.createCell(cellIdx++).setCellValue(contact.getId());
-            row.createCell(cellIdx++).setCellValue(contact.getTitle());
-            row.createCell(cellIdx++).setCellValue(contact.getUser());
-            row.createCell(cellIdx++).setCellValue(contact.getTenantUniqueName());
-            row.createCell(cellIdx++).setCellValue(contact.getComments());
-            row.createCell(cellIdx++).setCellValue(contact.getCreatedAt().toString());
-
-            for (String tag : sortedTags) {
-                row.createCell(cellIdx++).setCellValue(contact.getTags().contains(tag) ? "true" : "false");
-            }
 
             for (String prop : sortedProps) {
-                String propValue = contact.getProps().getOrDefault(prop, "/");
-                row.createCell(cellIdx++).setCellValue(propValue);
+                String propValue = contact.getProps().getOrDefault(prop, "");
+                Cell cell = row.createCell(cellIdx++);
+                cell.setCellValue(propValue);
+                cell.setCellStyle((i % 2 == 0) ? evenRowStyle : defaultCellStyle);
             }
+
+            for (String tag : sortedTags) {
+                Cell cell = row.createCell(cellIdx++);
+                cell.setCellValue(contact.getTags().contains(tag) ? "true" : "false");
+                cell.setCellStyle((i % 2 == 0) ? evenRowStyle : defaultCellStyle);
+            }
+
+            Cell cell = row.createCell(cellIdx++);
+            cell.setCellValue(contact.getComments());
+            cell.setCellStyle((i % 2 == 0) ? evenRowStyle : defaultCellStyle);
         }
+
+        // Enable filtering
+        sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, headerRow.getPhysicalNumberOfCells() - 1));
+
+        // Auto size columns
+        for (int i = 0; i < headerRow.getPhysicalNumberOfCells(); i++) {
+            sheet.autoSizeColumn(i);
+            sheet.setColumnWidth(i, sheet.getColumnWidth(i) + 1024);
+        }
+
 
         byte[] bytes;
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
