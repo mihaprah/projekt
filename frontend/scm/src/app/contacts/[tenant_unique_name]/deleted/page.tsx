@@ -1,6 +1,5 @@
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
-import ContactsPage from "@/app/contacts/[tenant_unique_name]/page";
 import {Tenant as TenantModel} from "@/models/Tenant";
 import DeletedContacts from "@/Components/Contact/DeletedContacts";
 
