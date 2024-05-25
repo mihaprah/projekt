@@ -3,7 +3,7 @@ import { Contact as ContactModel } from '../../models/Contact';
 import { Tenant as TenantModel } from '../../models/Tenant';
 import React, {useEffect} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faArrowLeft, faPlus, faTrash, faUsers} from "@fortawesome/free-solid-svg-icons";
+import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 import {ToastContainer} from "react-toastify";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
