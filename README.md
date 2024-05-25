@@ -23,6 +23,9 @@ Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplik
     - [Testiranje](#testiranje)
     - [Optimizacija kode](#optimizacija-kode)
 3. [Navodila za namestitev](#3-navodila-za-namestitev)
+    - [Testno lokalno okolje](#testno-lokalnmo-okolje)
+    - [Uporaba apliakcije](#uporaba-aplikacije)
+    - [Uporabniški priročnik](#uporabniški-priročnik)
 
 ## 1. Predstavitev projekta
 ### Podroben opis projekta
@@ -144,7 +147,7 @@ Unit teste smo pisali tudi za vse Service razrede:
 
 To nam je omogočalo, da smo z uporabo **GitHub Actions** naredili Workflow, ki nam je pognal vse teste, ki smo jih imeli v projektu z vsakim commitom na repozitorij. S tem smo lahko videli ali je nova koda, ki smo jo naložili na repozitorij pokvarila, katerega izmed testov in tako na napako tudi ustrezno reagirali s popravkom nove kode.
 
-Ob pisanju REST vmesnika (Controller razredov) smo tudi testirali vse **API končne točke**, da smo preverili ali še vedno delujejo pravilno. Torej ali sprejmejo in vrnejo podatke, kot jih morajo in hkrati kako reagirajo ob prejemu napačnih podatkov. Za to smo si pomagali z orodjem [Swagger](https://swagger.io), ki nam je omogočalo pregled vseh API točk in podatkov s katerimi te delujejo. Swagger smo vključili v projekt, ta je bil pognan na portu *localhost:8080/swagger-ui/index.html*.
+Ob pisanju REST vmesnika (Controller razredov) smo tudi testirali vse **API končne točke**, da smo preverili ali še vedno delujejo pravilno. Torej ali sprejmejo in vrnejo podatke, kot jih morajo in hkrati kako reagirajo ob prejemu napačnih podatkov. Za to smo si pomagali z orodjem [Swagger](https://swagger.io), ki nam je omogočalo pregled vseh API točk in podatkov s katerimi te delujejo. Swagger smo vključili v projekt, ta je dostopen na tem *[linku](https://projekt-test-environment.up.railway.app/swagger-ui/index.html)*.
 <p align="center">
   <img alt="swagger-api" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/a1983b6e-c604-4745-95c8-826ea1b2605f">
   <br/>
@@ -173,3 +176,60 @@ Za optimizacijo kode in pregled kode, smo uporabili orodje [SonarCloud](), ki na
 </p>
 
 ## 3. Navodila za namestitev 
+
+### Testno lokalno okolje
+Za namistitev aplikacije lokalno na vašem računalniku, smo naredili testno verzijo, ki je dostopna na [tej povezavi](https://github.com/Matija334/projekt_local/tree/main).
+
+#### Koraki za zagon
+
+###### 1. Kloniranje repozitorija
+
+Najprej klonirajte repozitorij na vašo lokalno napravo.
+
+###### 2. Pridobitev firebase serviceAccountKey.json datoteke za backend
+
+Za konfiguracijo Firebase je potrebno pridobiti **serviceAccountKey.json** 
+
+1. Pojdite na [Firebase Console](https://firebase.google.com).
+2. Izberite svoj projekt.
+3. V stranski vrstici kliknite na Project Settings (Nastavitve projekta).
+4. Izberite zavihek Service accounts (Storitveni računi).
+5. Izberite Java in kliknite na gumb Generate new private key (Ustvari nov zasebni ključ). To bo preneslo datoteko **serviceAccountKey.json** na vaš računalnik.
+
+Ustvarjeno datoteko kopirajte v **projekt_local/backend/scm/src/main/resources**
+
+###### 3. Konfiguracija docker compose
+
+V datoteki **docker-compose.yml**, ki se nahaja v projekt_local/ uredite naslednjo vrstico
+```bash
+SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017******Your database name goes here****** 
+```
+tukaj navedite poljubno ime za podatkovno bazo
+
+###### 4. Zagon docker compose
+
+Postavite se v mapo **projekt_local**, kjer se nahaja datoteka **docker-compose.yml** in izvedite ukaz 
+```bash
+docker-compose up --build
+```
+
+###### 5. Pridobitev firebase SDK za frontend
+
+1. Pojdite na [Firebase Console](https://firebase.google.com).
+2. Izberite svoj projekt.
+3. V stranski vrstici kliknite na Project Settings (Nastavitve projekta).
+4. Izberite zavihek General.
+
+Generirane vrednosti prekopirajte v **projekt_local/frontend/scm/.env**
+
+###### 6. Zagon frontenda
+
+Postavite se v mapo projekt_local/frontend/scm in izvedite naslednje ukaze:
+```bash
+npm install
+npm run build
+npm run start
+```
+
+### Uporaba apliakcije
+Aplikacije je dostopna na tej [povezavi](https://scm-frontend-seven.vercel.app/login)
