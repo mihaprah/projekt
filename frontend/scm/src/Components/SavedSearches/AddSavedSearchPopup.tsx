@@ -96,39 +96,40 @@ const AddSavedSearchPopup: React.FC<AddSavedSearchPopupProps> = (props) => {
             </button>
 
             {showPopup && (
-                <div
-                    className="absolute z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-60 inset-0">
+                <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg w-600px">
                         <h2 className={"font-semibold mb-4 text-2xl"}> {props.search?.id ? 'Update Search' : 'Save Search'}</h2>
                         <div className={"flex flex-col"}>
-                        <div className={"my-3"}>
-                            <label className={"font-semibold mb-1"}>Title</label>
-                            <input value={title} type={"text"} placeholder={"Search title"} className="rounded-8 text-gray-700 border-1px px-3 w-full mr-3 h-9" onChange={handleTitle}/>
-                        </div>
-                        {props.search?.searchQuery && (
                             <div className={"my-3"}>
-                                <label className={"font-semibold mb-1"}>Search Query</label>
-                                <p className="text-gray-600 break-words max-w-96">{props.search.searchQuery}</p>
+                                <label className={"font-semibold mb-1"}>Title</label>
+                                <input value={title} type={"text"} placeholder={"Search title"}
+                                       className="rounded-8 text-gray-700 border-1px px-3 w-full mr-3 h-9"
+                                       onChange={handleTitle}/>
                             </div>
-                        )}
-                        {props.search?.filter && (
-                            <div className={"my-3"}>
-                                <label className={"font-semibold mb-1"}>Search Filters (TAGS)</label>
-                                <p className="text-gray-600 break-words max-w-96">{props.search!.filter.join(", ")}</p>
-                            </div>
-                        )}
-                        {props.search?.sortOrientation === SortOrientation.ASC ? (
-                            <div className={"my-3"}>
-                                <label className={"font-semibold mb-1"}>Orientation</label>
-                                <p className="text-gray-600 break-words max-w-96">Ascending</p>
-                            </div>
-                        ) : (
-                            <div className={"my-3"}>
-                                <label className={"font-semibold mb-1"}>Orientation</label>
-                                <p className="text-gray-600 break-words max-w-96">Descending</p>
-                            </div>
+                            {props.search?.searchQuery && (
+                                <div className={"my-3"}>
+                                    <label className={"font-semibold mb-1"}>Search Query</label>
+                                    <p className="text-gray-600 break-words max-w-96">{props.search.searchQuery}</p>
+                                </div>
+                            )}
+                            {props.search?.filter && (
+                                <div className={"my-3"}>
+                                    <label className={"font-semibold mb-1"}>Search Filters (TAGS)</label>
+                                    <p className="text-gray-600 break-words max-w-96">{props.search!.filter.join(", ")}</p>
+                                </div>
+                            )}
+                            {props.search?.sortOrientation === SortOrientation.ASC ? (
+                                <div className={"my-3"}>
+                                    <label className={"font-semibold mb-1"}>Orientation</label>
+                                    <p className="text-gray-600 break-words max-w-96">Ascending</p>
+                                </div>
+                            ) : (
+                                <div className={"my-3"}>
+                                    <label className={"font-semibold mb-1"}>Orientation</label>
+                                    <p className="text-gray-600 break-words max-w-96">Descending</p>
+                                </div>
 
-                        )}
+                            )}
                         </div>
 
                         <div className={"mt-4 justify-center items-center flex"}>

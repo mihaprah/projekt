@@ -66,7 +66,7 @@ const AddPropsPopup: React.FC<AddPropsPopupProps> = ({
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+        <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
             <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl">Add existing property</h2>

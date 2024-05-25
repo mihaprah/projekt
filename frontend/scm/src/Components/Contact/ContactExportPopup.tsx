@@ -73,8 +73,7 @@ const ContactExportPopup: React.FC<ContactExportPopupProps> = (props) => {
             <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faDownload}/>
         </button>
             {showPopup && (
-                <div
-                    className="absolute z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-60 inset-0">
+                <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg max-w-3xl w-full">
                         <h2 className="font-semibold mb-4 text-2xl">Export contacts</h2>
                         <p>Are you sure you want to export selected contacts in excel?</p>

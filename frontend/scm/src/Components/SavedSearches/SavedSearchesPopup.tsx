@@ -109,8 +109,7 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
                 <FontAwesomeIcon className={"w-3.5 h-auto"} icon={props.icon}/>
             </button>
             {showPopup && (
-                <div
-                    className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-60 inset-0">
+                <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg">
                         <h2 className={"font-semibold mb-4 text-2xl"}>{props.title}</h2>
                         {props.action === "delete" && (<p>Are you sure you want to delete this search?</p>)}
@@ -151,7 +150,8 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
                                             checked={savedSearch.sortOrientation === 'ASC'}
                                             onChange={(e) => handleInputChange("sortOrientation", e.target.value)}
                                         />
-                                        <label className="ml-2" htmlFor="asc">Ascending <FontAwesomeIcon className="ml-1 w-2.5 h-auto" icon={faArrowUp}/>
+                                        <label className="ml-2" htmlFor="asc">Ascending <FontAwesomeIcon
+                                            className="ml-1 w-2.5 h-auto" icon={faArrowUp}/>
                                         </label>
                                     </div>
                                     <div className="flex items-center mt-2">
@@ -163,7 +163,8 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
                                             checked={savedSearch.sortOrientation === 'DESC'}
                                             onChange={(e) => handleInputChange("sortOrientation", e.target.value)}
                                         />
-                                        <label className="ml-2" htmlFor="desc">Descending <FontAwesomeIcon className="ml-1 w-2.5 h-auto" icon={faArrowDown}/>
+                                        <label className="ml-2" htmlFor="desc">Descending <FontAwesomeIcon
+                                            className="ml-1 w-2.5 h-auto" icon={faArrowDown}/>
                                         </label>
                                     </div>
                                 </div>
@@ -193,7 +194,7 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
                                     Delete Search
                                 </button> :
                                 <button onClick={() => handleEdit(savedSearch, props.IdToken)}
-                                    className="btn mt-4 mx-1 px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
+                                        className="btn mt-4 mx-1 px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
                                     Save changes
                                 </button>}
                         </div>

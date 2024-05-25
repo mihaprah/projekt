@@ -69,7 +69,7 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
             </button>
 
             {showPopup && (
-                <div className="absolute z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-60 inset-0">
+                <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg max-w-3xl w-full my-10 overflow-auto">
                         <h2 className="font-semibold mb-4 text-2xl">Edit Tenant</h2>
                         <form>

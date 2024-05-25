@@ -118,7 +118,7 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
             </button>
 
             {showPopup && (
-                <div className="absolute z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-60 inset-0">
+                <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg max-w-5xl w-full my-10 overflow-auto">
                         <h2 className="font-semibold mb-4 text-2xl">Tenant Settings</h2>
                         <h4 className={"text-gray-700 font-semibold"}>Display properties</h4>

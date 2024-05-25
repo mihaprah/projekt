@@ -107,7 +107,7 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
                 </div>
             </div>
             {showConfirmation && (
-                <div className="fixed z-50 inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+                <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-8 rounded-lg shadow-lg relative z-50">
                         <h2 className="text-xl mb-4">Are you sure you want to delete this tenant?</h2>
                         <div className="flex justify-end">

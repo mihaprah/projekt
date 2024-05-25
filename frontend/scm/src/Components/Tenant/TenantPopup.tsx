@@ -123,7 +123,7 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
             </button>
 
             {showPopup && (
-                <div className="absolute z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-60 inset-0">
+                <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg w-full max-w-3xl my-10 overflow-auto">
                         <h2 className={"font-semibold mb-4 text-2xl"}>{props.title}</h2>
                         {props.labels.map((label, index) => (
@@ -154,17 +154,18 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
                                             onChange={handleUsersChange}
                                         />
                                     )
-                                : (
-                                    <input
-                                        className={"input input-bordered w-full"}
-                                        type="text"
-                                        value={inputValues![index]}
-                                        onChange={(e) => handleInputChange(index, e.target.value)}
-                                    />
-                                )}
+                                    : (
+                                        <input
+                                            className={"input input-bordered w-full"}
+                                            type="text"
+                                            value={inputValues![index]}
+                                            onChange={(e) => handleInputChange(index, e.target.value)}
+                                        />
+                                    )}
                                 {label === 'Description' && <p className={"font-light text-xs mt-1"}>Max 50 words</p>}
                                 {label === 'Title' && <p className={"font-light text-xs mt-1"}>Min 3 letters</p>}
-                                {label === 'Other users' && <p className={"font-light text-xs mt-1"}>You are already added</p>}
+                                {label === 'Other users' &&
+                                    <p className={"font-light text-xs mt-1"}>You are already added</p>}
                             </div>
                         ))}
                         <div className={"mt-4 justify-center items-center flex"}>
@@ -173,7 +174,7 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
                             >Close Popup
                             </button>
                             <button onClick={() => handleSave()}
-                                className="btn mt-4 mx-1 px-5 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
+                                    className="btn mt-4 mx-1 px-5 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
                                 Add Tenant
                             </button>
                         </div>

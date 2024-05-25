@@ -215,8 +215,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
             </button>
 
             {showPopup && (
-                <div
-                    className="absolute z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-60 inset-0">
+                <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg max-w-3xl w-full my-10 overflow-auto">
                         <h2 className="font-semibold mb-4 text-2xl">Add New Contact</h2>
                         <form>
@@ -255,7 +254,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                                     isMulti
                                     options={availableTags}
                                     onChange={handleTagsChange}
-                                    value={formData.tags.map(tag => ({ label: tag, value: tag }))}
+                                    value={formData.tags.map(tag => ({label: tag, value: tag}))}
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 />
                             </div>
@@ -266,7 +265,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                                 {newProps.map((prop, index) => (
                                     <div key={index} className="flex items-center mb-3">
                                         <CreatableSelect
-                                            value={{ label: prop.key, value: prop.key }}
+                                            value={{label: prop.key, value: prop.key}}
                                             onChange={(selectedOption) => handlePropsChange(index, selectedOption, prop.value)}
                                             options={getFilteredPropsOptions()}
                                             className="flex-1 mr-2"
@@ -277,7 +276,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                                         <input
                                             type="text"
                                             value={prop.value}
-                                            onChange={(e) => handlePropsChange(index, { value: prop.key }, e.target.value)}
+                                            onChange={(e) => handlePropsChange(index, {value: prop.key}, e.target.value)}
                                             className="flex-1 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                         />
                                         <button
@@ -285,7 +284,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                                             onClick={() => removePropsField(index)}
                                             className="ml-2 text-gray-500 hover:text-gray-700 focus:outline-none"
                                         >
-                                            <FontAwesomeIcon icon={faTimes} />
+                                            <FontAwesomeIcon icon={faTimes}/>
                                         </button>
                                     </div>
                                 ))}
@@ -295,7 +294,10 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                                 </button>
                             </div>
                             <div className="mt-4 flex justify-center items-center">
-                                <button onClick={() => { setShowPopup(false); if (onClose) onClose(); }}
+                                <button onClick={() => {
+                                    setShowPopup(false);
+                                    if (onClose) onClose();
+                                }}
                                         className="mt-4 mx-1 px-4 py-1 bg-danger text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition">
                                     Close Popup
                                 </button>

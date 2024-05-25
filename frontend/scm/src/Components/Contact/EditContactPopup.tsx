@@ -183,7 +183,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
             </div>
 
             {showPopup && (
-                <div className="absolute z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-60 inset-0">
+                <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg max-w-3xl w-full my-10 overflow-auto">
                         <h2 className="font-semibold mb-4 text-2xl">Edit Contact</h2>
                         <form>
@@ -234,7 +234,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                     id="tags"
                                     name="tags"
                                     isMulti
-                                    value={formData.tags.map(tag => ({ label: tag, value: tag }))}
+                                    value={formData.tags.map(tag => ({label: tag, value: tag}))}
                                     options={availableTags}
                                     onChange={handleTagsChange}
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -247,7 +247,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                 {newProps.map((prop, index) => (
                                     <div key={index} className="flex items-center mb-3">
                                         <CreatableSelect
-                                            value={{ label: prop.key, value: prop.key }}
+                                            value={{label: prop.key, value: prop.key}}
                                             onChange={(selectedOption) => handleKeyChange(index, selectedOption)}
                                             options={getFilteredPropsOptions()}
                                             className="flex-1 mr-2"
@@ -266,7 +266,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                             onClick={() => removePropsField(index)}
                                             className="ml-2 text-gray-500 hover:text-gray-700 focus:outline-none"
                                         >
-                                            <FontAwesomeIcon icon={faTimes} />
+                                            <FontAwesomeIcon icon={faTimes}/>
                                         </button>
                                     </div>
                                 ))}

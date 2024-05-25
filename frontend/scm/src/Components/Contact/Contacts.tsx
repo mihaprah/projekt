@@ -64,6 +64,7 @@ const Contacts: React.FC<ContactsProps> = ({
         if(deleted){
             setViewMode('list');
         }
+
     }, [view]);
 
     const handleSelectContact = (contactId: string) => {
@@ -437,7 +438,7 @@ const Contacts: React.FC<ContactsProps> = ({
             </div>
 
             {showConfirmation && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+                <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-8 rounded-lg shadow-lg">
                         <h2 className="text-xl mb-4">Are you sure you want to delete this contact?</h2>
                         <div className="flex justify-end">
@@ -457,7 +458,7 @@ const Contacts: React.FC<ContactsProps> = ({
             )}
 
             {showTagConfirmation && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+                <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-8 rounded-lg shadow-lg">
                         <h2 className="text-xl mb-4">Add tags to selected contacts</h2>
                         <CreatableSelect
@@ -500,8 +501,8 @@ const Contacts: React.FC<ContactsProps> = ({
                     }}
                 />
             )}
-
             {duplicateContact && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-65">
                 <AddNewContactPopup
                     tenantUniqueName={tenantUniqueName}
                     onSave={() => {
@@ -510,7 +511,8 @@ const Contacts: React.FC<ContactsProps> = ({
                     }}
                     initialContactData={duplicateContact}
                     onClose={() => setDuplicateContact(null)}
-                />
+
+                /></div>
             )}
         </div>
     );
