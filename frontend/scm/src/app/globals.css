@@ -31,3 +31,9 @@
     text-wrap: balance;
   }
 }
+
+@layer base {
+  body {
+    @apply overflow-hidden;
+  }
+}
