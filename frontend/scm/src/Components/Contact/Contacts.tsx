@@ -3,13 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Contact as ContactModel } from '../../models/Contact';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faChevronLeft, faChevronRight, faInfo, faTags } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faChevronLeft, faChevronRight, faInfo, faTags, faCopy } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Tenant } from "@/models/Tenant";
 import ContactExportPopup from "@/Components/Contact/ContactExportPopup";
 import { MultiValue } from 'react-select';
 import CreatableSelect from "react-select/creatable";
+import AddNewContactPopup from "@/Components/Contact/AddNewContactPopup"; // Import the AddNewContactPopup component
 
 interface ContactsProps {
     contacts: ContactModel[];
@@ -48,7 +49,7 @@ const Contacts: React.FC<ContactsProps> = ({
     const [showTagConfirmation, setShowTagConfirmation] = useState(false);
     const [selectedTags, setSelectedTags] = useState<TagOption[]>([]);
     const [showAllTags, setShowAllTags] = useState<string | null>(null);
-
+    const [duplicateContact, setDuplicateContact] = useState<ContactModel | null>(null); // New state for duplicating contact
 
     const handleViewDetails = (contactId: string, tenantUniqueName: string) => {
         router.push(`/contacts/${tenantUniqueName}/${contactId}`);
@@ -139,6 +140,13 @@ const Contacts: React.FC<ContactsProps> = ({
         setSelectedTags(newValue as TagOption[]);
     };
 
+    const handleDuplicateContact = (contact: ContactModel) => {
+        setDuplicateContact({
+            ...contact,
+            title: `${contact.title} - duplicate`
+        });
+    };
+
     const indexOfLastContact = currentPage * contactsPerPage;
     const indexOfFirstContact = indexOfLastContact - contactsPerPage;
     const currentContacts = contacts.slice(indexOfFirstContact, indexOfLastContact);
@@ -193,23 +201,35 @@ const Contacts: React.FC<ContactsProps> = ({
                                 onClick={() => handleViewDetails(contact.id, contact.tenantUniqueName)}
                             >
                                 <div className="flex justify-between items-start mb-5">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedContacts.includes(contact.id)}
-                                        onClick={(e) => e.stopPropagation()}
-                                        onChange={(e) => {
-                                            handleSelectContact(contact.id);
-                                        }}
-                                        className="form-checkbox h-7 w-7 text-primary-light transition duration-150 ease-in-out rounded-8"
-                                    />
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            confirmDelete(contact.id);
-                                        }}
-                                        className="text-red-600 hover:text-red-800 transition">
-                                        <FontAwesomeIcon className="w-5 h-5" icon={faTrash}/>
-                                    </button>
+                                    <div className="flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedContacts.includes(contact.id)}
+                                            onClick={(e) => e.stopPropagation()}
+                                            onChange={(e) => {
+                                                handleSelectContact(contact.id);
+                                            }}
+                                            className="form-checkbox h-7 w-7 text-primary-light transition duration-150 ease-in-out rounded-8"
+                                        />
+                                    </div>
+                                    <div className="flex items-center">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleDuplicateContact(contact);
+                                            }}
+                                            className="text-primary-light hover:text-primary-dark transition mr-4">
+                                            <FontAwesomeIcon icon={faCopy} className="mr-2 w-5 h-5"/>
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                confirmDelete(contact.id);
+                                            }}
+                                            className="text-red-600 hover:text-red-800 transition">
+                                            <FontAwesomeIcon className="w-5 h-5" icon={faTrash}/>
+                                        </button>
+                                    </div>
                                 </div>
                                 <div className="text-center mb-6">
                                     {contact.props.fullName && displayProps.includes('fullName') && (
@@ -330,6 +350,11 @@ const Contacts: React.FC<ContactsProps> = ({
                                         <FontAwesomeIcon icon={faInfo} className="mr-2"/>
                                     </button>
                                     <button
+                                        onClick={() => handleDuplicateContact(contact)}
+                                        className="text-primary-light hover:text-primary-dark transition ml-4">
+                                        <FontAwesomeIcon icon={faCopy} className="mr-2"/>
+                                    </button>
+                                    <button
                                         onClick={() => confirmDelete(contact.id)}
                                         className="text-red-600 hover:text-red-800 transition ml-4">
                                         <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faTrash}/>
@@ -408,6 +433,18 @@ const Contacts: React.FC<ContactsProps> = ({
                         </div>
                     </div>
                 </div>
+            )}
+
+            {duplicateContact && (
+                <AddNewContactPopup
+                    tenantUniqueName={tenantUniqueName}
+                    onSave={() => {
+                        setDuplicateContact(null);
+                        onDeleted();
+                    }}
+                    initialContactData={duplicateContact} // Pass initial contact data to the popup
+                    onClose={() => setDuplicateContact(null)} // Add onClose handler
+                />
             )}
         </div>
     );
