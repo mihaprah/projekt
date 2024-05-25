@@ -2,6 +2,7 @@ package com.scm.scm.support.export;
 
 import com.scm.scm.contact.dto.ContactDTO;
 import com.scm.scm.contact.services.ContactServices;
+import org.apache.poi.ooxml.POIXMLProperties;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -52,7 +53,12 @@ public class ExportContactExcel {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        Workbook workbook = new XSSFWorkbook();
+        XSSFWorkbook  workbook = new XSSFWorkbook();
+
+        POIXMLProperties xmlProps = workbook.getProperties();
+        POIXMLProperties.CoreProperties coreProps = xmlProps.getCoreProperties();
+        coreProps.setCreator("SCM");
+
         Sheet sheet = workbook.createSheet("Contacts");
 
         Set<String> allTags = new HashSet<>();
