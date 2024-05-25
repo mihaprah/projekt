@@ -154,6 +154,25 @@ public class TenantController {
         return ResponseEntity.ok(tenantServices.addTagsToMultipleContacts(tenantUniqueName, contactIds, tag));
     }
 
+    @PutMapping(value = "/props/multiple/add/{tenant_unique_name}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addMultipleProps(
+            @PathVariable("tenant_unique_name") String tenantUniqueName,
+            @RequestHeader("userToken") String userToken,
+            @RequestHeader("tenantId") String tenantId,
+            @RequestBody Map<String, Object> requestBody) {
+
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
+        }
+
+        List<String> contactIds = (List<String>) requestBody.get("contactIds");
+        Map<String, String> propData = (Map<String, String>) requestBody.get("propData");
+
+        return ResponseEntity.ok(tenantServices.addPropsToMultipleContacts(tenantUniqueName, contactIds, propData));
+    }
+
     @PutMapping(value = "/labels/{tenant_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateLabels(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken, @RequestBody Map<String,String> labels) {
         FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));

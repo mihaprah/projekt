@@ -1,4 +1,3 @@
-"use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Contact as ContactModel } from '../../models/Contact';
@@ -10,7 +9,8 @@ import { Tenant } from "@/models/Tenant";
 import ContactExportPopup from "@/Components/Contact/ContactExportPopup";
 import { MultiValue } from 'react-select';
 import CreatableSelect from "react-select/creatable";
-import AddNewContactPopup from "@/Components/Contact/AddNewContactPopup"; // Import the AddNewContactPopup component
+import AddNewContactPopup from "@/Components/Contact/AddNewContactPopup";
+import AddPropsPopup from "@/Components/Contact/AddPropsPopup"; // Import the AddPropsPopup component
 
 interface ContactsProps {
     contacts: ContactModel[];
@@ -47,9 +47,10 @@ const Contacts: React.FC<ContactsProps> = ({
     const [currentPage, setCurrentPage] = useState(1);
     const [contactsPerPage, setContactsPerPage] = useState(50);
     const [showTagConfirmation, setShowTagConfirmation] = useState(false);
+    const [showPropConfirmation, setShowPropConfirmation] = useState(false); // New state for showing add prop popup
     const [selectedTags, setSelectedTags] = useState<TagOption[]>([]);
     const [showAllTags, setShowAllTags] = useState<string | null>(null);
-    const [duplicateContact, setDuplicateContact] = useState<ContactModel | null>(null); // New state for duplicating contact
+    const [duplicateContact, setDuplicateContact] = useState<ContactModel | null>(null);
 
     const handleViewDetails = (contactId: string, tenantUniqueName: string) => {
         router.push(`/contacts/${tenantUniqueName}/${contactId}`);
@@ -162,6 +163,10 @@ const Contacts: React.FC<ContactsProps> = ({
         }
     };
 
+    const handleAddProps = () => {
+        setShowPropConfirmation(true);
+    };
+
     const handleTagChange = (newValue: MultiValue<TagOption>) => {
         setSelectedTags(newValue as TagOption[]);
     };
@@ -195,11 +200,18 @@ const Contacts: React.FC<ContactsProps> = ({
                         <option value={100}>100</option>
                     </select>
                     {selectedContacts.length > 0 && !deleted && (
-                        <button
-                            onClick={() => setShowTagConfirmation(true)}
-                            className="btn btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition">
-                            <FontAwesomeIcon className="mr-1" icon={faTags}/> Add Tags
-                        </button>
+                        <div>
+                            <button
+                                onClick={() => setShowTagConfirmation(true)}
+                                className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                                Add Tags <FontAwesomeIcon className="mr-1" icon={faTags}/>
+                            </button>
+                            <button
+                                onClick={handleAddProps}
+                                className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark ml-2">
+                                Add Props <FontAwesomeIcon className="mr-1" icon={faCopy}/>
+                            </button>
+                        </div>
                     )}
                 </div>
                 <div className="flex items-center">
@@ -461,17 +473,32 @@ const Contacts: React.FC<ContactsProps> = ({
                         <div className="flex justify-end">
                             <button
                                 onClick={() => setShowTagConfirmation(false)}
-                                className="btn bg-gray-300 text-black mr-2">
-                                Cancel
+                                className="btn px-4 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 mr-5">
+                                Close popup
                             </button>
                             <button
                                 onClick={handleAddTags}
-                                className="btn bg-primary-light text-white">
+                                className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
                                 Add Tags
                             </button>
                         </div>
                     </div>
                 </div>
+            )}
+
+            {showPropConfirmation && (
+                <AddPropsPopup
+                    tenantUniqueName={tenantUniqueName}
+                    selectedContacts={selectedContacts}
+                    IdToken={IdToken}
+                    tenantId={tenantId}
+                    availableProps={Object.entries(tenant.labels).map(([key, value]) => ({ label: value, value: key }))}
+                    onClose={() => setShowPropConfirmation(false)}
+                    onSave={() => {
+                        setShowPropConfirmation(false);
+                        onDeleted();
+                    }}
+                />
             )}
 
             {duplicateContact && (
@@ -481,8 +508,8 @@ const Contacts: React.FC<ContactsProps> = ({
                         setDuplicateContact(null);
                         onDeleted();
                     }}
-                    initialContactData={duplicateContact} // Pass initial contact data to the popup
-                    onClose={() => setDuplicateContact(null)} // Add onClose handler
+                    initialContactData={duplicateContact}
+                    onClose={() => setDuplicateContact(null)}
                 />
             )}
         </div>

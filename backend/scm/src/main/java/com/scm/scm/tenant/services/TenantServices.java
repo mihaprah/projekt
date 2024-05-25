@@ -244,6 +244,32 @@ public class TenantServices {
         return "Tags added to contacts successfully";
     }
 
+    public String addPropsToMultipleContacts(String tenantUniqueName, List<String> contactIds, Map<String, String> propData) {
+        if (contactIds.isEmpty()) {
+            throw new CustomHttpException("Contact ids cannot be empty", 400, ExceptionCause.USER_ERROR);
+        }
+        if (propData.isEmpty()) {
+            throw new CustomHttpException("Prop data cannot be empty", 400, ExceptionCause.USER_ERROR);
+        }
+        if (tenantUniqueName.isEmpty()) {
+            throw new CustomHttpException("Tenant unique name cannot be empty", 400, ExceptionCause.USER_ERROR);
+        }
+
+        List<Contact> contacts = mongoTemplate.findAll(Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType());
+
+        for (Contact c : contacts) {
+            if (contactIds.contains(c.getId())) {
+                Map<String, String> oldProps = c.getProps();
+                oldProps.putAll(propData);
+                c.setProps(oldProps);
+                mongoTemplate.save(c, tenantUniqueName + CollectionType.MAIN.getCollectionType());
+            }
+        }
+
+        return "Props added to contacts successfully";
+    }
+
+
     private Map<String, String> setPredefinedLabels() {
         List<String> predefinedLabels = Arrays.asList(
                 "fullName",
