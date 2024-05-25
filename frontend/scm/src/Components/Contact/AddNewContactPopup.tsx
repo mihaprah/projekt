@@ -210,7 +210,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
         <div>
             <button onClick={openPopup}
                     className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                Add new Contact
+                Contact
                 <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faPlus}/>
             </button>
 

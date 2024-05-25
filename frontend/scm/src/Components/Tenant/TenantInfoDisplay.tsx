@@ -102,6 +102,7 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
                     </div>
                 </div>
                 <div className="flex items-end space-x-3">
+                    <Link href={`/contacts/${props.tenant.tenantUniqueName}/deleted`} className={"mt-5 link text-primary-light dark:text-white text-xs"}>Deleted contacts</Link>
                     <AddNewContactPopup tenantUniqueName={props.tenant.tenantUniqueName} onSave={props.onSave} />
                 </div>
             </div>
