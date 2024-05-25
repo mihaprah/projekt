@@ -132,7 +132,7 @@ class ContactServicesTests {
 
         contact1.setId("contactId");
 
-        String result = contactServices.deleteContact("tenantUniqueName", "contactId");
+        String result = contactServices.deleteContact("tenantUniqueName", "contactId", false);
 
         assertEquals("Contact deleted successfully from tenantUniqueName_main collection", result);
         verify(mongoTemplate, times(1)).remove(any(Contact.class), anyString());

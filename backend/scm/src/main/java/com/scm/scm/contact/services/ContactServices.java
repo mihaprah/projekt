@@ -197,7 +197,7 @@ public class ContactServices {
         }
     }
 
-    public String deleteContact(String tenantUniqueName, String contactId) {
+    public String deleteContact(String tenantUniqueName, String contactId, boolean delete) {
         if (contactId.isEmpty() || tenantUniqueName.isEmpty()) {
             throw new CustomHttpException("ContactId or uniqueTenantName is empty", 400, ExceptionCause.USER_ERROR);
         }
@@ -205,8 +205,17 @@ public class ContactServices {
             throw new CustomHttpException(ExceptionMessage.COLLECTION_NOT_EXIST.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
         }
         Contact contact = mongoTemplate.findById(contactId, Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType());
-        if (contact == null) {
+        if (contact == null && !delete) {
             throw new CustomHttpException("Contact not found", 404, ExceptionCause.USER_ERROR);
+        }
+        if (delete) {
+            Contact deletedContact = mongoTemplate.findById(contactId, Contact.class, tenantUniqueName + CollectionType.DELETED.getCollectionType());
+            if (deletedContact == null) {
+                throw new CustomHttpException("Contact not found in deleted collection", 404, ExceptionCause.USER_ERROR);
+            }
+            mongoTemplate.remove(deletedContact, tenantUniqueName + CollectionType.DELETED.getCollectionType());
+            log.log(Level.INFO, String.format("Contact completely deleted with id: %s %s %s ", deletedContact.getId(), FOR_TENANT, deletedContact.getTenantUniqueName()));
+            return "Contact deleted permanently from " + tenantUniqueName + "_deleted collection";
         }
         mongoTemplate.remove(contact, tenantUniqueName + CollectionType.MAIN.getCollectionType());
         log.log(Level.INFO, String.format("Contact deleted with id: %s %s %s ", contact.getId(), FOR_TENANT, contact.getTenantUniqueName()));
