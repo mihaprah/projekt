@@ -110,13 +110,19 @@ public class TenantServices {
     public String deactivateTenant(String id) {
         Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException(ExceptionMessage.TENANT_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR));
         if (tenant != null) {
-            tenant.setActive(false);
-            tenantRepository.save(tenant);
+            tenantRepository.delete(tenant);
 
             List <PredefinedSearch> searches = predefinedSearchRepository.findByOnTenant(tenant.getTenantUniqueName());
             predefinedSearchRepository.deleteAll(searches);
 
-            return "Tenant successfully deactivated";
+            String tenantUniqueName = tenant.getTenantUniqueName();
+            String[] collectionsToDelete = {tenantUniqueName + "_deleted", tenantUniqueName + "_main", tenantUniqueName + "_activity"};
+
+            for (String collectionName : collectionsToDelete) {
+                mongoTemplate.dropCollection(collectionName);
+            }
+
+            return "Tenant successfully deleted";
         } else {
             throw new CustomHttpException(ExceptionMessage.TENANT_NULL.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
         }

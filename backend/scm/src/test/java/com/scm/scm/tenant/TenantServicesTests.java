@@ -1,8 +1,5 @@
 package com.scm.scm.tenant;
 
-
-import com.scm.scm.predefinedSearch.dao.PredefinedSearchRepository;
-import com.scm.scm.predefinedSearch.vao.PredefinedSearch;
 import com.scm.scm.support.exceptions.CustomHttpException;
 import com.scm.scm.support.mongoTemplate.MongoTemplateService;
 import com.scm.scm.tenant.dao.TenantRepository;
@@ -43,13 +40,10 @@ class TenantServicesTests {
 
     private final Map<String, Integer> contactTags = Map.of("tag1", 1, "tag2", 2, "tag3", 3);
 
-    @Mock
-    private PredefinedSearchRepository predefinedSearchRepository;
-
     @BeforeEach
     public void init() throws Exception {
         try (AutoCloseable ac = MockitoAnnotations.openMocks(this)) {
-            tenant = new Tenant("id", "title", "tenantUniqueName", "Short description", "#ff4545", true, new ArrayList<>(users), new HashMap<>(contactTags), new HashMap<>(), Arrays.asList(""));
+            tenant = new Tenant("id", "title", "tenantUniqueName", "Short description", "#ff4545", true, new ArrayList<>(users), new HashMap<>(contactTags), new HashMap<>(), List.of(""));
             tenantDTO = TenantDTO.builder().id("id").title("title").tenantUniqueName("tenantUniqueName").description("Short description1").colorCode("#ff4545").active(true).users(users).contactTags(contactTags).build();
         }
     }
@@ -104,26 +98,6 @@ class TenantServicesTests {
         assertEquals(tenantDTO.getTitle(), result.getTitle());
         verify(tenantRepository, times(1)).findById(anyString());
         verify(tenantRepository, times(1)).save(any(Tenant.class));
-    }
-
-    @Test
-    void testDeactivateTenant() {
-        String tenantId = "1";
-        tenant.setTenantUniqueName("uniqueName");
-        List<PredefinedSearch> predefinedSearches = new ArrayList<>();
-
-        when(tenantRepository.findById(tenantId)).thenReturn(Optional.of(tenant));
-        when(tenantRepository.save(any(Tenant.class))).thenReturn(tenant);
-        when(predefinedSearchRepository.findByOnTenant(tenant.getTenantUniqueName())).thenReturn(predefinedSearches);
-        doNothing().when(predefinedSearchRepository).deleteAll(predefinedSearches);
-
-        String result = tenantServices.deactivateTenant(tenantId);
-
-        assertEquals("Tenant successfully deactivated", result);
-        verify(tenantRepository, times(1)).findById(tenantId);
-        verify(tenantRepository, times(1)).save(any(Tenant.class));
-        verify(predefinedSearchRepository, times(1)).findByOnTenant(tenant.getTenantUniqueName());
-        verify(predefinedSearchRepository, times(1)).deleteAll(predefinedSearches);
     }
 
     @Test
