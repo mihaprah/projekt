@@ -8,6 +8,7 @@ import ClientOnly from "@/Components/ClientOnly/ClientOnly";
 import { Suspense } from "react";
 import Loading from "@/app/loading";
 import AuthCheck from "@/Components/AuthCheck/AuthCheck";
+import {ToastContainer} from "react-toastify";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,9 +24,10 @@ export default function RootLayout({
             <Suspense fallback={<Loading />}>
                 <Navbar />
                 <AuthCheck>
+                    <ToastContainer />
                     <Suspense fallback={<Loading />}>
                         {children}
-                    </Suspense>
+                    </Suspense>Ï
                 </AuthCheck>
             </Suspense>
         </ClientOnly>

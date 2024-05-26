@@ -73,6 +73,7 @@ public class TenantServices {
                     throw new CustomHttpException("Failed to create tenant collections", 500, ExceptionCause.SERVER_ERROR);
                 }
                 tenant.setLabels(setPredefinedLabels());
+                tenant.setDisplayProps(new ArrayList<>(Arrays.asList("prefix","company", "phoneNumber", "email", "address")));
                 tenantRepository.save(tenant);
                 log.log(Level.INFO, "Tenant created with id: {0}", tenant.getId());
                 return convertToDTO(tenant);
@@ -278,10 +279,13 @@ public class TenantServices {
 
     private Map<String, String> setPredefinedLabels() {
         List<String> predefinedLabels = Arrays.asList(
-                "fullName",
+                "prefix",
                 "phoneNumber",
                 "email",
                 "address",
+                "postNumber",
+                "city",
+                "country",
                 "company",
                 "nationality",
                 "position",

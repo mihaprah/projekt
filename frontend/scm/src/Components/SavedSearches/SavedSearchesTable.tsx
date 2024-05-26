@@ -4,7 +4,6 @@ import React, {useEffect, useState} from "react";
 import {faPen, faTrash, faArrowUp, faArrowDown} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import SavedSearchesPopup from "@/Components/SavedSearches/SavedSearchesPopup";
-import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {useRouter} from "next/navigation";
 import {PredefinedSearch as SearchModel} from "@/models/PredefinedSearch";
@@ -68,7 +67,6 @@ const SavedSearchesTable: React.FC<SavedSearchesTableProps> = (props) => {
             <Loading />
         ) : (
             <div className="container mx-auto p-4">
-                <ToastContainer />
                 <h1 className="text-3xl pt-5 text-secondary-dark font-semibold mb-5">Saved searches</h1>
 
                 {savedSearches.length === 0 ? (
