@@ -2,7 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Contact as ContactModel } from '../../models/Contact';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faChevronLeft, faChevronRight, faInfo, faTags, faCopy } from '@fortawesome/free-solid-svg-icons';
+import {
+    faTrash,
+    faChevronLeft,
+    faChevronRight,
+    faInfo,
+    faTags,
+    faCopy,
+    faExclamationTriangle
+} from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Tenant } from "@/models/Tenant";
@@ -51,6 +59,9 @@ const Contacts: React.FC<ContactsProps> = ({
     const [selectedTags, setSelectedTags] = useState<TagOption[]>([]);
     const [showAllTags, setShowAllTags] = useState<string | null>(null);
     const [duplicateContact, setDuplicateContact] = useState<ContactModel | null>(null);
+    const [contactTitle, setContactTitle] = useState('');
+    const [confirmationText, setConfirmationText] = useState("");
+    const [isDeleteDisabled, setIsDeleteDisabled] = useState(true);
 
     const handleViewDetails = (contactId: string, tenantUniqueName: string) => {
         router.push(`/contacts/${tenantUniqueName}/${contactId}`);
@@ -121,20 +132,23 @@ const Contacts: React.FC<ContactsProps> = ({
                 if (!res.ok) {
                     throw new Error(`Error deleting contact: ${res.statusText}`);
                 }
-                toast.success('Contact completely deleted successfully');
+                toast.success('Contact permanently deleted successfully');
                 onDeleted();
                 router.refresh();
             } catch (error) {
-                toast.error('Failed to delete contact completely');
-                console.error('Failed to delete contact completely:', error);
+                toast.error('Failed to delete contact permanently');
+                console.error('Failed to delete contact permanently:', error);
             }
         }
 
     };
 
-    const confirmDelete = (contactId: string) => {
+    const confirmDelete = (contactId: string, title?: string) => {
         setContactToDelete(contactId);
         setShowConfirmation(true);
+        if(title){
+            setContactTitle(title);
+        }
     };
 
     const handleAddTags = async () => {
@@ -170,6 +184,11 @@ const Contacts: React.FC<ContactsProps> = ({
 
     const handleTagChange = (newValue: MultiValue<TagOption>) => {
         setSelectedTags(newValue as TagOption[]);
+    };
+
+    const handleConfirmationTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setConfirmationText(event.target.value);
+        setIsDeleteDisabled(event.target.value !== contactTitle);
     };
 
     const handleDuplicateContact = (contact: ContactModel) => {
@@ -406,7 +425,7 @@ const Contacts: React.FC<ContactsProps> = ({
                                     ) : (
                                         <td className="px-2 py-4 whitespace-no-wrap border-gray-300 text-right flex items-center">
                                             <button
-                                                onClick={() => confirmDelete(contact.id)}
+                                                onClick={() => confirmDelete(contact.id, contact.title)}
                                                 className="text-red-600 hover:text-red-800 transition ml-4">
                                                 Delete permanently<FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faTrash}/>
                                             </button>
@@ -437,7 +456,43 @@ const Contacts: React.FC<ContactsProps> = ({
                 </button>
             </div>
 
-            {showConfirmation && (
+
+            {showConfirmation && deleted && (
+                <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
+                    <div className="bg-white p-8 rounded-lg shadow-lg relative z-50">
+                        <h2 className="text-xl mb-4 font-semibold flex items-center">
+                            Are you sure you want to delete this contact?
+                            <FontAwesomeIcon className="ml-2 w-5 h-5 text-red-600" icon={faExclamationTriangle}/>
+                        </h2>
+                        <p>
+                            This action will permanently delete the contact and all its data from the database.<br/>
+                            No users will be able to access this contact anymore.
+                        </p>
+                        <p className={"mt-3"}>Type <strong>{contactTitle}</strong> to confirm.</p>
+                        <input
+                            type="text"
+                            className="mt-2 mb-4 p-2 border rounded w-full"
+                            value={confirmationText}
+                            onChange={handleConfirmationTextChange}
+                        />
+                        <div className="flex justify-end">
+                            <button
+                                onClick={() => setShowConfirmation(false)}
+                                className="px-4 py-1 rounded-8 bg-gray-300 text-black mr-2 disabled:opacity-50 hover:scale-105 transition">
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => handleDelete(contactToDelete!)}
+                                className="btn px-5 py-2 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700"
+                                disabled={isDeleteDisabled}>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showConfirmation && !deleted && (
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-8 rounded-lg shadow-lg">
                         <h2 className="text-xl mb-4">Are you sure you want to delete this contact?</h2>
