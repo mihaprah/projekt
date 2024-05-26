@@ -102,7 +102,12 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({contact, activityLog, te
                                 <div className={"flex"}>
                                     <FontAwesomeIcon icon={faUser}
                                                      className="text-primary mr-3 w-5 mb-1.5 h-auto"/>
-                                    <h1 className="text-2xl font-semibold text-primary">{contact.title}</h1>
+                                    <span className="text-2xl font-semibold text-primary">
+                                        {contact.props.prefix && (
+                                            <span className={"mr-1"}>{contact.props.prefix}</span>
+                                        )}
+                                        {contact.title}
+                                    </span>
                                 </div>
                             </div>
                             <EditContactPopup contact={contact} tenantUniqueName={tenantUniqueName}/>
@@ -154,7 +159,7 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({contact, activityLog, te
                             <>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mb-4">
                                     {Object.entries(contact.props).map(([name, value], index) => (
-                                        name !== "company" && name !== "phoneNumber" && name !== "email" && (
+                                        name !== "company" && name !== "phoneNumber" && name !== "email" && name !== "prefix" && (
                                             <div key={index} className="bg-gray-50 p-4 rounded-8 shadow-sm">
                                                 <h4 className="font-semibold text-lg text-primary">{tenant?.labels[name]}</h4>
                                                 <p className="mt-1 text-gray-700">{value}</p>

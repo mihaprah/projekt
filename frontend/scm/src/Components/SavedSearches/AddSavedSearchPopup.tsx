@@ -1,4 +1,4 @@
-import {toast, ToastContainer} from "react-toastify";
+import {toast} from "react-toastify";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import React, {useEffect, useState} from "react";
 import {faFloppyDisk} from "@fortawesome/free-solid-svg-icons";
@@ -88,7 +88,6 @@ const AddSavedSearchPopup: React.FC<AddSavedSearchPopupProps> = (props) => {
 
     return (
         <div>
-            <ToastContainer/>
             <button onClick={() => setShowPopup(true)}
                     className="btn mr-3 px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
                 {props.search?.id ? 'Update Search' : 'Save Search'} <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"}

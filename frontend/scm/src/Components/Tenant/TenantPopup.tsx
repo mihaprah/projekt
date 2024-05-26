@@ -7,7 +7,7 @@ import {onAuthStateChanged} from "firebase/auth";
 import {auth} from "@/firebase";
 import {useRouter} from 'next/navigation';
 import CreatableSelect from "react-select/creatable";
-import {toast, ToastContainer} from "react-toastify";
+import {toast} from "react-toastify";
 
 interface TenantAddPopupProps {
     buttonAction: string;
@@ -116,7 +116,6 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
 
     return (
         <div>
-            <ToastContainer />
             <button onClick={() => setShowPopup(true)}
                     className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
                     {props.buttonAction} <FontAwesomeIcon className={"ml-1 w-3.5 h-auto"} icon={props.icon}/>

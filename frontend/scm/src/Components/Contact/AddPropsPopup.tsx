@@ -33,7 +33,7 @@ const AddPropsPopup: React.FC<AddPropsPopupProps> = ({
 
     const handleSaveProps = async () => {
         if (!selectedProp || !propValue) {
-            //toast.error('Please select a property and enter a value');
+            toast.error('Please select a property and enter a value');
             return;
         }
 
@@ -56,11 +56,11 @@ const AddPropsPopup: React.FC<AddPropsPopupProps> = ({
                 throw new Error(`Error adding property: ${res.statusText}`);
             }
 
-            //toast.success('Property added successfully');
+            toast.success('Property added successfully');
             onSave();
             router.refresh();
         } catch (error) {
-            //toast.error('Failed to add property');
+            toast.error('Failed to add property');
             console.error('Failed to add property:', error);
         }
     };

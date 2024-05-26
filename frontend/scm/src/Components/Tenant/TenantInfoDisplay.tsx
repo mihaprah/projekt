@@ -2,7 +2,7 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faUsers, faTrash, faArrowLeft, faPlus, faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import EditTenantPopup from "@/Components/Tenant/EditTenantPopup";
 import AddNewContactPopup from "@/Components/Contact/AddNewContactPopup";
 import TenantSettingsPopup from "@/Components/Tenant/TenantSettingsPopup";
@@ -59,7 +59,6 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
 
     return (
         <div>
-            <ToastContainer />
             <div className="flex justify-between mb-4">
                 <div>
                     <div className={"flex items-center"}>

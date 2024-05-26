@@ -216,7 +216,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
 
             {showPopup && (
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
-                    <div className="bg-white p-10 rounded-8 shadow-lg max-w-3xl w-full my-10 overflow-auto">
+                    <div className="bg-white p-10 rounded-8 shadow-lg max-w-3xl w-full my-10 h-full overflow-auto">
                         <h2 className="font-semibold mb-4 text-2xl">Add New Contact</h2>
                         <form>
                             <div className="mb-4">

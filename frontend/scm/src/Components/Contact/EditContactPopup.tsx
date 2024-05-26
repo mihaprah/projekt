@@ -5,7 +5,7 @@ import { Contact as ContactModel } from '../../models/Contact';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTimes, faTrash } from '@fortawesome/free-solid-svg-icons';
 import CreatableSelect from 'react-select/creatable';
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
 
@@ -170,7 +170,6 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
 
     return (
         <div>
-            <ToastContainer />
             <div className="flex space-x-4">
                 <button onClick={() => setShowPopup(true)}
                         className="btn mt-2 px-6 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">

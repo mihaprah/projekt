@@ -271,7 +271,7 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
                     tenantId={props.tenant.id}
                     IdToken={props.IdToken}
                     view={viewMode}
-                    onDeleted={handleContactChange}
+                    onChange={handleContactChange}
                     tenant={props.tenant}
                 />
             ) : (

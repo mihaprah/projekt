@@ -26,7 +26,7 @@ interface ContactsProps {
     tenantId: string;
     IdToken: string;
     view: 'grid' | 'list';
-    onDeleted: () => void;
+    onChange: () => void;
     tenant: Tenant;
     deleted?: boolean;
 }
@@ -42,7 +42,7 @@ const Contacts: React.FC<ContactsProps> = ({
                                                tenantId,
                                                IdToken,
                                                view,
-                                               onDeleted,
+                                               onChange,
                                                tenant,
                                                deleted
                                            }) => {
@@ -76,7 +76,7 @@ const Contacts: React.FC<ContactsProps> = ({
             setViewMode('list');
         }
 
-    }, [view]);
+    }, [view, contacts]);
 
     const handleSelectContact = (contactId: string) => {
         setSelectedContacts(prevSelected => {
@@ -113,7 +113,7 @@ const Contacts: React.FC<ContactsProps> = ({
                     throw new Error(`Error deleting contact: ${res.statusText}`);
                 }
                 toast.success('Contact deleted successfully');
-                onDeleted();
+                onChange();
                 router.refresh();
             } catch (error) {
                 toast.error('Failed to delete contact');
@@ -133,7 +133,7 @@ const Contacts: React.FC<ContactsProps> = ({
                     throw new Error(`Error deleting contact: ${res.statusText}`);
                 }
                 toast.success('Contact permanently deleted successfully');
-                onDeleted();
+                onChange();
                 router.refresh();
             } catch (error) {
                 toast.error('Failed to delete contact permanently');
@@ -290,8 +290,13 @@ const Contacts: React.FC<ContactsProps> = ({
                                     </div>
                                 </div>
                                 <div className="text-center mb-6">
-                                    {contact.props.title && tenant.displayProps.includes('title') && (
-                                        <h2 className="text-xl font-bold mb-1.5">{contact.props.title}</h2>
+                                    {contact.title && (
+                                        <div className={"flex justify-center"}>
+                                            {contact.props.prefix && tenant.displayProps.includes('prefix') && (
+                                                <p className="text-xl font-bold mr-1">{contact.props.prefix}</p>
+                                            )}
+                                            <h2 className="text-xl font-bold mb-1.5">{contact.title}</h2>
+                                        </div>
                                     )}
                                     {contact.props.email && tenant.displayProps.includes('email') && (
                                         <a href={`mailto:${contact.props.email}`}
@@ -306,7 +311,7 @@ const Contacts: React.FC<ContactsProps> = ({
                                 </div>
 
                                     <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-6 text-center justify-center">
-                                        {tenant.displayProps.filter(prop => prop !== 'fullName' && prop !== 'email' && prop !== 'phoneNumber' && contact.props[prop]).map(prop => (
+                                        {tenant.displayProps.filter(prop => prop !== 'prefix' && prop !== 'email' && prop !== 'phoneNumber' && contact.props[prop]).map(prop => (
                                             <div key={prop}>
                                                 <strong>{tenant.labels[prop]}</strong>
                                                 <p>{contact.props[prop]}</p>
@@ -341,21 +346,24 @@ const Contacts: React.FC<ContactsProps> = ({
                             <thead className={"border-b-2 border-gray-300"}>
                             <tr>
                                 {!deleted && (
-                                <th className="px-2 py-2 border-b-2 border-gray-300 text-left text-xs leading-4 text-gray-600 tracking-wider">
-                                    <div className="flex items-center w-5 h-5">
+                                    <th className="px-2 py-2 border-b-2 border-gray-300 text-left text-xs leading-4 text-gray-600 tracking-wider">
+                                        <div className="flex items-center w-5 h-5">
                                             <input
-                                            type="checkbox"
-                                            checked={selectAll}
-                                            onChange={handleSelectAll}
-                                            className="form-checkbox h-4 w-4 hover:scale-105 text-primary-light transition duration-150 ease-in-out"
-                                        />
-                                    </div>
-                                </th>
+                                                type="checkbox"
+                                                checked={selectAll}
+                                                onChange={handleSelectAll}
+                                                className="form-checkbox h-4 w-4 hover:scale-105 text-primary-light transition duration-150 ease-in-out"
+                                            />
+                                        </div>
+                                    </th>
                                 )}
-                                {tenant.displayProps.map(prop => (
+                                <th className="px-2 py-2 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-600 tracking-wider">
+                                    Title
+                                </th>
+                                {tenant.displayProps.filter(prop => prop !== 'prefix').map(prop => (
                                     <th key={prop}
                                         className="px-2 py-2 border-b-2 border-gray-300 text-left text-sm leading-4 text-gray-600 tracking-wider">
-                                    {tenant.labels[prop]}
+                                        {tenant.labels[prop]}
                                     </th>
                                 ))}
                                 <th className="px-2 py-2 border-b-2 border-gray-300 text-left text-xs leading-4 text-gray-600 tracking-wider"></th>
@@ -373,7 +381,13 @@ const Contacts: React.FC<ContactsProps> = ({
                                             className="form-checkbox h-4 w-4 hover:scale-105 text-primary-light transition duration-150 ease-in-out"
                                         />
                                     </td> )}
-                                    {tenant.displayProps.map(prop => (
+                                    <td className={"px-2 py-3 whitespace-no-wrap border-b border-gray-300"}>
+                                        {contact.props.prefix && tenant.displayProps.includes('prefix') && (
+                                            <span className="mr-2">{contact.props.prefix}</span>
+                                        )}
+                                        {contact.title}
+                                    </td>
+                                    {tenant.displayProps.filter(prop => prop !== 'prefix').map(prop => (
                                         <td key={prop} className="px-2 py-3 whitespace-no-wrap border-b border-gray-300">
                                             <div className="text-sm leading-4 text-gray-800">
                                                 {prop === 'email' ? (
@@ -552,7 +566,7 @@ const Contacts: React.FC<ContactsProps> = ({
                     onClose={() => setShowPropConfirmation(false)}
                     onSave={() => {
                         setShowPropConfirmation(false);
-                        onDeleted();
+                        onChange();
                     }}
                 />
             )}
@@ -562,7 +576,7 @@ const Contacts: React.FC<ContactsProps> = ({
                     tenantUniqueName={tenantUniqueName}
                     onSave={() => {
                         setDuplicateContact(null);
-                        onDeleted();
+                        onChange();
                     }}
                     initialContactData={duplicateContact}
                     onClose={() => setDuplicateContact(null)}

@@ -4,7 +4,6 @@ import { Tenant as TenantModel } from '../../models/Tenant';
 import React, {useEffect} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
-import {ToastContainer} from "react-toastify";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import Contacts from "@/Components/Contact/Contacts";
@@ -61,7 +60,6 @@ const DeletedContacts: React.FC<DeletedContactsProps> = (props) => {
                 <Loading />
             ) : (
                 <>
-                    <ToastContainer/>
                     <div className={"flex items-center"}>
                         <FontAwesomeIcon
                             icon={faArrowLeft}
@@ -84,7 +82,7 @@ const DeletedContacts: React.FC<DeletedContactsProps> = (props) => {
                     </div>
                     {contacts.length !== 0 ? (
                         <Contacts contacts={contacts} tenantUniqueName={props.tenant.tenantUniqueName} tenantId={props.tenant.id}
-                                  IdToken={props.IdToken} view={'list'} onDeleted={handleContactChange} tenant={props.tenant} deleted={true} />
+                                  IdToken={props.IdToken} view={'list'} onChange={handleContactChange} tenant={props.tenant} deleted={true} />
                     ) : (
                         <div className="flex flex-col mt-20">
                             <div className="flex items-center justify-center">
