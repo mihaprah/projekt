@@ -290,8 +290,8 @@ const Contacts: React.FC<ContactsProps> = ({
                                     </div>
                                 </div>
                                 <div className="text-center mb-6">
-                                    {contact.props.fullName && tenant.displayProps.includes('fullName') && (
-                                        <h2 className="text-xl font-bold mb-1.5">{contact.props.fullName}</h2>
+                                    {contact.props.title && tenant.displayProps.includes('title') && (
+                                        <h2 className="text-xl font-bold mb-1.5">{contact.props.title}</h2>
                                     )}
                                     {contact.props.email && tenant.displayProps.includes('email') && (
                                         <a href={`mailto:${contact.props.email}`}
@@ -338,7 +338,7 @@ const Contacts: React.FC<ContactsProps> = ({
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="min-w-full bg-white table-auto">
-                            <thead>
+                            <thead className={"border-b-2 border-gray-300"}>
                             <tr>
                                 {!deleted && (
                                 <th className="px-2 py-2 border-b-2 border-gray-300 text-left text-xs leading-4 text-gray-600 tracking-wider">
@@ -405,7 +405,7 @@ const Contacts: React.FC<ContactsProps> = ({
                                     </div>
                                 </td>
                                     {!deleted ? (
-                                        <td className="px-2 py-4 whitespace-no-wrap border-gray-300 text-right flex items-center">
+                                        <td className="px-2 py-4 whitespace-no-wrap border-b border-gray-300 text-right flex items-center">
                                             <button
                                                 onClick={() => handleViewDetails(contact.id, contact.tenantUniqueName)}
                                                 className="text-primary-light hover:text-primary-dark transition relative group">
@@ -423,11 +423,11 @@ const Contacts: React.FC<ContactsProps> = ({
                                             </button>
                                         </td>
                                     ) : (
-                                        <td className="px-2 py-4 whitespace-no-wrap border-gray-300 text-right flex items-center">
+                                        <td className="px-2 py-4 whitespace-no-wrap border-b border-gray-300 text-right flex items-center">
                                             <button
                                                 onClick={() => confirmDelete(contact.id, contact.title)}
                                                 className="text-red-600 hover:text-red-800 transition ml-4">
-                                                Delete permanently<FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faTrash}/>
+                                                Delete permanently<FontAwesomeIcon className="ml-2 w-3.5 h-auto" icon={faTrash}/>
                                             </button>
                                         </td>
                                     )}

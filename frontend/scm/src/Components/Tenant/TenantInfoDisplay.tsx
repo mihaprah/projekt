@@ -77,7 +77,7 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
                         )}
                         <div className="text-sm breadcrumbs mx-2">
                             <ul className={"text-gray-500"}>
-                                <li><Link href={"/"}>Tenants</Link></li>
+                                <li><Link href={"/"}>Home</Link></li>
                                 <li><Link href={"#"}>{props.tenant.title}</Link></li>
                             </ul>
                         </div>
@@ -105,8 +105,10 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
                     </div>
                 </div>
                 <div className="flex items-end space-x-3">
-                    <Link href={`/contacts/${props.tenant.tenantUniqueName}/deleted`} className={"mt-5 link text-primary-light dark:text-white text-xs"}>Deleted contacts</Link>
-                    <AddNewContactPopup tenantUniqueName={props.tenant.tenantUniqueName} onSave={props.onSave} />
+                    <div className={"flex items-center"}>
+                        <Link href={`/contacts/${props.tenant.tenantUniqueName}/deleted`} className={"hover:scale-105 transition text-danger dark:text-white text-xs mr-3"}>Deleted Contacts</Link>
+                        <AddNewContactPopup tenantUniqueName={props.tenant.tenantUniqueName} onSave={props.onSave} />
+                    </div>
                 </div>
             </div>
             {showConfirmation && (

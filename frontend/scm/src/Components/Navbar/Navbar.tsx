@@ -44,14 +44,14 @@ const Navbar = () => {
                         <ul>
                             <li className={`m-2 p-3 rounded-8 hover:bg-primary-dark hover:scale-105 transition hover:shadow dark:hover:bg-primary-light ${pathname === '/' ? 'scale-105 transition bg-primary-dark' : ''}`}>
                                 <Link href={"/"}>
-                                    <span className={"mr-2 font-semibold"}>Tenants</span>
-                                    <FontAwesomeIcon className={"h-5 w-auto ml-1"} icon={faUsersRectangle}/>
+                                    <span className={"mr-2 font-semibold"}>Home</span>
+                                    <FontAwesomeIcon className={"w-5 h-auto ml-1 "} icon={faUsersRectangle}/>
                                 </Link>
                             </li>
                             <li className={`m-2 p-3 rounded-8 hover:bg-primary-dark hover:scale-105 transition hover:shadow dark:hover:bg-primary-light ${pathname === '/saved-searches' ? 'scale-105 transition bg-primary-dark' : ''}`}>
                             <Link href={"/saved-searches"}>
                                     <span className={"mr-2 font-semibold"}>Saved Searches</span>
-                                    <FontAwesomeIcon className={"h-5 w-auto ml-1"} icon={faMagnifyingGlass} />
+                                    <FontAwesomeIcon className={"w-5 h-auto ml-1"} icon={faMagnifyingGlass} />
                                 </Link>
                             </li>
                         </ul>
