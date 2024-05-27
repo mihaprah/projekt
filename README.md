@@ -26,7 +26,7 @@ Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplik
     - [Optimizacija kode](#optimizacija-kode)
 3. [Navodila za namestitev lokalno](#3-navodila-za-namestitev-lokalno)
     - [Testno lokalno okolje](#testno-lokalnmo-okolje)
-4. [Uporaba aplikacije](#uporaba-aplikacije)
+4. [Uporaba aplikacije](#4-uporaba-aplikacije)
     - [Uporabniški priročnik](#uporabniški-priročnik)
 
 ## 1. Predstavitev projekta
