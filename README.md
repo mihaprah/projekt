@@ -20,13 +20,13 @@ Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplik
     - [Organizacija in način dela](#organizacija-in-način-dela)
     - [Zasnova podatkovne strukture](#zasnova-podatkovne-strukture)
     - [Diagram primerov uporabe](#diagram-primerov-uporabe)
-    - [Graf avtentikacije](#graf-avtentikacije)
+    - [Graf registracije novega uporabnika in graf avtentikacije](#graf-registracije-novega-uporabnika-in-graf-avtentikacije)
     - [Wireframe aplikacije (prototip izgleda)](#wireframe-aplikacije-prototip-izgleda)
     - [Testiranje](#testiranje)
     - [Optimizacija kode](#optimizacija-kode)
-3. [Navodila za namestitev](#3-navodila-za-namestitev)
+3. [Navodila za namestitev lokalno](#3-navodila-za-namestitev-lokalno)
     - [Testno lokalno okolje](#testno-lokalnmo-okolje)
-    - [Uporaba aplikacije](#uporaba-aplikacije)
+4. [Uporaba aplikacije](#uporaba-aplikacije)
     - [Uporabniški priročnik](#uporabniški-priročnik)
 
 ## 1. Predstavitev projekta
@@ -52,7 +52,7 @@ V dokumentaciji projekta je predstavljen celoten proces dela od začetka do konc
 
 ### Tehnološki nabor
 #### Backend (zaledje)
-Zaledje aplikacije smo izdelali v programskem jeziku [Java](https://www.java.com/en/). Uporabili smo ogrodje [SpringBoot](https://spring.io/projects/spring-boot), ki nam je pomagalo izgraditi REST vmesnik in komunicirati s podatkovno bazo. Za podatkovno bazo smo izbrali NoSQL dokumentno bazo [MongoDB](https://www.mongodb.com), ki nam je omogočila shranjevanje fleksibilnih, JSON podobnih dokumentov. Ta je bila potrebna, saj imajo lahko posamezni kontakti na sebi poljubno število različnih atributov in značk. Bazo smo poganli v dockerju in za prikaz uporabili [Atlas Compass](https://www.mongodb.com/products/tools/compass), ki nam je omogočal vizualizacijo podatkovne baze. V njem je bilo tudi možno kolekcije in podatke spreminjati in brisati. Za testiranje API-jev smo uporabili orodje [Postman](https://www.postman.com), ki nam je omogočilo kreacijo map v katerih smo imeli vse posamezne requeste za vse objekte. Te mape smo lahko med seboj tudi delili in tako zagotovili enako okolje za testiranje API-ja. Postman omogoča tudi pisanje skript, ki smo jih uporabili pri generiranju naključnih podatkov za namena polnjenja baze za testiranje.
+Zaledje aplikacije smo izdelali v programskem jeziku [Java](https://www.java.com/en/). Uporabili smo ogrodje [SpringBoot](https://spring.io/projects/spring-boot), ki nam je pomagalo izgraditi REST vmesnik in komunicirati s podatkovno bazo. Za podatkovno bazo smo izbrali NoSQL dokumentno bazo [MongoDB](https://www.mongodb.com), ki nam je omogočila shranjevanje fleksibilnih, JSON podobnih dokumentov. Ta je bila potrebna, saj imajo lahko posamezni kontakti na sebi poljubno število različnih atributov in značk. Bazo smo poganli v dockerju in za prikaz uporabili [Atlas Compass](https://www.mongodb.com/products/tools/compass), ki nam je omogočal vizualizacijo podatkovne baze. V njem je bilo tudi možno kolekcije in podatke spreminjati in brisati. Za testiranje API-jev smo uporabili orodje [Postman](https://www.postman.com), ki nam je omogočilo kreacijo map v katerih smo imeli vse posamezne requeste za vse objekte. Te mape smo lahko med seboj tudi delili in tako zagotovili enako okolje za testiranje API-ja. Postman omogoča tudi pisanje skript, ki smo jih uporabili pri generiranju naključnih podatkov za namena polnjenja baze za testiranje. Za lažje dokumentiranje APIja smo tudi uporabili orodje [Swagger](https://swagger.io), ki nam je lepo vizualno prikazalo, katere vse končne točke ima aplikacija, kaj sprejmejo, kje so dostopne in kaj vračajo. Omogoča tudi pregled vseh shem, ki se uporabljajo za pošiljanje podatkov preko http protokola.
 
 #### Frontend (pročelje)
 Spletno aplikacijo smo izdelali s pomočjo programske knjižnice [React](https://react.dev) v programskem jeziku [Typescript](https://www.typescriptlang.org). Za ogrodje smo uporabili [Next.js](https://nextjs.org), ki ima številne prednosti:
@@ -115,8 +115,29 @@ Spodaj je skica, ki prikazuje strukturo naše podatkovne baze.
   <img width="700" alt="data-strucute" src="https://github.com/mihaprah/projekt/assets/116807398/08cb12ec-73b7-46c9-b227-97b8088bf536">
 </p>
 
-### Graf avtentikacije
-# TODO
+### Graf registracije novega uporabnika in graf avtentikacije
+Priložena sta dva grafa ki prikazujeta postopek registracije novega uporabnika in postopek avtentikacije uporabniki pri pridobivanju podatkov.
+#### Registracija novega uporabnika
+1. Uporabnik se najprej registrira v aplikaciji SCM preko emaila in gesla
+2. V ozadju se pošlje registracija na Firebase, kjer se doda novi uporabnik
+3. Firebase pošlje uporabniku mail s povezavo za potrditev novega računa
+4. Ko uporabnik potrdi svoj račun, se lahko prijavi v aplikaciji SCM
+5. Preko Firebase se izvede avtentikacija uporabnika
+6. Če je avtentikacija uspešna, se uporabnika spusti v aplikacijo, drugače mu dostop zavrne
+<p align="center">
+  <img alt="user-registration" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/594fa78c-8be2-4c74-8e94-3da261984a42">
+</p>
+
+#### Avtentikacija uporabnika
+1. Uporabnik pošlje zahtevek na backend, kjer se v "Request Heafer" vključi njegov **IdToken**
+2. Najprej se preveri ali je token veljaven, torej če je uporabnik registriran preko Firebase v aplikacijo SCM
+3. Če je avtentikacija zavrnjena, se potopek zaključi, drugače se preveri ali ima uporabnik dostop do Tenanta, za kateraga želi pridobiti podatke
+4. Če je avtentikacija uspešna pridobi podatke, ki jih je želel, drugače se postopek zaključi
+5. Backend vrne odgovor na začetno zahtevo
+<p align="center">
+  <img alt="user-registration" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/fa242c66-13bd-46b7-ac83-9849c2e6dbb0">
+</p>
+
 
 ### Wireframe aplikacije (prototip izgleda)
 S pomočjo orodja [Figma](https://www.figma.com), ki omogoča enostavno in hitro izdelavo vizualnih prototipov, smo izdelali prototip, kako bi naj aplikacija izgledala. Prototip nam je nato služil, kot navodilo za izgradnjo spletne aplikacije v nadaljevanju projekta.
@@ -166,7 +187,7 @@ Unit teste smo pisali tudi za vse Service razrede:
 
 To nam je omogočalo, da smo z uporabo **GitHub Actions** naredili Workflow, ki nam je pognal vse teste, ki smo jih imeli v projektu z vsakim commitom na repozitorij. S tem smo lahko videli ali je nova koda, ki smo jo naložili na repozitorij pokvarila, katerega izmed testov in tako na napako tudi ustrezno reagirali s popravkom nove kode.
 
-Ob pisanju REST vmesnika (Controller razredov) smo tudi testirali vse **API končne točke**, da smo preverili ali še vedno delujejo pravilno. Torej ali sprejmejo in vrnejo podatke, kot jih morajo in hkrati kako reagirajo ob prejemu napačnih podatkov. Za to smo si pomagali z orodjem [Swagger](https://swagger.io), ki nam je omogočalo pregled vseh API točk in podatkov s katerimi te delujejo. Swagger smo vključili v projekt, ta je dostopen na tem *[linku](https://projekt-test-environment.up.railway.app/swagger-ui/index.html)*.
+Ob pisanju REST vmesnika (Controller razredov) smo tudi testirali vse **API končne točke**, da smo preverili ali še vedno delujejo pravilno. Torej ali sprejmejo in vrnejo podatke, kot jih morajo in hkrati kako reagirajo ob prejemu napačnih podatkov. Za to smo si pomagali z orodjem Swagger, ki nam je omogočalo pregled vseh API točk in podatkov s katerimi te delujejo. Swagger smo vključili v projekt, ta je dostopen na tem *[linku](https://projekt-test-environment.up.railway.app/swagger-ui/index.html)*.
 <p align="center">
   <img alt="swagger-api" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/a1983b6e-c604-4745-95c8-826ea1b2605f">
   <br/>
@@ -194,7 +215,7 @@ Za optimizacijo kode in pregled kode, smo uporabili orodje [SonarCloud](), ki na
   Pregled nadzorne plošče v orodju SonarCloud
 </p>
 
-## 3. Navodila za namestitev 
+## 3. Navodila za namestitev lokalno
 
 ### Testno lokalno okolje
 Za namistitev aplikacije lokalno na vašem računalniku, smo naredili testno verzijo, ki je dostopna na [tej povezavi](https://github.com/Matija334/projekt_local/tree/main).
@@ -250,5 +271,5 @@ npm run build
 npm run start
 ```
 
-### Uporaba aplikacije
-Aplikacije je dostopna na tej [povezavi](https://scm-frontend-seven.vercel.app/login)
+## 4. Uporaba aplikacije
+Aplikacije je dostopna na tej [povezavi](https://scm-frontend-seven.vercel.app/login). Uporabnik se mora pred uporabo aplikacije na njej registrirati. Po registraciji bo na mail dobil povezavo za potrditev računa. Ko je opravil vse to, se lahko prijavi v aplikacijo in ob uspešni prijavi dobi dostop do aplikacije.
