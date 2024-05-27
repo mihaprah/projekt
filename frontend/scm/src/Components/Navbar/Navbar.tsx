@@ -38,7 +38,9 @@ const Navbar = () => {
     return (
         <div className={"bg-primary-light flex justify-between text-white dark:bg-primary-dark"}>
             <div className={"flex"}>
-                <Image width={700} height={700} className={"w-150px"} src={"/logo-scm.png"} alt={"Logo"}/>
+                <Link href={"/"}>
+                        <Image width={700} height={700} className={"w-150px"} src={"/logo-scm.png"} alt={"Logo"}/>
+                </Link>
                 <div className={"items-center justify-center flex"}>
                     <nav className={"navbar"}>
                         <ul>
