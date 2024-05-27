@@ -22,4 +22,20 @@ public class ContactDTO {
     private List<String> tags;
     private Map<String, String> props;
     private String attributesToString;
+
+    public String contactAttributesToString() {
+        StringBuilder contactTags = new StringBuilder();
+        for (String tag : this.getTags()) {
+            contactTags.append(tag.toLowerCase()).append(",");
+        }
+        StringBuilder contactPropsKey = new StringBuilder();
+        for (String prop : this.getProps().keySet()) {
+            contactPropsKey.append(prop.toLowerCase()).append(",");
+        }
+        StringBuilder contactPropsValues = new StringBuilder();
+        for (String prop : this.getProps().values()) {
+            contactPropsValues.append(prop.toLowerCase()).append(",");
+        }
+        return this.title.toLowerCase() + "," + contactTags + contactPropsKey + contactPropsValues;
+    }
 }

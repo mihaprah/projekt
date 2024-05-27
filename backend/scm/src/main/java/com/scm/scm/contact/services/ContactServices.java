@@ -284,4 +284,38 @@ public class ContactServices {
         }
         return comparator;
     }
+
+    public void saveAllContacts(List<ContactDTO> contacts) {
+        // Pretvori vsak ContactDTO v Contact in ga shrani v bazo podatkov
+        for (ContactDTO contactDTO : contacts) {
+            Contact contact = convertToEntity(contactDTO);
+            if (contact.getTenantUniqueName().isEmpty()) {
+                throw new CustomHttpException(ExceptionMessage.TENANT_NAME_EMPTY.getExceptionMessage(), 400, ExceptionCause.USER_ERROR);
+            }
+            if (contact.getTitle().isEmpty()) {
+                throw new CustomHttpException("Contact title is empty", 400, ExceptionCause.USER_ERROR);
+            }
+            if (!mongoTemplateService.collectionExists(contact.getTenantUniqueName() + CollectionType.MAIN.getCollectionType())) {
+                throw new CustomHttpException(ExceptionMessage.COLLECTION_NOT_EXIST.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
+            }
+
+            contact.setId(contact.generateId(contact.getTitle()));
+            contact.setAttributesToString(contact.contactAttributesToString());
+
+            // Shrani kontakt v glavno kolekcijo
+            mongoTemplate.save(contact, contact.getTenantUniqueName() + CollectionType.MAIN.getCollectionType());
+
+            // Posodobi oznake in lastnosti najemnika
+            tenantServices.addTags(contact.getTenantUniqueName(), contact.getTags());
+            tenantServices.addLabels(contact.getTenantUniqueName(), contact.getProps().keySet());
+
+            // Dodaj dogodek ustvarjanja kontakta
+            Event event = new Event(contact.getUser(), contact.getId(), EventState.CREATED);
+            eventsServices.addEvent(event, contact.getTenantUniqueName());
+
+            log.log(Level.INFO, String.format("Contact created with id: %s for tenant: %s", contact.getId(), contact.getTenantUniqueName()));
+        }
+    }
+
+
 }

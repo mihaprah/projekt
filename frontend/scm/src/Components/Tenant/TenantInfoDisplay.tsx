@@ -18,6 +18,7 @@ import { Tenant as TenantModel } from "@/models/Tenant";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import TenantPopup from "@/Components/Tenant/TenantPopup";
+import ImportContacts from "@/Components/Contact/ImportContacts";
 
 interface TenantInfoDisplayProps {
     tenant: TenantModel;
@@ -117,6 +118,7 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
                             <FontAwesomeIcon className={"ml-1 w-3 h-auto"} icon={faDumpster} />
                         </Link>
                         <AddNewContactPopup tenantUniqueName={props.tenant.tenantUniqueName} onSave={props.onSave} />
+                        <ImportContacts tenantUniqueName={props.tenant.tenantUniqueName} IdToken={props.IdToken} />
                     </div>
                 </div>
             </div>
