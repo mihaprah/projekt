@@ -140,7 +140,7 @@ Priložena sta dva grafa ki prikazujeta postopek registracije novega uporabnika 
 
 
 ### Wireframe aplikacije (prototip izgleda)
-S pomočjo orodja [Figma](https://www.figma.com), ki omogoča enostavno in hitro izdelavo vizualnih prototipov, smo izdelali prototip, kako bi naj aplikacija izgledala. Prototip nam je nato služil, kot navodilo za izgradnjo spletne aplikacije v nadaljevanju projekta.
+S pomočjo orodja [Figma](https://www.figma.com), ki omogoča enostavno in hitro izdelavo vizualnih prototipov, smo izdelali prototip, kako bi naj aplikacija izgledala. Prototip nam je nato služil, kot navodilo za izgradnjo spletne aplikacije v nadaljevanju projekta. Spodaj je na voljo nekaj zaslonskih posnetkov prototipa, vse slike so na dostopne v mapi **documentation/documentation-photos**
 
 <p align="center">
   <img alt="dashboard" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/52fce584-1c14-4b32-81b3-1ceb4bac6364">
@@ -154,23 +154,7 @@ S pomočjo orodja [Figma](https://www.figma.com), ki omogoča enostavno in hitro
   <br/>
   Pregled vseh kontaktov za enega "Tenanta". Pogled je nastavljen na <b>seznam</b> ali na <b>mrežo</b>.
 </p>
-<p align="center">
-  <img alt="kontakt" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/08aecbb0-0e32-4643-8590-816009e9fa72">
-  <br/>
-  Pregled posameznega kontakta.
-</p>
-<p align="center">
-  <img alt="add-tenant" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/5cbe449f-70b3-4968-aff2-fd731f7d9dc6">
-  <br/>
-  <img alt="add-tenant" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/5ed4fdde-bf47-4ee3-adc7-0da143588f87">
-  <br/>
-  Dodajanje novega <b>"Tenanta"</b> in novega <b>kontakta</b> znotraj posameznega "Tenanta".
-</p>
-<p align="center">
-  <img alt="kontakt" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/695547c5-0494-4e8e-a45e-ef9e48f3c201">
-  <br/>
-  Pregled že v naprej shranjenih nastavitev za iskanje specifičnih kontaktov znotraj določenega "Tenanta".
-</p>
+
 
 ### Testiranje
 Za testiranje smo poskrbeli s sprotnim pisanjem unit testov. Teste smo napisali za sledeče entitete:
