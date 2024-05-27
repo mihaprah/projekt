@@ -20,6 +20,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -252,12 +253,25 @@ public class ContactServices {
     }
 
     public List<Contact> getContactsBySearchQuery(String searchQuery, List<Contact> contacts, SortOrientation sortOrientation) {
+        if (searchQuery.contains("&")) {
+            List<String> andQueries = Arrays.asList(searchQuery.split("&"));
+            return contacts.stream()
+                    .filter(contact -> andQueries.stream().allMatch(query -> contact.getAttributesToString().toLowerCase().contains(query.toLowerCase())))
+                    .collect(Collectors.toList());
+        }
+        if (!searchQuery.contains("\\|")) {
+            List<String> orQueries = Arrays.asList(searchQuery.split("\\|"));
+            return contacts.stream()
+                    .filter(contact -> orQueries.stream().anyMatch(query -> contact.getAttributesToString().toLowerCase().contains(query.toLowerCase())))
+                    .collect(Collectors.toList());
+
+        }
+
         List<Contact> filteredContacts = contacts.stream()
                 .filter(contact -> contact.getAttributesToString().contains(searchQuery.toLowerCase()))
                 .collect(Collectors.toList());
 
         Comparator<Contact> comparator = getComparatorBasedOnOrientation(sortOrientation);
-
         filteredContacts.sort(comparator);
 
         return filteredContacts;
