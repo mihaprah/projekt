@@ -19,12 +19,14 @@ Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplik
     - [Tehnološki nabor](#tehnološki-nabor)
     - [Organizacija in način dela](#organizacija-in-način-dela)
     - [Zasnova podatkovne strukture](#zasnova-podatkovne-strukture)
+    - [Diagram primerov uporabe](#diagram-primerov-uporabe)
+    - [Graf avtentikacije](#graf-avtentikacije)
     - [Wireframe aplikacije (prototip izgleda)](#wireframe-aplikacije-prototip-izgleda)
     - [Testiranje](#testiranje)
     - [Optimizacija kode](#optimizacija-kode)
 3. [Navodila za namestitev](#3-navodila-za-namestitev)
     - [Testno lokalno okolje](#testno-lokalnmo-okolje)
-    - [Uporaba apliakcije](#uporaba-aplikacije)
+    - [Uporaba aplikacije](#uporaba-aplikacije)
     - [Uporabniški priročnik](#uporabniški-priročnik)
 
 ## 1. Predstavitev projekta
@@ -50,14 +52,25 @@ V dokumentaciji projekta je predstavljen celoten proces dela od začetka do konc
 
 ### Tehnološki nabor
 #### Backend (zaledje)
-Zaledje aplikacije smo izdelali v programskem jeziku [Java](https://www.java.com/en/). Uporabili smo ogrodje [SpringBoot](https://spring.io/projects/spring-boot), ki nam je pomagalo izgraditi REST vmesnik in komunicirati s podatkovno bazo. Za podatkovno bazo smo izbrali NoSQL dokumentno bazo [MongoDB](https://www.mongodb.com).
+Zaledje aplikacije smo izdelali v programskem jeziku [Java](https://www.java.com/en/). Uporabili smo ogrodje [SpringBoot](https://spring.io/projects/spring-boot), ki nam je pomagalo izgraditi REST vmesnik in komunicirati s podatkovno bazo. Za podatkovno bazo smo izbrali NoSQL dokumentno bazo [MongoDB](https://www.mongodb.com), ki nam je omogočila shranjevanje fleksibilnih, JSON podobnih dokumentov. Ta je bila potrebna, saj imajo lahko posamezni kontakti na sebi poljubno število različnih atributov in značk. Bazo smo poganli v dockerju in za prikaz uporabili [Atlas Compass](https://www.mongodb.com/products/tools/compass), ki nam je omogočal vizualizacijo podatkovne baze. V njem je bilo tudi možno kolekcije in podatke spreminjati in brisati. Za testiranje API-jev smo uporabili orodje [Postman](https://www.postman.com), ki nam je omogočilo kreacijo map v katerih smo imeli vse posamezne requeste za vse objekte. Te mape smo lahko med seboj tudi delili in tako zagotovili enako okolje za testiranje API-ja. Postman omogoča tudi pisanje skript, ki smo jih uporabili pri generiranju naključnih podatkov za namena polnjenja baze za testiranje.
 
 #### Frontend (pročelje)
-Spletno aplikacijo smo idelali s pomočjo programske knjižnice [React](https://react.dev) v programskem jeziku [Typescript](https://www.typescriptlang.org).
+Spletno aplikacijo smo izdelali s pomočjo programske knjižnice [React](https://react.dev) v programskem jeziku [Typescript](https://www.typescriptlang.org). Za ogrodje smo uporabili [Next.js](https://nextjs.org), ki ima številne prednosti:
+- komponente smo lahko označili kot "server komponente", kaj izboljša samo delovanje aplikacije
+- v osnovni obliki omogoča navigacijo s pomočjo app routerja, kaj je pomenilo, da ga ni potrebno lastno implementirati
+
+Za vizulani izgled aplikacije smo uporabili nizko nivojski okvir za CSS [Tailwind CSS](https://tailwindcss.com), ki nam je omočil enostvano izgradnjo komponent s uporabo pripomočkov. Komponente so tako hitro postale odzivne in se držale enakega stila, saj smo glavne CSS atribute nastavili v **tailwind.config.ts** datoteki (border-radius, margin, padding, width, primary-color, background-color,...).
+
+Za prijavo in registracijo uporabnikov smo uporabili [Firebase](https://firebase.google.com), ki omogoča možnost prijave s emailom in geslom. Prav tako omogoča avtentikacijo uporabnikov tako na frontendu, kot na backendu.
+
+#### Gostovanje
+Za namene predstavitve smo projekt naložili na splet. Za gostovanje backenda in Mongo podatkovne baze smo uporabili ponudnika [Railway](https://railway.app), ki nam je omogočil enostavno nalaganje iz GitHub repozitorija in tudi enostavno dodajanje okoljskih spremenljivk, ki so potrebne za povezavo na bazo in avtentikacijo. Za gostovanje frontenda smo izbrali ponudnika [Vercel](https://vercel.com), ki je oblačna platforma za gostovanje JavaScript storitev in podpira Next.js. Omogoča hitro gostovanje s pomočji GitHub repozitorija in okoljskih spremenljivk, ki so potrebne za avtentikacijo.
 
 ### Organizacija in način dela
 #### Komunikacija
 Vsa komunikacija znotraj projekta je bila speljana preko [Discord](https://discord.com) strežnika, razen komuniciranje s profersorjem, ki je bilo preko maila. Naredili smo ločene kanale za posamezne dele projekta. Tako smo uspeli ločit komunikacijo, da smo lahko reševali probleme ločeno in se zadeve niso izgubile oziroma se niso problemi spregledali. Prav tako smo preko Discord strežnika izvedli vse skupinske sestanke in vso delo na daljavo, kjer smo si pomagali s funkcijo deljenja zaslona.
+
+Med izvedbo samega projekta smo izvedli tudi številne sestanke s profesorjem v živo. Namen teh je bil prikazati dosedanje delo, dobiti povratne informacije in morebitne napotke za nadaljne delo.
 <p align="center">
   <img width="309" alt="discord-photo" src="https://github.com/mihaprah/projekt/assets/116807398/48f1979e-aaf7-4581-89ef-e99392d073d9">
 </p>
@@ -86,18 +99,24 @@ Za shranjevanje podatkov smo uporabili MongoDB, kjer smo uporabljali različne k
 - Tenant deleted -> kolekcija, ki beleži vse izbrisane kontakte znotraj ene skupine
 - Tenant activity -> kolekcija, ki beleži vse aktivnosti, ki jih izvede uporabnik znotraj eneke skupine, kot so recimo ustvarjanje, posodabljanje ali brisanje kontaktov. Ta kolekcija nam omogoča usvarjanje revizijske sledi.
 
-Posamezen kontakt ima kot privzeto nastavljena atributa ime in priimek, ostale atribute lahko poljubno dodaja uporabnik, kot pare ključ in vredost.
+Posamezen kontakt ima kot privzeto nastavljena title oziroma naziv, ostale atribute lahko poljubno dodaja uporabnik, kot pare ključ in vredost. Kontaktu se lahko dodajo tudi značke in komentarji. Vse spremembe na posamznem kontaktu se beležijo in hranijo v kolekcijo activity.
 
-Obstaja tudi glavna kolekcija "Tenants", kjer so zabeleženi dodatni podatki o vsaki kolekciji, kot so njeno celo ime, opis, barva in pa ime uporabnika, ki jo je usvaril.
+Obstaja tudi glavna kolekcija "Tenants", kjer so zabeleženi dodatni podatki o vsaki kolekciji, kot so njeno celo ime, opis, barva, ime uporabnikov, ki imajo do nje dostop, shranjeni atributi za prikaz in pa tako imenovai label, ki omogočajo mapiranje poljubno mapiranje ključ vrednosti za vsako skupino uporabnikov posebaj.
 
-V bazi imamo tudi kolekcijo "Users", kjer je zabeležen osnovni podatek o uporabniku, ki je prijavljen v sistem in lahko ustvarja svoje kolekcije.
-
-Kolekcija "Predefined searches", je namenjena shranjevanju iskalnih podatkov posameznih uporabnikov, če se ti uporabljajo recimo zelo pogosto.
+Kolekcija "Predefined searches", je namenjena shranjevanju iskalnih podatkov posameznih uporabnikov, če se ti uporabljajo recimo zelo pogosto. Uporabniik lahko ob filtriranju shrani nastavitve filtriranja za prihodnjo upšorabo.
 
 Spodaj je skica, ki prikazuje strukturo naše podatkovne baze.
 <p align="center">
-  <img width="700" alt="data-strucute" src="https://github.com/mihaprah/projekt/assets/116807398/32533fd8-028f-4af9-98d5-d07653454180">
+  <img width="700" alt="diagram-primerov-uporabe" src="https://github.com/mihaprah/projekt/assets/116807398/019d51c9-4768-4c75-9b1c-fb396446de90">
 </p>
+
+### Diagram primerov uporabe
+<p align="center">
+  <img width="700" alt="data-strucute" src="https://github.com/mihaprah/projekt/assets/116807398/08cb12ec-73b7-46c9-b227-97b8088bf536">
+</p>
+
+### Graf avtentikacije
+# TODO
 
 ### Wireframe aplikacije (prototip izgleda)
 S pomočjo orodja [Figma](https://www.figma.com), ki omogoča enostavno in hitro izdelavo vizualnih prototipov, smo izdelali prototip, kako bi naj aplikacija izgledala. Prototip nam je nato služil, kot navodilo za izgradnjo spletne aplikacije v nadaljevanju projekta.
@@ -231,5 +250,5 @@ npm run build
 npm run start
 ```
 
-### Uporaba apliakcije
+### Uporaba aplikacije
 Aplikacije je dostopna na tej [povezavi](https://scm-frontend-seven.vercel.app/login)
