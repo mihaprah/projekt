@@ -25,11 +25,11 @@ const updateLabels = async (labels: any, tenantId: string, IdToken: string) => {
         });
 
         if (!res.ok) {
-            throw new Error(`Error updating labels: ${res.statusText}`);
+            toast.error(res.statusText || "Failed to save labels!");
         }
 
-    } catch (error) {
-        toast.error("Failed to save tenant settings.");
+    } catch (error: any) {
+        toast.error(error.message || "Failed to save tenant settings.");
         return [];
     }
 }
@@ -46,11 +46,11 @@ const updateDisplayProps = async (displayProps: string[], tenantId: string, IdTo
         });
 
         if (!res.ok) {
-            throw new Error(`Error updating display props: ${res.statusText}`);
+            toast.error(res.statusText || "Failed to save display properties!");
         }
 
-    } catch (error) {
-        toast.error("Failed to save display properties.");
+    } catch (error: any) {
+        toast.error(error.message || "Failed to save display properties.");
         return [];
     }
 }

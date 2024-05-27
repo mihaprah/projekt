@@ -8,6 +8,7 @@ import Link from "next/link";
 import {useRouter} from "next/navigation";
 import Contacts from "@/Components/Contact/Contacts";
 import Loading from "@/app/loading";
+import {toast} from "react-toastify";
 interface DeletedContactsProps {
     IdToken: string;
     tenant: TenantModel;
@@ -22,18 +23,18 @@ const fetchDeletedContacts = async (tenant_unique_name: string, IdToken: string)
         });
 
         if (!res.ok) {
-            throw new Error(`Error fetching deleted contacts: ${res.statusText}`);
+            toast.error(res.statusText || 'Failed to fetch deleted contacts');
         }
 
         const contacts = await res.json();
 
         if (!Array.isArray(contacts)) {
-            throw new Error('Fetched data is not an array');
+            toast.error('Fetched data is not an array');
         }
 
         return contacts;
-    } catch (error) {
-        console.error('Failed to fetch deleted contacts:', error);
+    } catch (error: any) {
+        toast.error(error.message || 'Failed to fetch deleted contacts')
         return [];
     }
 };

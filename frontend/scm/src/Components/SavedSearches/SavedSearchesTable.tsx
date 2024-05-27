@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {useRouter} from "next/navigation";
 import {PredefinedSearch as SearchModel} from "@/models/PredefinedSearch";
 import Loading from "@/app/loading";
+import {toast} from "react-toastify";
 
 interface SavedSearchesTableProps {
     IdToken: string;
@@ -22,18 +23,18 @@ const fetchSearches = async (IdToken: string): Promise<SavedSearchesModel[]> => 
         });
 
         if (!res.ok) {
-            throw new Error(`Error fetching predefined searches: ${res.statusText}`);
+            toast.error(res.statusText || 'Failed to fetch predefined searches');
         }
 
         const savedSearches = await res.json();
 
         if (!Array.isArray(savedSearches)) {
-            throw new Error('Fetched data is not an array');
+            toast.error('Fetched data is not an array');
         }
 
         return savedSearches;
-    } catch (error) {
-        console.error('Failed to fetch predefined searches:', error);
+    } catch (error: any) {
+        toast.error(error.message || 'Failed to fetch predefined searches');
         return [];
     }
 }

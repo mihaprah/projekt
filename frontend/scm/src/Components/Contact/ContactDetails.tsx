@@ -40,12 +40,11 @@ const fetchTenant = async (tenantUniqueName: string, IdToken: string) => {
         });
 
         if (!res.ok) {
-            throw new Error(`Error fetching tenant: ${res.statusText}`);
+            toast.error(res.statusText || 'Failed to get tenant');
         }
         return await res.json();
-    } catch (error) {
-        toast.error('Failed to get tenant');
-        console.error('Failed to get tenant:', error);
+    } catch (error: any) {
+        toast.error(error.message || 'Failed to get tenant');
     }
 }
 

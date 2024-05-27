@@ -4,6 +4,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUsers} from "@fortawesome/free-solid-svg-icons";
 import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
+import {toast} from "react-toastify";
 
 interface TenantProps {
     tenant: TenantModel;
@@ -19,12 +20,12 @@ const fetchNumberContacts = async (IdToken: string, tenantUniqueName: string): P
         });
 
         if (!res.ok) {
-            throw new Error(`Error fetching contacts number from a tenant: ${res.statusText}`);
+            toast.error(res.statusText || 'Failed to fetch number of contacts');
         }
 
         return await res.json();
-    } catch (error) {
-        console.error('Failed to fetch number of contacts:', error);
+    } catch (error: any) {
+        toast.error(error.message || 'Failed to fetch number of contacts')
         return 0;
     }
 }

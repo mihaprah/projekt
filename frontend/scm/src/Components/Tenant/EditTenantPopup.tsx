@@ -56,15 +56,14 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
             });
 
             if (!res.ok) {
-                throw new Error(`Error saving tenant: ${res.statusText}`);
+                toast.error(res.statusText || "Failed to save tenant!");
             }
 
             setShowPopup(false);
             toast.success("Tenant saved successfully!");
             router.refresh();
-        } catch (error) {
-            toast.error("Failed to save tenant.");
-            console.error('Failed to save tenant:', error);
+        } catch (error: any) {
+            toast.error(error.message || "Failed to save tenant.");
         }
     };
 

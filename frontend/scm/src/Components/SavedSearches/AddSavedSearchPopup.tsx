@@ -21,13 +21,12 @@ const addSavedSearch = async (search: SearchModel, IdToken: string): Promise<voi
         });
 
         if (!res.ok) {
-            throw new Error(`Error saving search: ${res.statusText}`);
+            toast.error(res.statusText || "Failed to save search!");
         } else {
             toast.success("Search saved successfully!");
         }
-    } catch (error) {
-        toast.error("Failed to save search!");
-        console.error('Failed to save search:', error);
+    } catch (error: any) {
+        toast.error(error.message || "Failed to save search!");
     }
 }
 
@@ -42,13 +41,12 @@ const updateSavedSearch = async (search: SearchModel, IdToken: string): Promise<
             body: JSON.stringify(search),
         });
         if (!res.ok) {
-            throw new Error(`Error updating search: ${res.statusText}`);
+            toast.error(res.statusText || "Failed to update search!");
         } else {
             toast.success("Search updated successfully!");
         }
-    } catch (error) {
-        toast.error("Failed to update search!");
-        console.error('Failed to update search:', error);
+    } catch (error: any) {
+        toast.error(error.message || "Failed to update search!");
     }
 }
 

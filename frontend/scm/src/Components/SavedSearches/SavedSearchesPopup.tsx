@@ -31,14 +31,14 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
                 });
 
                 if (!res.ok) {
-                    throw new Error(`Error fetching tags: ${res.statusText}`);
+                    toast.error(res.statusText || 'Failed to fetch tags');
                 }
 
                 const tenant = await res.json();
                 const tags = Object.keys(tenant.contactTags).map(tag => (tag));
                 setAvailableTags(tags);
-            } catch (error) {
-                console.error('Failed to fetch tags:', error);
+            } catch (error: any) {
+                toast.error(error.message || 'Failed to fetch tags');
             }
         };
             fetchTags();
@@ -65,14 +65,13 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
                 }
             });
             if (!res.ok) {
-                toast.error("Error to delete search!");
-                throw new Error(`Error deleting search: ${res.statusText}`);
+                toast.error(res.statusText || "Error to delete search!");
             }
             toast.success("Search deleted successfully!");
             props.onSavedSearchAction();
             setShowPopup(false);
-        } catch (error) {
-            toast.error("Failed to delete search!");
+        } catch (error: any) {
+            toast.error(error.message || "Failed to delete search!");
         }
 
     }
@@ -88,15 +87,15 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
                 body: JSON.stringify(savedSearch),
             });
             if (!res.ok) {
-                throw new Error(`Error editing search: ${res.statusText}`);
+                toast.error(res.statusText || "Failed to edit search!")
             }
 
             toast.success("Search edited successfully!");
             props.onSavedSearchAction();
             setShowPopup(false);
 
-        } catch (error) {
-            toast.error("Failed to edit search!");
+        } catch (error: any) {
+            toast.error(error.message || "Failed to edit search!");
         }
     }
 

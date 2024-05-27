@@ -92,10 +92,10 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
             });
 
             if (!res.ok) {
-                throw new Error(`Error saving tenant: ${res.statusText}`);
+                toast.error(res.statusText || "Failed to save tenant!");
             }
-        } catch (error) {
-            console.error('Failed to save tenant:', error);
+        } catch (error: any) {
+            toast.error(error.message || "Failed to save tenant.")
         }
     }
 

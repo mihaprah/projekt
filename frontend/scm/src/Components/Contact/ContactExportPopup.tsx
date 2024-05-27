@@ -36,8 +36,7 @@ const ContactExportPopup: React.FC<ContactExportPopupProps> = (props) => {
             });
 
             if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(`Error exporting contacts: ${res.statusText}, Response: ${JSON.stringify(errorData)}`);
+                toast.error(res.statusText || "Failed to export contacts.");
             }
 
             const blob = await res.blob();
@@ -57,10 +56,9 @@ const ContactExportPopup: React.FC<ContactExportPopupProps> = (props) => {
             toast.success("Contacts exported successfully!");
             setShowPopup(false);
             router.refresh();
-        } catch (error) {
-            toast.error("Failed to export contacts.");
+        } catch (error: any) {
+            toast.error(error.message || "Failed to export contacts.");
             setShowPopup(false);
-            console.error('Failed to export contacts:', error);
         }
     }
 

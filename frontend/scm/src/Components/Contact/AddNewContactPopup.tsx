@@ -45,14 +45,14 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                 });
 
                 if (!res.ok) {
-                    throw new Error(`Error fetching tags: ${res.statusText}`);
+                    toast.error(res.statusText || 'Failed to fetch tags');
                 }
 
                 const tenant = await res.json();
                 const tags = Object.keys(tenant.contactTags).map(tag => ({ label: tag, value: tag }));
                 setAvailableTags(tags);
-            } catch (error) {
-                console.error('Failed to fetch tags:', error);
+            } catch (error: any) {
+                toast.error(error.message || 'Failed to fetch tags');
             }
         };
 
@@ -65,7 +65,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                 });
 
                 if (!res.ok) {
-                    throw new Error(`Error fetching contacts: ${res.statusText}`);
+                    toast.error(res.statusText || 'Failed to fetch props keys');
                 }
 
                 const tenant = await res.json();
@@ -73,8 +73,8 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                     const propsKeys = Object.keys(tenant.labels);
                     setAvailablePropsKeys(propsKeys);
                 }
-            } catch (error) {
-                console.error('Failed to fetch props keys:', error);
+            } catch (error: any) {
+                toast.error(error.message || 'Failed to fetch props keys');
             }
         };
 
@@ -140,7 +140,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
             });
 
             if (!res.ok) {
-                throw new Error(`Error saving contact: ${res.statusText}`);
+                toast.error(res.statusText || "Failed to add contact.");
             }
 
             setShowPopup(false);
@@ -148,9 +148,8 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
             toast.success("Contact added successfully!");
             onSave();
             router.refresh();
-        } catch (error) {
-            toast.error("Failed to add contact.");
-            console.error('Failed to add contact:', error);
+        } catch (error: any) {
+            toast.error(error.message || "Failed to add contact.");
         }
     };
 
@@ -171,7 +170,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
             });
 
             if (!res.ok) {
-                throw new Error(`Error fetching last contact: ${res.statusText}`);
+                toast.error(res.statusText || "Failed to fetch last contact props.");
             }
 
             const contacts = await res.json();
@@ -196,8 +195,8 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
             });
             setNewProps(propsArray);
             setShowPopup(true);
-        } catch (error) {
-            console.error('Failed to fetch last contact props:', error);
+        } catch (error: any) {
+            toast.error(error.message || "Failed to fetch last contact props.");
         }
     };
 

@@ -45,14 +45,13 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
             });
 
             if (!res.ok) {
-                throw new Error(`Error deactivating tenant: ${res.statusText}`);
+                toast.error(res.statusText || "Failed to deactivate tenant!");
             }
 
             toast.success("Tenant deactivated successfully!");
             router.push('/'); //Redirect to home or any other page after deletion
-        } catch (error) {
-            toast.error("Failed to deactivate tenant.");
-            console.error('Failed to deactivate tenant:', error);
+        } catch (error: any) {
+            toast.error(error.message || "Failed to deactivate tenant.");
         }
     };
 

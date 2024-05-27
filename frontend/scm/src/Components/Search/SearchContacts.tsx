@@ -10,6 +10,7 @@ import TenantInfoDisplay from "@/Components/Tenant/TenantInfoDisplay";
 import Select from 'react-select';
 import AddSavedSearchPopup from "@/Components/SavedSearches/AddSavedSearchPopup";
 import {useRouter} from "next/navigation";
+import {toast} from "react-toastify";
 
 interface SearchContactsProps {
     contacts: ContactModel[];
@@ -33,18 +34,18 @@ const fetchFilteredContacts = async (search: SearchModel, IdToken: string, tenan
         });
 
         if (!res.ok) {
-            throw new Error(`Error fetching contacts: ${res.statusText}`);
+            toast.error(res.statusText || 'Failed to fetch contacts');
         }
 
         const contacts = await res.json();
 
         if (!Array.isArray(contacts)) {
-            throw new Error('Fetched data is not an array');
+            toast.error('Fetched data is not an array');
         }
 
         return contacts;
-    } catch (error) {
-        console.error('Failed to fetch contacts:', error);
+    } catch (error: any) {
+        toast.error(error.message || 'Failed to fetch contacts');
         return [];
     }
 }
@@ -58,18 +59,18 @@ const fetchAllContacts = async (tenantUniqueName: string, IdToken: string): Prom
         });
 
         if (!res.ok) {
-            throw new Error(`Error fetching contacts: ${res.statusText}`);
+            toast.error(res.statusText || 'Failed to fetch contacts');
         }
 
         const contacts = await res.json();
 
         if (!Array.isArray(contacts)) {
-            throw new Error('Fetched data is not an array');
+            toast.error('Fetched data is not an array');
         }
 
         return contacts;
-    } catch (error) {
-        console.error('Failed to fetch contacts:', error);
+    } catch (error: any) {
+        toast.error(error.message || 'Failed to fetch contacts');
         return [];
     }
 }
@@ -82,13 +83,13 @@ const fetchSearch = async (IdToken: string, searchId: string): Promise<SearchMod
             },
         });
         if (!res.ok) {
-            throw new Error(`Error fetching predefined search: ${res.statusText}`);
+            toast.error(res.statusText || 'Failed to fetch predefined search');
         }
         const search = await res.json();
 
         return search as SearchModel;
-    } catch (error) {
-        console.error('Failed to fetch predefined searches:', error);
+    } catch (error: any) {
+        toast.error(error.message || 'Failed to fetch predefined search');
         return {} as SearchModel;
     }
 }

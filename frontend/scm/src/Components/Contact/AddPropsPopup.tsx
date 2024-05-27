@@ -53,15 +53,14 @@ const AddPropsPopup: React.FC<AddPropsPopupProps> = ({
             });
 
             if (!res.ok) {
-                throw new Error(`Error adding property: ${res.statusText}`);
+                toast.error(res.statusText || 'Failed to add property');
             }
 
             toast.success('Property added successfully');
             onSave();
             router.refresh();
-        } catch (error) {
-            toast.error('Failed to add property');
-            console.error('Failed to add property:', error);
+        } catch (error: any) {
+            toast.error(error.message || 'Failed to add property');
         }
     };
 

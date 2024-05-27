@@ -43,16 +43,15 @@ const ImportContacts: React.FC<ImportContactsProps> = ({ tenantUniqueName, IdTok
             });
 
             if (!res.ok) {
-                throw new Error(`Error importing contacts: ${res.statusText}`);
+                toast.error(res.statusText || 'Failed to import contacts');
             }
 
             setShowPopup(false);
             if (onClose) onClose();
             toast.success('Contacts imported successfully');
             router.refresh();
-        } catch (error) {
-            toast.error('Failed to import contacts');
-            console.error('Failed to import contacts:', error);
+        } catch (error: any) {
+            toast.error(error.message || 'Failed to import contacts');
         }
     };
 

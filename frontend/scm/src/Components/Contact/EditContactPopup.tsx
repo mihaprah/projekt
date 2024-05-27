@@ -34,14 +34,14 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                 });
 
                 if (!res.ok) {
-                    throw new Error(`Error fetching tags: ${res.statusText}`);
+                    toast.error(res.statusText || 'Failed to fetch tags');
                 }
 
                 const tenant = await res.json();
                 const tags = Object.keys(tenant.contactTags).map(tag => ({ label: tag, value: tag }));
                 setAvailableTags(tags);
-            } catch (error) {
-                console.error('Failed to fetch tags:', error);
+            } catch (error: any) {
+                toast.error(error.message || 'Failed to fetch tags');
             }
         };
 
@@ -54,7 +54,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                 });
 
                 if (!res.ok) {
-                    throw new Error(`Error fetching props keys: ${res.statusText}`);
+                    toast.error(res.statusText || 'Failed to fetch props keys');
                 }
 
                 const tenant = await res.json();
@@ -62,8 +62,8 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                     const propsKeys = Object.keys(tenant.labels);
                     setAvailablePropsKeys(propsKeys);
                 }
-            } catch (error) {
-                console.error('Failed to fetch props keys:', error);
+            } catch (error: any) {
+                toast.error(error.message || 'Failed to fetch props keys');
             }
         };
 
@@ -135,15 +135,14 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
             });
 
             if (!res.ok) {
-                throw new Error(`Error saving contact: ${res.statusText}`);
+                toast.error(res.statusText || "Failed to save contact.");
             }
 
             setShowPopup(false);
             toast.success("Contact saved successfully!");
             router.refresh();
-        } catch (error) {
-            toast.error("Failed to save contact.");
-            console.error('Failed to save contact:', error);
+        } catch (error: any) {
+            toast.error(error.message || "Failed to save contact.");
         }
     };
 
@@ -158,14 +157,13 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
             });
 
             if (!res.ok) {
-                throw new Error(`Error deleting contact: ${res.statusText}`);
+                toast.error(res.statusText || "Failed to delete contact.");
             }
             toast.success('Contact deleted successfully');
             router.push(`/contacts/${tenantUniqueName}`);
             router.refresh();
-        } catch (error) {
-            toast.error('Failed to delete contact');
-            console.error('Failed to delete contact:', error);
+        } catch (error: any) {
+            toast.error(error.message ||'Failed to delete contact');
         }
     };
 

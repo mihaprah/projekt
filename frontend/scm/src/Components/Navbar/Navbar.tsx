@@ -8,6 +8,7 @@ import {onAuthStateChanged, signOut} from "firebase/auth";
 import {auth} from "@/firebase";
 import Cookies from "js-cookie";
 import Image from "next/image";
+import {toast} from "react-toastify";
 
 
 const Navbar = () => {
@@ -26,8 +27,8 @@ const Navbar = () => {
             await signOut(auth);
             Cookies.remove('IdToken');
             window.location.href = '/login';
-        } catch (error) {
-            console.error("Error logging out:", error);
+        } catch (error: any) {
+            toast.error(error.message || "Failed to logout")
         }
     };
 

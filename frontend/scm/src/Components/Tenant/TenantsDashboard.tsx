@@ -6,6 +6,7 @@ import Tenant from "@/Components/Tenant/Tenant";
 import {Tenant as TenantModel} from "@/models/Tenant";
 import React, {useEffect, useState} from "react";
 import Loading from "@/app/loading";
+import {toast} from "react-toastify";
 
 interface TenantDashboardProps {
     IdToken: string;
@@ -20,18 +21,18 @@ const fetchTenants = async (IdToken: string): Promise<TenantModel[]> => {
         });
 
         if (!res.ok) {
-            throw new Error(`Error fetching tenants: ${res.statusText}`);
+            toast.error(res.statusText || 'Failed to fetch tenants');
         }
 
         const tenants = await res.json();
 
         if (!Array.isArray(tenants)) {
-            throw new Error('Fetched data is not an array');
+            toast.error('Fetched data is not an array');
         }
 
         return tenants;
-    } catch (error) {
-        console.error('Failed to fetch tenants:', error);
+    } catch (error: any) {
+        toast.error(error.message || 'Failed to fetch tenants');
         return [];
     }
 }

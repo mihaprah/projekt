@@ -110,14 +110,13 @@ const Contacts: React.FC<ContactsProps> = ({
                 });
 
                 if (!res.ok) {
-                    throw new Error(`Error deleting contact: ${res.statusText}`);
+                    toast.error(res.statusText || 'Failed to delete contact');
                 }
                 toast.success('Contact deleted successfully');
                 onChange();
                 router.refresh();
-            } catch (error) {
-                toast.error('Failed to delete contact');
-                console.error('Failed to delete contact:', error);
+            } catch (error: any) {
+                toast.error(error.message || 'Failed to delete contact');
             }
         } else {
             try {
@@ -129,14 +128,13 @@ const Contacts: React.FC<ContactsProps> = ({
                 });
 
                 if (!res.ok) {
-                    throw new Error(`Error deleting contact: ${res.statusText}`);
+                    toast.error(res.statusText || 'Failed to delete contact');
                 }
                 toast.success('Contact permanently deleted successfully');
                 onChange();
                 router.refresh();
-            } catch (error) {
-                toast.error('Failed to delete contact permanently');
-                console.error('Failed to delete contact permanently:', error);
+            } catch (error: any) {
+                toast.error(error.message || 'Failed to delete contact permanently');
             }
         }
 
@@ -164,16 +162,15 @@ const Contacts: React.FC<ContactsProps> = ({
             });
 
             if (!res.ok) {
-                throw new Error(`Error adding tags: ${res.statusText}`);
+                toast.error(res.statusText || 'Failed to add tags');
             }
 
             toast.success('Tags added successfully');
             setSelectedContacts([]);
             setSelectedTags([]);
             router.refresh();
-        } catch (error) {
-            toast.error('Failed to add tags');
-            console.error('Failed to add tags:', error);
+        } catch (error: any) {
+            toast.error(error.message || 'Failed to add tags');
         }
     };
 
