@@ -121,7 +121,6 @@ const Contacts: React.FC<ContactsProps> = ({
             }
         } else {
             try {
-                console.log(contactId)
                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts/delete/${contactId}/${tenantUniqueName}`, {
                     method: 'DELETE',
                     headers: {

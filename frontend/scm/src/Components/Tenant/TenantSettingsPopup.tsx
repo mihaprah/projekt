@@ -35,7 +35,6 @@ const updateLabels = async (labels: any, tenantId: string, IdToken: string) => {
 }
 
 const updateDisplayProps = async (displayProps: string[], tenantId: string, IdToken: string) => {
-    console.log(displayProps);
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/displayProps/${tenantId}`, {
             method: 'PUT',
@@ -89,7 +88,6 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
             toast.success("Tenant settings saved successfully!");
             router.refresh();
         } catch (error) {
-            console.log(error);
             toast.error("Failed to save tenant settings.");
         }
     };

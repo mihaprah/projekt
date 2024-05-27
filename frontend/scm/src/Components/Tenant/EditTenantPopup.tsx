@@ -59,10 +59,6 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
                 throw new Error(`Error saving tenant: ${res.statusText}`);
             }
 
-            const updatedTenant = await res.json();
-            console.log('Tenant updated:', updatedTenant);
-
-
             setShowPopup(false);
             toast.success("Tenant saved successfully!");
             router.refresh();

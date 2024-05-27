@@ -138,9 +138,6 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                 throw new Error(`Error saving contact: ${res.statusText}`);
             }
 
-            const updatedContact = await res.json();
-            console.log('Contact updated:', updatedContact);
-
             setShowPopup(false);
             toast.success("Contact saved successfully!");
             router.refresh();

@@ -18,7 +18,6 @@ const Home = () => {
                 router.push('/login');
             } else {
                 const idToken = await currentUser.getIdToken();
-                console.log(idToken);
                 if(idToken === "" || idToken === null){
                     router.push('/login');
                 }

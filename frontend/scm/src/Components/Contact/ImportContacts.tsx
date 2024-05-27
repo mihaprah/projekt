@@ -42,9 +42,6 @@ const ImportContacts: React.FC<ImportContactsProps> = ({ tenantUniqueName, IdTok
                 body: formData,
             });
 
-            const textResponse = await res.text();
-            console.log('Raw response:', textResponse);
-
             if (!res.ok) {
                 throw new Error(`Error importing contacts: ${res.statusText}`);
             }

@@ -50,17 +50,13 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
     };
 
     const handleSave = () => {
-        if (!sanitizeDescription(inputValues[1])) return
         if (inputValues[0] === '' || inputValues[1] === '') {
             toast.error("Error! All fields are required");
             return
         }
+        if (!sanitizeDescription(inputValues[1])) return
         if (inputValues[0].length < 3) {
             toast.error("Error! Title is too short");
-            return
-        }
-        if(inputValues[1].length < 10){
-            toast.error("Error! Description is too short. At least 10 characters required.");
             return
         }
         users.push(user.email)
@@ -111,6 +107,10 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
     const sanitizeDescription = (description: string) => {
         if (description.length > 300) {
             toast.error("Error! Description is too long");
+            return false;
+        }
+        if (description.length < 10) {
+            toast.error("Error! Description is too short. At least 10 characters required.");
             return false;
         }
         return true;

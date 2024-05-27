@@ -5,7 +5,8 @@ import { useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from "@/firebase";
 import { onAuthStateChanged, getIdTokenResult, User } from 'firebase/auth';
-import Cookies from 'js-cookie'; // Dodamo js-cookie za upravljanje cookijev
+import Cookies from 'js-cookie';
+import {toast} from "react-toastify"; // Dodamo js-cookie za upravljanje cookijev
 
 interface AuthCheckProps {
     children: ReactNode;
@@ -25,7 +26,7 @@ const AuthCheck: React.FC<AuthCheckProps> = ({ children }) => {
                 const token = Cookies.get("IdToken"); // Preveri token iz cookija
 
                 if (!token) {
-                    console.log("No token found in cookies.");
+                    toast.error("No token found in cookies.");
                     return false;
                 }
 
@@ -37,13 +38,13 @@ const AuthCheck: React.FC<AuthCheckProps> = ({ children }) => {
                 const expirationTime = tokenResult.expirationTime ? new Date(tokenResult.expirationTime).getTime() / 1000 : 0;
 
                 if (expirationTime < currentTime) {
-                    console.log("Token has expired.");
+                    toast.error("Token has expired.");
                     return false;
                 }
 
                 return true;
-            } catch (error) {
-                console.error('Error validating IdToken:', error);
+            } catch (error: any) {
+                toast.error(error.message);
                 return false;
             }
         };
@@ -51,7 +52,6 @@ const AuthCheck: React.FC<AuthCheckProps> = ({ children }) => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             const token = Cookies.get("IdToken"); // Preveri token iz cookija
             if (!token) {
-                console.log("No token found in cookies, redirecting to login.");
                 router.push('/login');
                 return;
             }

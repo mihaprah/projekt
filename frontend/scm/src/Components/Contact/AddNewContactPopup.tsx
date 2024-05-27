@@ -139,9 +139,6 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                 body: JSON.stringify(updatedFormData),
             });
 
-            const textResponse = await res.text();
-            console.log('Raw response:', textResponse);
-
             if (!res.ok) {
                 throw new Error(`Error saving contact: ${res.statusText}`);
             }
