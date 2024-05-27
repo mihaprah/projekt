@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -67,7 +67,7 @@ const ImportContacts: React.FC<ImportContactsProps> = ({ tenantUniqueName, IdTok
         <div>
             <button onClick={openPopup}
                     className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark ml-3">
-                Import Contacts
+                Import
                 <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faUpload} />
             </button>
 

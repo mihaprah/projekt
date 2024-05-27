@@ -112,7 +112,11 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
         return availablePropsKeys.filter(key => !newProps.some(prop => prop.key === key)).map(key => ({ label: key, value: key }));
     };
 
-    const handleSave = async () => {
+    const handleUpdate = async () => {
+        if (formData.title.length < 3) {
+            toast.error("Error! Title is too short");
+            return
+        }
         const finalProps = newProps.reduce((acc, { key, value }) => {
             if (key) acc[key] = value;
             return acc;
@@ -280,9 +284,9 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                         className="btn mt-4 mx-1 px-5 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition">
                                     Close Popup
                                 </button>
-                                <button type="button" onClick={handleSave}
+                                <button type="button" onClick={handleUpdate}
                                         className="btn mt-4 mx-1 px-5 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
-                                    Save changes
+                                    Save Changes
                                 </button>
                             </div>
                         </form>

@@ -59,6 +59,10 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
             toast.error("Error! Title is too short");
             return
         }
+        if(inputValues[1].length < 10){
+            toast.error("Error! Description is too short. At least 10 characters required.");
+            return
+        }
         users.push(user.email)
         const newTenant: Tenant = {
             id: props.tenant?.id || '',

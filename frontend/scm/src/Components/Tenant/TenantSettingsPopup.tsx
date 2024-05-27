@@ -154,7 +154,7 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
                                                      icon={faCircleInfo}/>
                                 </div>
                             </div>
-                            <div className="max-h-80 grid grid-cols-3 gap-2">
+                            <div className="max-h-auto grid grid-cols-3 gap-2">
                                 {formData.labels && Object.entries(formData.labels).map(([key, value], index) => (
                                     <div key={index} className="mb-4 flex justify-end items-center">
                                         <label className="block text-gray-700 text-sm font-semibold mr-5"

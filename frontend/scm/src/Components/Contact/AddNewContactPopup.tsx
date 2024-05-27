@@ -118,6 +118,10 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
     };
 
     const handleSave = async () => {
+        if (formData.title.length < 3) {
+            toast.error("Error! Title is too short");
+            return
+        }
         const finalProps = newProps.reduce((acc, { key, value }) => {
             if (key) acc[key] = value;
             return acc;

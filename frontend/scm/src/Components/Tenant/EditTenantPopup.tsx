@@ -5,8 +5,8 @@ import { Tenant as TenantModel } from '../../models/Tenant';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import CreatableSelect from 'react-select/creatable';
-import {toast} from "react-toastify";
 import {useRouter} from "next/navigation";
+import {toast} from "react-toastify";
 
 interface EditTenantPopupProps {
     tenant: TenantModel;
@@ -31,7 +31,20 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
         setFormData(prevState => ({ ...prevState, users }));
     };
 
-    const handleSave = async () => {
+    const handleUpdate = async () => {
+        if (!sanitizeDescription(formData.description)) return
+        if (formData.title === '' || formData.description === '') {
+            toast.error("Error! All fields with * are required");
+            return
+        }
+        if (formData.title.length < 3) {
+            toast.error("Error! Title is too short");
+            return
+        }
+        if(formData.description.length < 10){
+            toast.error("Error! Description is too short. At least 10 characters required.");
+            return
+        }
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants`, {
                 method: 'PUT',
@@ -58,6 +71,14 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
             console.error('Failed to save tenant:', error);
         }
     };
+
+    const sanitizeDescription = (description: string) => {
+        if (description.length > 300) {
+            toast.error("Error! Description is too long");
+            return false;
+        }
+        return true;
+    }
 
     const availableColors: string[] = ["Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink", "Brown", "Black", "Violet"];
 
@@ -135,9 +156,9 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
                                         className="btn mt-4 mx-1 px-5 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition">
                                     Close Popup
                                 </button>
-                                <button type="button" onClick={handleSave}
+                                <button type="button" onClick={handleUpdate}
                                         className="btn mt-4 mx-1 px-5 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
-                                    Save Tenant
+                                    Save Changes
                                 </button>
                             </div>
                         </form>
