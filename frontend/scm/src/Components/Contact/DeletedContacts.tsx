@@ -24,12 +24,14 @@ const fetchDeletedContacts = async (tenant_unique_name: string, IdToken: string)
 
         if (!res.ok) {
             toast.error(res.statusText || 'Failed to fetch deleted contacts');
+            return [];
         }
 
         const contacts = await res.json();
 
         if (!Array.isArray(contacts)) {
             toast.error('Fetched data is not an array');
+            return [];
         }
 
         return contacts;

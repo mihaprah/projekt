@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import {FirebaseError} from "firebase-admin";
 import Link from "next/link";
 import {checkEmail, checkIfEmpty, checkPassword} from "@/utils/UserValidation";
+import Image from "next/image";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -45,7 +46,7 @@ const Login = () => {
             <ToastContainer />
             <div className={"flex flex-col items-center justify-center min-h-screen"}>
                 <div className={"flex flex-col items-center justify-center rounded-8 p-10"}>
-                    <img className={"w-48 h-auto rounded-8"} src={"/logo-scm.png"} alt={"Logo"}/>
+                    <Image width={700} height={700} className={"w-48 h-auto rounded-8"} src={"/logo-scm.png"} alt={"Logo"}/>
                     <h3 className={"text-xl font-semibold mb-5 dark:text-white dark:pt-6"}>Log in with Email</h3>
                     <form onSubmit={handleLogin} className={"flex flex-col items-center justify-center"}>
                         <label className="input input-bordered flex items-center gap-2 mb-2 text-secondary-dark dark:bg-white">

@@ -84,6 +84,7 @@ const fetchSearch = async (IdToken: string, searchId: string): Promise<SearchMod
         });
         if (!res.ok) {
             toast.error(res.statusText || 'Failed to fetch predefined search');
+            return {} as SearchModel;
         }
         const search = await res.json();
 

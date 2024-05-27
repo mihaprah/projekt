@@ -26,6 +26,7 @@ const updateLabels = async (labels: any, tenantId: string, IdToken: string) => {
 
         if (!res.ok) {
             toast.error(res.statusText || "Failed to save labels!");
+            return [];
         }
 
     } catch (error: any) {
@@ -47,6 +48,7 @@ const updateDisplayProps = async (displayProps: string[], tenantId: string, IdTo
 
         if (!res.ok) {
             toast.error(res.statusText || "Failed to save display properties!");
+            return [];
         }
 
     } catch (error: any) {

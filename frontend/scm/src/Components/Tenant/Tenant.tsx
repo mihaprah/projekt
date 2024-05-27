@@ -21,6 +21,7 @@ const fetchNumberContacts = async (IdToken: string, tenantUniqueName: string): P
 
         if (!res.ok) {
             toast.error(res.statusText || 'Failed to fetch number of contacts');
+            return 0;
         }
 
         return await res.json();

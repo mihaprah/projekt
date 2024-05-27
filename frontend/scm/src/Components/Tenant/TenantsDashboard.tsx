@@ -22,12 +22,14 @@ const fetchTenants = async (IdToken: string): Promise<TenantModel[]> => {
 
         if (!res.ok) {
             toast.error(res.statusText || 'Failed to fetch tenants');
+            return [];
         }
 
         const tenants = await res.json();
 
         if (!Array.isArray(tenants)) {
             toast.error('Fetched data is not an array');
+            return [];
         }
 
         return tenants;

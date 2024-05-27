@@ -24,12 +24,14 @@ const fetchSearches = async (IdToken: string): Promise<SavedSearchesModel[]> => 
 
         if (!res.ok) {
             toast.error(res.statusText || 'Failed to fetch predefined searches');
+            return [];
         }
 
         const savedSearches = await res.json();
 
         if (!Array.isArray(savedSearches)) {
             toast.error('Fetched data is not an array');
+            return [];
         }
 
         return savedSearches;

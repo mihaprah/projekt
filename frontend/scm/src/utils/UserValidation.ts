@@ -24,3 +24,11 @@ export const checkPassword = (password: string) => {
     }
     return true;
 }
+
+export const checkConfirmPassword = (password: string, confirmPassword: string) => {
+    if (password !== confirmPassword) {
+        toast.error("Passwords do not match!");
+        return false;
+    }
+    return true;
+}
