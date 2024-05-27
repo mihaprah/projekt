@@ -1,6 +1,6 @@
 "use client";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faArrowDown, faArrowUp, faList, faRotateLeft, faTh} from "@fortawesome/free-solid-svg-icons";
+import {faArrowDown, faArrowUp, faCircleInfo, faList, faRotateLeft, faTh} from "@fortawesome/free-solid-svg-icons";
 import React, {useEffect, useState} from "react";
 import {Contact as ContactModel} from "@/models/Contact";
 import {Tenant as TenantModel} from "@/models/Tenant";
@@ -207,8 +207,8 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
         <>
             <TenantInfoDisplay tenant={props.tenant} contactsNumber={props.contactsNumber} IdToken={props.IdToken}
                                onSave={handleContactChange} numberOfTenants={props.numberOfTenants}/>
-            <div className={"my-3 flex items-center"}>
-                <input value={searchQuery} type="text" placeholder="Search"
+            <div className={"mt-3 flex items-center"}>
+                <input value={searchQuery} type="text" placeholder="Search contacts..."
                        className="rounded-8 text-gray-700 border-1px px-3 w-96 mr-3 h-9"
                        onChange={(e) => handleSearchQuery(e.target.value)}/>
                 <Select
@@ -218,7 +218,7 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
                     value={tags ? tags.map(tag => ({label: tag, value: tag})) : []}
                     options={availableTags}
                     onChange={handleTagsChange}
-                    className="rounded-8 w-96 py-2 px-3"
+                    className="rounded-8 w-96 py-1 px-3"
                 />
                 {showAsc ? (
                     <div>
@@ -251,7 +251,7 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
                 </button>
                 {save && (
                     <>
-                        <AddSavedSearchPopup search={search} IdToken={props.IdToken} />
+                        <AddSavedSearchPopup search={search} IdToken={props.IdToken}/>
                     </>
                 )}
                 {reset && (
@@ -263,6 +263,12 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
                         </button>
                     </>
                 )}
+            </div>
+            <div className={"flex mt-0 mb-3 items-center"}>
+                <p className={"font-light text-xs"}>Use & and | hover for more info </p>
+                <div className="tooltip tooltip-right" data-tip="Use & for AND and | for OR when searching for multiple attributes at the same time. Use without spaces between attributes.">
+                    <FontAwesomeIcon className="ml-1 w-3.5 h-auto" style={{color: "#007BFF"}} icon={faCircleInfo}/>
+                </div>
             </div>
             {contacts.length !== 0 ? (
                 <Contacts

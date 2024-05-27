@@ -3,7 +3,7 @@
 import { Tenant as TenantModel } from '../../models/Tenant';
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGear } from "@fortawesome/free-solid-svg-icons";
+import {faCircleInfo, faGear} from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Select from "react-select";
@@ -120,9 +120,18 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
             {showPopup && (
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg max-w-5xl w-full my-10 overflow-auto">
-                        <h2 className="font-semibold mb-4 text-2xl">Tenant Settings</h2>
-                        <h4 className={"text-gray-700 font-semibold"}>Display properties</h4>
-                        <p className="text-gray-700 text-sm mb-4 mt-1">Choose up to 9 props to display</p>
+                        <h2 className="font-semibold text-2xl">Tenant Settings</h2>
+                        <p className={"font-light text-sm mb-4"}>Set the Display properties for the Contact group and
+                            set the Label names to your desired values.</p>
+                        <div className={"flex mt-0 items-center"}>
+                            <h4 className={"text-gray-700 font-semibold"}>Display properties</h4>
+                            <div className="tooltip tooltip-right"
+                                 data-tip="Select from the list of properties that you have on all the Contacts in your Contact group. Choose up to 9 different properites to display at once on grid or list view. Contact Title is always displayed.">
+                                <FontAwesomeIcon className="ml-1 w-3.5 h-auto" style={{color: "#007BFF"}}
+                                                 icon={faCircleInfo}/>
+                            </div>
+                        </div>
+                        <p className="text-gray-700 text-sm mb-4">Choose up to 9 attributes to display on the screen.</p>
                         <form>
                             <Select
                                 id="displayProps"
@@ -134,9 +143,17 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
                                 }))}
                                 options={getFilteredPropsOptions()}
                                 onChange={handleDisplayPropsChange}
-                                className="appearance-none border-0 mb-10 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                className="appearance-none border-0 rounded w-full py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             />
-                            <h4 className={"text-gray-700 font-semibold mb-3"}>Label names</h4>
+                            <hr className={"my-5 border-gray-300"}/>
+                            <div className={"flex mt-0 items-center"}>
+                                <h4 className={"text-gray-700 font-semibold"}>Label names</h4>
+                                <div className="tooltip tooltip-right"
+                                     data-tip="Select how you want your properties keys to be displayed on the screen. By default the raw key value is displayed.">
+                                    <FontAwesomeIcon className="ml-1 w-3.5 h-auto" style={{color: "#007BFF"}}
+                                                     icon={faCircleInfo}/>
+                                </div>
+                            </div>
                             <div className="max-h-80 grid grid-cols-3 gap-2">
                                 {formData.labels && Object.entries(formData.labels).map(([key, value], index) => (
                                     <div key={index} className="mb-4 flex justify-end items-center">

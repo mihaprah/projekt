@@ -1,7 +1,14 @@
 "use client";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faUsers, faTrash, faArrowLeft, faPlus, faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
+import {
+    faUsers,
+    faTrash,
+    faArrowLeft,
+    faPlus,
+    faExclamationTriangle,
+    faDumpster
+} from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import EditTenantPopup from "@/Components/Tenant/EditTenantPopup";
 import AddNewContactPopup from "@/Components/Contact/AddNewContactPopup";
@@ -105,7 +112,10 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
                 </div>
                 <div className="flex items-end space-x-3">
                     <div className={"flex items-center"}>
-                        <Link href={`/contacts/${props.tenant.tenantUniqueName}/deleted`} className={"hover:scale-105 transition text-danger dark:text-white text-xs mr-3"}>Deleted Contacts</Link>
+                        <Link href={`/contacts/${props.tenant.tenantUniqueName}/deleted`} className={"hover:scale-105 transition text-danger dark:text-white text-xs mr-3"}>
+                            Deleted Contacts
+                            <FontAwesomeIcon className={"ml-1 w-3 h-auto"} icon={faDumpster} />
+                        </Link>
                         <AddNewContactPopup tenantUniqueName={props.tenant.tenantUniqueName} onSave={props.onSave} />
                     </div>
                 </div>

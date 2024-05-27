@@ -3,7 +3,7 @@ import { Contact as ContactModel } from '../../models/Contact';
 import { Tenant as TenantModel } from '../../models/Tenant';
 import React, {useEffect} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
+import {faArrowLeft, faCircleInfo} from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import Contacts from "@/Components/Contact/Contacts";
@@ -78,11 +78,22 @@ const DeletedContacts: React.FC<DeletedContactsProps> = (props) => {
                         </div>
                     </div>
                     <div className={"flex items-center mt-3"}>
-                        <h2 className="text-3xl font-semibold text-primary-light mb-5">Deleted contacts - {props.tenant.title}</h2>
+                        <h2 className="text-3xl font-semibold text-primary-light">Deleted contacts
+                            - {props.tenant.title}</h2>
+                    </div>
+                    <div className={"flex mt-0 mb-3 items-center"}>
+                        <p className={"font-light text-sm"}>Deleted Contacts list for group {props.tenant.title} </p>
+                        <div className="tooltip tooltip-right"
+                             data-tip="When you delete a Contact it is moved to Deleted contacts page, where you can see which contacts have been deleted for each group. You can also permanently delete a Contact from the database, this will remove all data assosiated wiht the Contact."  >
+                            <FontAwesomeIcon className="ml-1 w-3.5 h-auto" style={{color: "#007BFF"}}
+                                             icon={faCircleInfo}/>
+                        </div>
                     </div>
                     {contacts.length !== 0 ? (
-                        <Contacts contacts={contacts} tenantUniqueName={props.tenant.tenantUniqueName} tenantId={props.tenant.id}
-                                  IdToken={props.IdToken} view={'list'} onChange={handleContactChange} tenant={props.tenant} deleted={true} />
+                        <Contacts contacts={contacts} tenantUniqueName={props.tenant.tenantUniqueName}
+                                  tenantId={props.tenant.id}
+                                  IdToken={props.IdToken} view={'list'} onChange={handleContactChange}
+                                  tenant={props.tenant} deleted={true}/>
                     ) : (
                         <div className="flex flex-col mt-20">
                             <div className="flex items-center justify-center">

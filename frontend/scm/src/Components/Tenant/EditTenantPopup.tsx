@@ -71,11 +71,12 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
             {showPopup && (
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg max-w-3xl w-full my-10 overflow-auto">
-                        <h2 className="font-semibold mb-4 text-2xl">Edit Tenant</h2>
+                        <h2 className="font-semibold text-2xl">Edit Tenant</h2>
+                        <p className={"font-light text-sm mb-2"}>Edit existing attributes associated with this group of Contacts. Attributes marked with * are required.</p>
                         <form>
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
-                                    Title
+                                    Title*
                                 </label>
                                 <input
                                     type="text"
@@ -88,20 +89,20 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
                                 <p className={"font-light text-xs mt-1"}>Min 3 letters</p>
                             </div>
                             <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
-                                    Description
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
+                                    Description*
                                 </label>
                                 <textarea
                                     id="description"
                                     name="description"
                                     value={formData.description}
                                     onChange={handleChange}
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    className="shadow appearance-none border min-h-24 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 />
                                 <p className={"font-light text-xs mt-1"}>Max 50 words</p>
                             </div>
                             <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="colorCode">
+                                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="colorCode">
                                     Colour
                                 </label>
                                 <select
@@ -124,7 +125,7 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
                                     id="users"
                                     name="users"
                                     isMulti
-                                    value={formData.users.map(user => ({ label: user, value: user }))}
+                                    value={formData.users.map(user => ({label: user, value: user}))}
                                     onChange={handleUsersChange}
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 />

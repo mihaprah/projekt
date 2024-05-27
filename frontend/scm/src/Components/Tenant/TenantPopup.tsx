@@ -124,10 +124,13 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
             {showPopup && (
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg w-full max-w-3xl my-10 overflow-auto">
-                        <h2 className={"font-semibold mb-4 text-2xl"}>{props.title}</h2>
+                        <h2 className={"font-semibold text-2xl"}>{props.title}</h2>
+                        <p className={"font-light text-sm mb-2"}>Create new group of Contacts for you and your team to use. Attributes marked with * are required.</p>
                         {props.labels.map((label, index) => (
-                            <div key={index} className={"p-2 justify-between flex flex-col items-start"}>
-                                <label className={"font-normal mb-1"}>{label}</label>
+                            <div key={index} className={"py-2 justify-between flex flex-col items-start"}>
+                                {label === 'Title' || label === 'Description' ? (
+                                    <label className={"block text-gray-700 text-sm font-bold mb-2"}>{label}*</label>
+                                ) : (<label className={"block text-gray-700 text-sm font-bold mb-2"}>{label}</label>)}
                                 {label === 'Colour' ? (
                                     <select
                                         className={"input input-bordered w-full"}
@@ -140,7 +143,7 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
                                     </select>
                                 ) : label === 'Description' ? (
                                     <textarea
-                                        className={"input input-bordered w-full h-20"}
+                                        className={"input input-bordered w-full min-h-24"}
                                         value={inputValues![index]}
                                         onChange={(e) => handleInputChange(index, e.target.value)}
                                     />
@@ -162,7 +165,7 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
                                         />
                                     )}
                                 {label === 'Description' && <p className={"font-light text-xs mt-1"}>Max 50 words</p>}
-                                {label === 'Title' && <p className={"font-light text-xs mt-1"}>Min 3 letters</p>}
+                                {label === 'Title' && <p className={"font-light text-xs mt-1"}>Min 3 letters required.</p>}
                                 {label === 'Other users' &&
                                     <p className={"font-light text-xs mt-1"}>You are already added</p>}
                             </div>

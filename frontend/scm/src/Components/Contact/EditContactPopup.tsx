@@ -184,11 +184,12 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
             {showPopup && (
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg max-w-3xl w-full my-10 overflow-auto">
-                        <h2 className="font-semibold mb-4 text-2xl">Edit Contact</h2>
+                        <h2 className="font-semibold text-2xl">Edit Contact</h2>
+                        <p className={"font-light text-sm mb-2"}>Edit an existing Contact, changes will be updated and can be viewed by all the group users. Attributes marked with * are required.</p>
                         <form>
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
-                                    Title
+                                    Title*
                                 </label>
                                 <input
                                     type="text"
@@ -222,7 +223,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                                     name="comments"
                                     value={formData.comments}
                                     onChange={handleChange}
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline min-h-32"
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline min-h-24"
                                 />
                             </div>
                             <div className="mb-4">
@@ -291,7 +292,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
 
             {showConfirmation && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-                    <div className="bg-white p-8 rounded-lg shadow-lg">
+                <div className="bg-white p-8 rounded-lg shadow-lg">
                         <h2 className="text-xl mb-4">Are you sure you want to delete this contact?</h2>
                         <div className="flex justify-end">
                             <button

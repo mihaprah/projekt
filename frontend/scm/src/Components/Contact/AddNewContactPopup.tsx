@@ -217,11 +217,12 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
             {showPopup && (
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg max-w-3xl w-full my-10 h-full overflow-auto">
-                        <h2 className="font-semibold mb-4 text-2xl">Add New Contact</h2>
+                        <h2 className="font-semibold text-2xl">Add new Contact</h2>
+                        <p className={"font-light text-sm mb-2"}>Create a new Contact that will be added to the selected group and can be used by all the group users. Attributes marked with * are required.</p>
                         <form>
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
-                                    Title
+                                    Title*
                                 </label>
                                 <input
                                     type="text"
@@ -241,7 +242,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                                     name="comments"
                                     value={formData.comments}
                                     onChange={handleChange}
-                                    className="shadow appearance-none border rounded w-full min-h-32 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    className="shadow appearance-none border rounded w-full min-h-24 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 />
                             </div>
                             <div className="mb-4">
