@@ -142,12 +142,12 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
                         <div className="flex justify-end">
                             <button
                                 onClick={() => setShowConfirmation(false)}
-                                className="px-4 py-1 rounded-8 bg-gray-300 text-black mr-2 disabled:opacity-50 hover:scale-105 transition">
+                                className="px-4 py-1 rounded-8 bg-gray-300 text-black mr-2 font-semibold disabled:opacity-50 hover:scale-105 transition">
                                 Cancel
                             </button>
                             <button
                                 onClick={handleDeleteTenant}
-                                className="btn px-5 py-2 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700"
+                                className="btn px-4 py-1 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-danger"
                                 disabled={isDeleteDisabled}>
                                 Delete
                             </button>

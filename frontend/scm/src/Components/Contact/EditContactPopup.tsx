@@ -296,13 +296,13 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                         <div className="flex justify-end">
                             <button
                                 onClick={() => setShowConfirmation(false)}
-                                className="rounded-8 px-4 py-2 font-semibold bg-gray-300 text-black mr-2 hover:scale-105 transition">
+                                className="rounded-8 px-4 py-1 font-semibold bg-gray-300 text-black mr-2 hover:scale-105 transition">
                                 Cancel
                             </button>
                             <button
                                 onClick={handleDelete}
-                                className="px-4 bg-danger font-semibold rounded-8 py-2 text-white hover:scale-105 transition">
-                                Delete <FontAwesomeIcon className="ml-1 w-3.5 h-auto" icon={faTrash} />
+                                className="px-4 bg-danger font-semibold rounded-8 py-1 text-white hover:scale-105 transition">
+                                Delete
                             </button>
                         </div>
                     </div>
