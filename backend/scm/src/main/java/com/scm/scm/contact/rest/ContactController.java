@@ -133,6 +133,20 @@ public class ContactController {
         return ResponseEntity.ok(contactServices.deleteContact(cleanTenantUniqueName, cleanId, true));
     }
 
+    @PutMapping(value = "/revert/{contact_id}/{tenant_unique_name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> revertContact(@PathVariable(name = "contact_id") String id, @PathVariable(name = "tenant_unique_name") String tenantUniqueName, @RequestHeader("userToken") String userToken) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+        String sanitizedUserToken = StringEscapeUtils.escapeHtml4(decodedToken.getEmail());
+
+        if (!userAccessService.hasAccessToContact(sanitizedUserToken, tenantUniqueName)) {
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
+        }
+        String cleanId = StringEscapeUtils.escapeHtml4(id);
+        String cleanTenantUniqueName = StringEscapeUtils.escapeHtml4(tenantUniqueName);
+
+        return ResponseEntity.ok(contactServices.revertContact(cleanTenantUniqueName, cleanId));
+    }
+
     @PostMapping(value = "/export", consumes = MediaType.APPLICATION_JSON_VALUE , produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<byte[]> exportContacts(@RequestBody ExportContactRequest request, @RequestHeader("userToken") String userToken) {
         FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));

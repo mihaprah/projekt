@@ -198,6 +198,31 @@ public class ContactServices {
         }
     }
 
+    public String revertContact (String tenantUniqueName, String contactId){
+        if (contactId.isEmpty() || tenantUniqueName.isEmpty()) {
+            throw new CustomHttpException("ContactId or uniqueTenantName is empty", 400, ExceptionCause.USER_ERROR);
+        }
+        if (!mongoTemplateService.collectionExists(tenantUniqueName + CollectionType.MAIN.getCollectionType()) || !mongoTemplateService.collectionExists(tenantUniqueName + CollectionType.DELETED.getCollectionType())) {
+            throw new CustomHttpException(ExceptionMessage.COLLECTION_NOT_EXIST.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
+        }
+        Contact contact = mongoTemplate.findById(contactId, Contact.class, tenantUniqueName + CollectionType.DELETED.getCollectionType());
+        if (contact == null ) {
+            throw new CustomHttpException("Contact not found", 404, ExceptionCause.USER_ERROR);
+        }
+        mongoTemplate.remove(contact, tenantUniqueName + CollectionType.DELETED.getCollectionType());
+        log.log(Level.INFO, String.format("Contact reverted with id: %s %s %s ", contact.getId(), FOR_TENANT, contact.getTenantUniqueName()));
+        mongoTemplate.save(contact, tenantUniqueName + CollectionType.MAIN.getCollectionType());
+        log.log(Level.INFO, "Contact saved to {} _main collection", tenantUniqueName);
+
+        Event event = new Event(contact.getUser(), contact.getId(), EventState.REVERTED);
+        eventsServices.addEvent(event, contact.getTenantUniqueName());
+
+        tenantServices.addTags(tenantUniqueName, contact.getTags());
+
+        return "Contact reverted successfully to " + tenantUniqueName + "_main collection";
+    }
+
+
     public String deleteContact(String tenantUniqueName, String contactId, boolean delete) {
         if (contactId.isEmpty() || tenantUniqueName.isEmpty()) {
             throw new CustomHttpException("ContactId or uniqueTenantName is empty", 400, ExceptionCause.USER_ERROR);
