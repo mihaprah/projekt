@@ -5,7 +5,8 @@ export enum EventState {
     TAG_ADD = 'TAG_ADD',
     TAG_REMOVED = 'TAG_REMOVED',
     PROP_ADD = 'PROP_ADD',
-    PROP_REMOVED = 'PROP_REMOVED'
+    PROP_REMOVED = 'PROP_REMOVED',
+    REVERTED = 'REVERTED',
 }
 
 export interface Event {

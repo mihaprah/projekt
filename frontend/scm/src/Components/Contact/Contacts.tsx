@@ -9,7 +9,7 @@ import {
     faInfo,
     faTags,
     faCopy,
-    faExclamationTriangle, faPlus, faMinus
+    faExclamationTriangle, faPlus, faMinus, faRotateLeft
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -65,6 +65,8 @@ const Contacts: React.FC<ContactsProps> = ({
     const [isDeleteDisabled, setIsDeleteDisabled] = useState(true);
     const [showRemoveTagConfirmation, setShowRemoveTagConfirmation] = useState(false);
     const [showRemovePropConfirmation, setShowRemovePropConfirmation] = useState(false);
+    const [showRevertConfirmation, setShowRevertConfirmation] = useState(false);
+    const [revertContact, setRevertContact] = useState<string | null>(null);
 
     const handleViewDetails = (contactId: string, tenantUniqueName: string) => {
         router.push(`/contacts/${tenantUniqueName}/${contactId}`);
@@ -150,6 +152,38 @@ const Contacts: React.FC<ContactsProps> = ({
             setContactTitle(title);
         }
     };
+
+    const handleRevert = async (contactId: string) => {
+        setShowRevertConfirmation(false);
+        setRevertContact(null);
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts/revert/${contactId}/${tenantUniqueName}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'userToken': `Bearer ${IdToken}`,
+                }
+            });
+
+            if (!res.ok) {
+                toast.error(res.statusText || 'Failed to revert contact');
+            }
+            toast.success('Contact reverted successfully');
+            onChange();
+            router.refresh();
+        } catch (error: any) {
+            toast.error(error.message || 'Failed to revert contact');
+        }
+
+    }
+
+    const confirmRevert = (contactId: string, title?: string) => {
+        setRevertContact(contactId);
+        setShowRevertConfirmation(true);
+        if(title){
+            setContactTitle(title);
+        }
+    }
 
     const handleAddTags = async () => {
         setShowTagConfirmation(false);
@@ -484,7 +518,14 @@ const Contacts: React.FC<ContactsProps> = ({
                                             <button
                                                 onClick={() => confirmDelete(contact.id, contact.title)}
                                                 className="text-red-600 hover:text-red-800 transition ml-4">
-                                                Delete permanently<FontAwesomeIcon className="ml-2 w-3.5 h-auto" icon={faTrash}/>
+                                                Delete permanently<FontAwesomeIcon className="ml-2 w-3.5 h-auto"
+                                                                                   icon={faTrash}/>
+                                            </button>
+                                            <button
+                                                onClick={() => confirmRevert(contact.id, contact.title)}
+                                                className="text-blue-600 hover:text-blue-800 transition ml-4">
+                                                Revert<FontAwesomeIcon className="ml-2 w-3.5 h-auto"
+                                                                                   icon={faRotateLeft}/>
                                             </button>
                                         </td>
                                     )}
@@ -563,6 +604,26 @@ const Contacts: React.FC<ContactsProps> = ({
                                 onClick={() => handleDelete(contactToDelete!)}
                                 className="px-4 py-1 font-semibold bg-danger hover:scale-105 transition rounded-8 text-white">
                                 Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showRevertConfirmation && (
+                <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
+                    <div className="bg-white p-8 rounded-lg shadow-lg">
+                        <h2 className="text-xl mb-4">Are you sure you want to revert contact <b>{contactTitle}</b>?</h2>
+                        <div className="flex justify-end">
+                            <button
+                                onClick={() => setShowRevertConfirmation(false)}
+                                className="px-4 py-1 rounded-8 hover:scale-105 transition font-semibold bg-gray-300 text-black mr-2">
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => handleRevert(revertContact!)}
+                                className="px-4 py-1 font-semibold bg-primary-light hover:scale-105 transition rounded-8 text-white">
+                                Revert
                             </button>
                         </div>
                     </div>

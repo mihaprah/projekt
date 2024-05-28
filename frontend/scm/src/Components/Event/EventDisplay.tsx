@@ -2,7 +2,16 @@ import React from 'react';
 import { EventState } from "@/models/Event";
 import { Event } from "@/models/Event";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircle, faTag, faPen, faPlus, faMinus, faCalendarAlt, faClock } from "@fortawesome/free-solid-svg-icons";
+import {
+    faCircle,
+    faTag,
+    faPen,
+    faPlus,
+    faMinus,
+    faCalendarAlt,
+    faClock,
+    faTrash, faRotateLeft
+} from "@fortawesome/free-solid-svg-icons";
 
 interface EventDisplayProps {
     event: Event;
@@ -25,6 +34,10 @@ const EventDisplay: React.FC<EventDisplayProps> = ({ event }) => {
                 return faPlus;
             case EventState.PROP_REMOVED:
                 return faMinus;
+            case EventState.DELETED:
+                return faTrash;
+            case EventState.REVERTED:
+                return faRotateLeft;
             default:
                 return faCircle;
         }
@@ -42,6 +55,10 @@ const EventDisplay: React.FC<EventDisplayProps> = ({ event }) => {
                 return `ADDED ATTRIBUTE "${event.propKey}" and set it to "${event.currentState}"`;
             case EventState.PROP_REMOVED:
                 return `REMOVED ATTRIBUTE "${event.propKey}" with value "${event.prevState}"`;
+            case EventState.DELETED:
+                return `CONTACT DELETED`;
+            case EventState.REVERTED:
+                return `CONTACT REVERTED`;
             default:
                 return 'CREATED CONTACT';
         }
