@@ -157,7 +157,7 @@ jobs:
   build_analyze:
     name: SonarCloud
     runs-on: ubuntu-latest
-    needs: [unit_tests, build_frontend]
+    needs: [build_frontend, unit_tests]
     steps:
       - uses: actions/checkout@v3
         with:
