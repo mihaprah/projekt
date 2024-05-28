@@ -91,8 +91,6 @@ const Register = () => {
                                 placeholder="Email"
                             />
                         </label>
-                        <p className={"text-xs text-gray-400 break-words"}>Password must be at least 6 characters
-                            long.</p>
                         <label
                             className="input input-bordered flex items-center gap-2 mb-2 text-secondary-dark dark:bg-white">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
@@ -123,6 +121,8 @@ const Register = () => {
                                 placeholder="Confirm Password"
                             />
                         </label>
+                        <p className={"text-xs text-gray-400 break-words"}>Password must be at least 6 characters
+                            long.</p>
                         {password.length > 5 && password === confirmPassword ? (
                             <p className={"text-xs text-success"}>Passwords match!</p>
                         ) : (
