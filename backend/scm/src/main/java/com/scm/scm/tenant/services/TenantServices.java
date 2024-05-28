@@ -226,7 +226,34 @@ public class TenantServices {
         return tenants.stream().map(this::convertToDTO).toList();
     }
 
-    public String addTagsToMultipleContacts(String tenantUniqueName, List<String> contactIds, String tag) {
+    public String addTagsToMultipleContacts(String tenantUniqueName, List<String> contactIds, String[] tags) {
+        if (contactIds.isEmpty()) {
+            throw new CustomHttpException("Contact ids cannot be empty", 400, ExceptionCause.USER_ERROR);
+        }
+        if (tags.length == 0) {
+            throw new CustomHttpException("Tags cannot be empty", 400, ExceptionCause.USER_ERROR);
+        }
+        if (tenantUniqueName.isEmpty()) {
+            throw new CustomHttpException("Tenant unique name cannot be empty", 400, ExceptionCause.USER_ERROR);
+        }
+        List<Contact> contacts = mongoTemplate.findAll(Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType());
+        for (Contact c : contacts) {
+            if (contactIds.contains(c.getId())) {
+                List<String> oldTags = c.getTags();
+                for (String tag : tags) {
+                    if (!oldTags.contains(tag)) {
+                        oldTags.add(tag);
+                    }
+                }
+                c.setTags(oldTags);
+                mongoTemplate.save(c, tenantUniqueName + CollectionType.MAIN.getCollectionType());
+                addTags(tenantUniqueName, Arrays.asList(tags));
+            }
+        }
+        return "Tags added to contacts successfully";
+    }
+
+    public String removeTagsFromMultipleContacts(String tenantUniqueName, List<String> contactIds, String tag) {
         if (contactIds.isEmpty()) {
             throw new CustomHttpException("Contact ids cannot be empty", 400, ExceptionCause.USER_ERROR);
         }
@@ -236,19 +263,22 @@ public class TenantServices {
         if (tenantUniqueName.isEmpty()) {
             throw new CustomHttpException("Tenant unique name cannot be empty", 400, ExceptionCause.USER_ERROR);
         }
+
         List<Contact> contacts = mongoTemplate.findAll(Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType());
+
         for (Contact c : contacts) {
             if (contactIds.contains(c.getId())) {
                 List<String> oldTags = c.getTags();
-                if (!oldTags.contains(tag)) {
-                    oldTags.add(tag);
+                if (oldTags.contains(tag)) {
+                    oldTags.remove(tag);
+                    c.setTags(oldTags);
+                    mongoTemplate.save(c, tenantUniqueName + CollectionType.MAIN.getCollectionType());
+                    removeTags(tenantUniqueName, List.of(tag));
                 }
-                c.setTags(oldTags);
-                mongoTemplate.save(c, tenantUniqueName + CollectionType.MAIN.getCollectionType());
-                addTags(tenantUniqueName, List.of(tag));
             }
         }
-        return "Tags added to contacts successfully";
+
+        return "Tags removed from contacts successfully";
     }
 
     public String addPropsToMultipleContacts(String tenantUniqueName, List<String> contactIds, Map<String, String> propData) {
@@ -275,6 +305,34 @@ public class TenantServices {
 
         return "Props added to contacts successfully";
     }
+
+    public String removePropsFromMultipleContacts(String tenantUniqueName, List<String> contactIds, List<String> propsToRemove) {
+        if (contactIds.isEmpty()) {
+            throw new CustomHttpException("Contact ids cannot be empty", 400, ExceptionCause.USER_ERROR);
+        }
+        if (propsToRemove.isEmpty()) {
+            throw new CustomHttpException("Props to remove cannot be empty", 400, ExceptionCause.USER_ERROR);
+        }
+        if (tenantUniqueName.isEmpty()) {
+            throw new CustomHttpException("Tenant unique name cannot be empty", 400, ExceptionCause.USER_ERROR);
+        }
+
+        List<Contact> contacts = mongoTemplate.findAll(Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType());
+
+        for (Contact c : contacts) {
+            if (contactIds.contains(c.getId())) {
+                Map<String, String> oldProps = c.getProps();
+                for (String prop : propsToRemove) {
+                    oldProps.remove(prop);
+                }
+                c.setProps(oldProps);
+                mongoTemplate.save(c, tenantUniqueName + CollectionType.MAIN.getCollectionType());
+            }
+        }
+
+        return "Props removed from contacts successfully";
+    }
+
 
 
     private Map<String, String> setPredefinedLabels() {

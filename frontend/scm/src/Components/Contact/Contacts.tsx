@@ -9,16 +9,17 @@ import {
     faInfo,
     faTags,
     faCopy,
-    faExclamationTriangle
+    faExclamationTriangle, faPlus, faMinus
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Tenant } from "@/models/Tenant";
 import ContactExportPopup from "@/Components/Contact/ContactExportPopup";
-import { MultiValue } from 'react-select';
+import Select, { MultiValue } from 'react-select';
 import CreatableSelect from "react-select/creatable";
 import AddNewContactPopup from "@/Components/Contact/AddNewContactPopup";
-import AddPropsPopup from "@/Components/Contact/AddPropsPopup"; // Import the AddPropsPopup component
+import AddPropsPopup from "@/Components/Contact/AddPropsPopup";
+import RemovePropsPopup from "@/Components/Contact/RemovePropsPopup"; // Import the AddPropsPopup component
 
 interface ContactsProps {
     contacts: ContactModel[];
@@ -55,13 +56,15 @@ const Contacts: React.FC<ContactsProps> = ({
     const [currentPage, setCurrentPage] = useState(1);
     const [contactsPerPage, setContactsPerPage] = useState(50);
     const [showTagConfirmation, setShowTagConfirmation] = useState(false);
-    const [showPropConfirmation, setShowPropConfirmation] = useState(false); // New state for showing add prop popup
+    const [showPropConfirmation, setShowPropConfirmation] = useState(false);
     const [selectedTags, setSelectedTags] = useState<TagOption[]>([]);
     const [showAllTags, setShowAllTags] = useState<string | null>(null);
     const [duplicateContact, setDuplicateContact] = useState<ContactModel | null>(null);
     const [contactTitle, setContactTitle] = useState('');
     const [confirmationText, setConfirmationText] = useState("");
     const [isDeleteDisabled, setIsDeleteDisabled] = useState(true);
+    const [showRemoveTagConfirmation, setShowRemoveTagConfirmation] = useState(false);
+    const [showRemovePropConfirmation, setShowRemovePropConfirmation] = useState(false);
 
     const handleViewDetails = (contactId: string, tenantUniqueName: string) => {
         router.push(`/contacts/${tenantUniqueName}/${contactId}`);
@@ -151,7 +154,7 @@ const Contacts: React.FC<ContactsProps> = ({
     const handleAddTags = async () => {
         setShowTagConfirmation(false);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/tags/multiple/add/${tenantUniqueName}/${selectedTags[0].value}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/tags/multiple/add/${tenantUniqueName}/${selectedTags.map(tag => tag.value)}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -174,9 +177,41 @@ const Contacts: React.FC<ContactsProps> = ({
         }
     };
 
+    const handleRemoveTags = async () => {
+        setShowTagConfirmation(false);
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/tags/multiple/remove/${tenantUniqueName}/${selectedTags.map(tag => tag.value)}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'userToken': `Bearer ${IdToken}`,
+                    'tenantId': tenantId
+                },
+                body: JSON.stringify(selectedContacts)
+            });
+
+            if (!res.ok) {
+                toast.error(res.statusText || 'Failed to remove tags');
+            }
+
+            toast.success('Tags removed successfully');
+            setSelectedContacts([]);
+            setSelectedTags([]);
+            router.refresh();
+        } catch (error: any) {
+            toast.error(error.message || 'Failed to remove tags');
+        }
+    };
+
+
     const handleAddProps = () => {
         setShowPropConfirmation(true);
     };
+
+    const handleRemoveProps = () => {
+        setShowRemovePropConfirmation(true);
+    };
+
 
     const handleTagChange = (newValue: MultiValue<TagOption>) => {
         setSelectedTags(newValue as TagOption[]);
@@ -223,16 +258,28 @@ const Contacts: React.FC<ContactsProps> = ({
                                 Add Tags <FontAwesomeIcon className="mr-1" icon={faTags}/>
                             </button>
                             <button
+                                onClick={() => setShowRemoveTagConfirmation(true)}
+                                className="btn px-4 btn-sm bg-red-600 border-0 text-white dark:bg-red-700 dark:hover:bg-red-700 rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 ml-2 mr-5">
+                                Remove Tags <FontAwesomeIcon className="mr-1" icon={faTags}/>
+                            </button>
+                            <button
                                 onClick={handleAddProps}
                                 className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark ml-2">
-                                Add Props <FontAwesomeIcon className="mr-1" icon={faCopy}/>
+                                Add Prop <FontAwesomeIcon className="mr-1" icon={faPlus}/>
                             </button>
+                            <button
+                                onClick={handleRemoveProps}
+                                className="btn px-4 btn-sm bg-red-600 border-0 text-white dark:bg-red-700 dark:hover:bg-red-700 rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 ml-2">
+                                Remove Props <FontAwesomeIcon className="mr-1" icon={faMinus}/>
+                            </button>
+
                         </div>
                     )}
                 </div>
                 <div className="flex items-center">
-                    {!deleted && (<ContactExportPopup IdToken={IdToken} tenantUniqueName={tenantUniqueName} tenantId={tenantId}
-                                                      contactIds={selectedContacts}/>)}
+                    {!deleted && (
+                        <ContactExportPopup IdToken={IdToken} tenantUniqueName={tenantUniqueName} tenantId={tenantId}
+                                            contactIds={selectedContacts}/>)}
                 </div>
             </div>
 
@@ -552,6 +599,36 @@ const Contacts: React.FC<ContactsProps> = ({
                 </div>
             )}
 
+            {showRemoveTagConfirmation && (
+                <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
+                    <div className="bg-white p-8 rounded-lg shadow-lg">
+                        <h2 className="text-xl mb-4">Remove tags from selected contacts</h2>
+                        <Select
+                            isMulti
+                            options={Object.entries(tenant.contactTags).map(([key, value]) => ({
+                                label: key,
+                                value: key
+                            }))}
+                            value={selectedTags}
+                            onChange={handleTagChange}
+                            className="mb-4"
+                        />
+                        <div className="flex justify-end">
+                            <button
+                                onClick={() => setShowRemoveTagConfirmation(false)}
+                                className="btn px-4 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 mr-5">
+                                Close popup
+                            </button>
+                            <button
+                                onClick={handleRemoveTags}
+                                className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                                Remove Tags
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {showPropConfirmation && (
                 <AddPropsPopup
                     tenantUniqueName={tenantUniqueName}
@@ -566,6 +643,22 @@ const Contacts: React.FC<ContactsProps> = ({
                     }}
                 />
             )}
+
+            {showRemovePropConfirmation && (
+                <RemovePropsPopup
+                    tenantUniqueName={tenantUniqueName}
+                    selectedContacts={selectedContacts}
+                    IdToken={IdToken}
+                    tenantId={tenantId}
+                    availableProps={Object.entries(tenant.labels).map(([key, value]) => ({ label: value, value: key }))}
+                    onClose={() => setShowRemovePropConfirmation(false)}
+                    onSave={() => {
+                        setShowRemovePropConfirmation(false);
+                        onChange();
+                    }}
+                />
+            )}
+
             {duplicateContact && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-65">
                 <AddNewContactPopup

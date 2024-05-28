@@ -89,13 +89,33 @@ public class TenantController {
     }
 
     @PutMapping(value = "/deactivate/{tenant_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deactivateTenant(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken){
+    public ResponseEntity<String> deactivateTenant(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken) {
         FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
 
         if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(tenantServices.deactivateTenant(tenantId));
+    }
+
+    @PutMapping(value = "/tags/add/{tenant_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addTag(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken, @RequestBody List<String> tags) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
+        }
+        return ResponseEntity.ok(tenantServices.addTags(tenantId, tags));
+    }
+
+    @PutMapping(value = "/tags/remove/{tenant_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> removeTag(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken, @RequestBody List<String> tags) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
+        }
+        return ResponseEntity.ok(tenantServices.removeTags(tenantId, tags));
     }
 
     @PutMapping(value = "/users/add/{tenant_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -119,14 +139,32 @@ public class TenantController {
     }
 
     @PutMapping(value = "/tags/multiple/add/{tenant_unique_name}/{tag}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addMultipleTags(@PathVariable("tenant_unique_name") String tenantUniqueName, @PathVariable("tag") String tag, @RequestHeader("userToken") String userToken, @RequestHeader("tenantId") String tenantId, @RequestBody List<String> contactIds) {
+    public ResponseEntity<String> addMultipleTags(@PathVariable("tenant_unique_name") String tenantUniqueName, @PathVariable("tag") String[] tags, @RequestHeader("userToken") String userToken, @RequestHeader("tenantId") String tenantId, @RequestBody List<String> contactIds) {
         FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
 
         if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
-        return ResponseEntity.ok(tenantServices.addTagsToMultipleContacts(tenantUniqueName, contactIds, tag));
+        return ResponseEntity.ok(tenantServices.addTagsToMultipleContacts(tenantUniqueName, contactIds, tags));
     }
+
+    @PutMapping(value = "/tags/multiple/remove/{tenant_unique_name}/{tag}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> removeMultipleTags(
+            @PathVariable("tenant_unique_name") String tenantUniqueName,
+            @PathVariable("tag") String tag,
+            @RequestHeader("userToken") String userToken,
+            @RequestHeader("tenantId") String tenantId,
+            @RequestBody List<String> contactIds) {
+
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
+        }
+
+        return ResponseEntity.ok(tenantServices.removeTagsFromMultipleContacts(tenantUniqueName, contactIds, tag));
+    }
+
 
     @PutMapping(value = "/props/multiple/add/{tenant_unique_name}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addMultipleProps(
@@ -147,8 +185,28 @@ public class TenantController {
         return ResponseEntity.ok(tenantServices.addPropsToMultipleContacts(tenantUniqueName, contactIds, propData));
     }
 
+    @PutMapping(value = "/props/multiple/remove/{tenant_unique_name}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> removeMultipleProps(
+            @PathVariable("tenant_unique_name") String tenantUniqueName,
+            @RequestHeader("userToken") String userToken,
+            @RequestHeader("tenantId") String tenantId,
+            @RequestBody Map<String, Object> requestBody) {
+
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+
+        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
+        }
+
+        List<String> contactIds = (List<String>) requestBody.get("contactIds");
+        List<String> propsToRemove = (List<String>) requestBody.get("propsToRemove");
+
+        return ResponseEntity.ok(tenantServices.removePropsFromMultipleContacts(tenantUniqueName, contactIds, propsToRemove));
+    }
+
+
     @PutMapping(value = "/labels/{tenant_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> updateLabels(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken, @RequestBody Map<String,String> labels) {
+    public ResponseEntity<String> updateLabels(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken, @RequestBody Map<String, String> labels) {
         FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
 
         if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {

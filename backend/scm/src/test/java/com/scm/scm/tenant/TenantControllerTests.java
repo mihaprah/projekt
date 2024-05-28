@@ -44,8 +44,9 @@ class TenantControllerTests {
     private FirebaseConfig firebaseConfig;
 
     @BeforeEach
-    public void init() throws Exception{
-        try (AutoCloseable ac = MockitoAnnotations.openMocks(this)){}
+    public void init() throws Exception {
+        try (AutoCloseable ac = MockitoAnnotations.openMocks(this)) {
+        }
     }
 
     @Test
@@ -165,7 +166,7 @@ class TenantControllerTests {
         when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
         when(userAccessService.hasAccessToTenant(mockToken.getEmail(), tenantId)).thenReturn(true);
 
-        ResponseEntity<String> response = tenantController.addMultipleTags(tenantUniqueName, tag, userToken, tenantId, contactIds);
+        ResponseEntity<String> response = tenantController.addMultipleTags(tenantUniqueName, new String[]{tag}, userToken, tenantId, contactIds);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -249,6 +250,6 @@ class TenantControllerTests {
         when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
         when(userAccessService.hasAccessToTenant(mockToken.getEmail(), tenantId)).thenReturn(false);
 
-        assertThrows(CustomHttpException.class, () -> tenantController.addMultipleTags(tenantUniqueName, tag, userToken, tenantId, contactIds));
+        assertThrows(CustomHttpException.class, () -> tenantController.addMultipleTags(tenantUniqueName, new String[]{tag}, userToken, tenantId, contactIds));
     }
 }
