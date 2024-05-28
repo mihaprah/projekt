@@ -23,9 +23,10 @@ Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplik
     - [Graf registracije novega uporabnika in graf avtentikacije](#graf-registracije-novega-uporabnika-in-graf-avtentikacije)
     - [Wireframe aplikacije (prototip izgleda)](#wireframe-aplikacije-prototip-izgleda)
     - [Testiranje](#testiranje)
+    - [GitHub Actions](#github-actions)
     - [Optimizacija kode](#optimizacija-kode)
 3. [Navodila za namestitev lokalno](#3-navodila-za-namestitev-lokalno)
-    - [Testno lokalno okolje](#testno-lokalnmo-okolje)
+    - [Testno lokalno okolje](#testno-lokalno-okolje)
 4. [Uporaba aplikacije](#4-uporaba-aplikacije)
     - [Uporabniški priročnik](#uporabniški-priročnik)
 
@@ -185,6 +186,18 @@ Orodje nam je omogočalo tudi pregled vseh shem, ki se uporabljajo v API klicih.
   <br/>
   Pregled shem, ki jih uporablja API s orodjem Swagger
 </p>
+
+### GitHub Actions
+V projektu smo tudi vspostavili workflow, ki se je zaganjal ob vsakem pushu sprememb. Ta workflow je bil sestavljen iz 3. korakov
+1. Najprej se je pognal **build** za frontend in **build** za backend
+2. V drugem koraku se poženejo **Unit testi** za backend
+3. Na koncu se izvede **SonarCloud** pregled kode
+
+Če so vsi koraki uspešni, izgleda graf izvedbe takole
+<p align="center">
+  <img alt="swagger-sheme" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/992ffae7-b8d5-4af6-b689-4a20a1e11a35">
+</p>
+
 
 ### Optimizacija kode
 Za optimizacijo kode in pregled kode, smo uporabili orodje [SonarCloud](), ki nam je omogočalo, da smo v **GitHub Actions** Workflow vključili neprestan pregled kode. Repotizorij smo povezali s SonrCloudom in tako dobili dostop do nadzorne plošče projekta. Na njej smo lahko gledali kakša je koda glede na:
