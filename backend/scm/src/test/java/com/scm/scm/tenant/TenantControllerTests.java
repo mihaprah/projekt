@@ -49,15 +49,6 @@ class TenantControllerTests {
     }
 
     @Test
-    void testGetTenants() {
-        List<TenantDTO> tenants = Collections.emptyList();
-        when(tenantServices.getAllTenants()).thenReturn(tenants);
-        ResponseEntity<List<TenantDTO>> response = tenantController.getTenants();
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(tenants, response.getBody());
-    }
-
-    @Test
     void testGetTenant() {
         String tenantId = "1";
         String userToken = "Bearer token";
@@ -128,36 +119,6 @@ class TenantControllerTests {
         when(userAccessService.hasAccessToTenant(mockToken.getEmail(), tenantId)).thenReturn(true);
 
         ResponseEntity<String> response = tenantController.deactivateTenant(tenantId, userToken);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-    }
-
-    @Test
-    void testAddTag() {
-        String tenantId = "1";
-        String userToken = "Bearer token";
-        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
-        List<String> tags = Collections.emptyList();
-
-        when(mockToken.getEmail()).thenReturn("test@example.com");
-        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
-        when(userAccessService.hasAccessToTenant(mockToken.getEmail(), tenantId)).thenReturn(true);
-
-        ResponseEntity<String> response = tenantController.addTag(tenantId, userToken, tags);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-    }
-
-    @Test
-    void testRemoveTag() {
-        String tenantId = "1";
-        String userToken = "Bearer token";
-        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
-        List<String> tags = Collections.emptyList();
-
-        when(mockToken.getEmail()).thenReturn("test@example.com");
-        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
-        when(userAccessService.hasAccessToTenant(mockToken.getEmail(), tenantId)).thenReturn(true);
-
-        ResponseEntity<String> response = tenantController.removeTag(tenantId, userToken, tags);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -245,34 +206,6 @@ class TenantControllerTests {
         when(userAccessService.hasAccessToTenant(mockToken.getEmail(), tenantId)).thenReturn(false);
 
         assertThrows(CustomHttpException.class, () -> tenantController.deactivateTenant(tenantId, userToken));
-    }
-
-    @Test
-    void testAddTagAccessDenied() {
-        String tenantId = "1";
-        String userToken = "Bearer token";
-        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
-        List<String> tags = Collections.emptyList();
-
-        when(mockToken.getEmail()).thenReturn("test@example.com");
-        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
-        when(userAccessService.hasAccessToTenant(mockToken.getEmail(), tenantId)).thenReturn(false);
-
-        assertThrows(CustomHttpException.class, () -> tenantController.addTag(tenantId, userToken, tags));
-    }
-
-    @Test
-    void testRemoveTagAccessDenied() {
-        String tenantId = "1";
-        String userToken = "Bearer token";
-        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
-        List<String> tags = Collections.emptyList();
-
-        when(mockToken.getEmail()).thenReturn("test@example.com");
-        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
-        when(userAccessService.hasAccessToTenant(mockToken.getEmail(), tenantId)).thenReturn(false);
-
-        assertThrows(CustomHttpException.class, () -> tenantController.removeTag(tenantId, userToken, tags));
     }
 
     @Test

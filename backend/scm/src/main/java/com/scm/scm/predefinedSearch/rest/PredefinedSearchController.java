@@ -24,12 +24,6 @@ public class PredefinedSearchController {
         this.userVerifyService = userVerifyService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<PredefinedSearchDTO>> getPredefinedSearches() {
-        List<PredefinedSearchDTO> predefinedSearches = predefinedSearchServices.getAllPredefinedSearches();
-        return ResponseEntity.ok(predefinedSearches);
-    }
-
     @GetMapping(value = "/{predefined_search_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PredefinedSearchDTO> getPredefinedSearch(@PathVariable("predefined_search_id") String predefinedSearchId, @RequestHeader("userToken") String userToken) {
         FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));

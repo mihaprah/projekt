@@ -34,12 +34,6 @@ public class TenantController {
 
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<TenantDTO>> getTenants() {
-        List<TenantDTO> tenants = tenantServices.getAllTenants();
-        return ResponseEntity.ok(tenants);
-    }
-
     @GetMapping(value = "/{tenant_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TenantDTO> getTenant(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken) {
         FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
@@ -102,26 +96,6 @@ public class TenantController {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
         return ResponseEntity.ok(tenantServices.deactivateTenant(tenantId));
-    }
-
-    @PutMapping(value = "/tags/add/{tenant_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addTag(@PathVariable("tenant_id") String tenantId, @RequestHeader("userToken") String userToken, @RequestBody List<String> tags) {
-        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
-
-        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
-            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
-        }
-        return ResponseEntity.ok(tenantServices.addTags(tenantId, tags));
-    }
-
-    @PutMapping(value = "/tags/remove/{tenant_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> removeTag(@PathVariable("tenant_id") String tenantId,@RequestHeader("userToken") String userToken, @RequestBody List<String> tags) {
-        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
-
-        if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
-            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
-        }
-        return ResponseEntity.ok(tenantServices.removeTags(tenantId, tags));
     }
 
     @PutMapping(value = "/users/add/{tenant_id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
