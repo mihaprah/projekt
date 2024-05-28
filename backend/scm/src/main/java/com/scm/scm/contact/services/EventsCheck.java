@@ -22,12 +22,12 @@ public class EventsCheck {
         this.tenantServices = tenantServices;
     }
 
-    public void checkProps (Contact existingContact, Contact contact){
+    public void checkProps (Contact existingContact, Contact contact, String username) {
         Map<String, String> existingProps = existingContact.getProps();
         Map<String, String> props = contact.getProps();
 
         Event event = new Event();
-        event.setUser(contact.getUser());
+        event.setUser(username);
         event.setContact(existingContact.getId());
 
         for (Map.Entry<String, String> entry : props.entrySet()){
@@ -62,12 +62,12 @@ public class EventsCheck {
         }
     }
 
-    public void checkTags (Contact existingContact, Contact contact) {
+    public void checkTags (Contact existingContact, Contact contact, String username) {
         List<String> existingTags = existingContact.getTags();
         List<String> tags = contact.getTags();
 
         Event event = new Event();
-        event.setUser(contact.getUser());
+        event.setUser(username);
         event.setContact(existingContact.getId());
 
         for (String tag : tags){

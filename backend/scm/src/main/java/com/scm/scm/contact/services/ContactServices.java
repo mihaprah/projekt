@@ -114,7 +114,7 @@ public class ContactServices {
         return contacts.stream().map(this::convertToDTO).toList();
     }
 
-    public String createContact(ContactDTO contactDTO) {
+    public String createContact(ContactDTO contactDTO, String username) {
         ContactDTO sanitizedContactDTO = new ContactDTO();
         sanitizedContactDTO.setId(StringEscapeUtils.escapeHtml4(contactDTO.getId()));
         sanitizedContactDTO.setTitle(StringEscapeUtils.escapeHtml4(contactDTO.getTitle()));
@@ -148,14 +148,14 @@ public class ContactServices {
         tenantServices.addTags(contact.getTenantUniqueName(), contact.getTags());
         tenantServices.addLabels(contact.getTenantUniqueName(), contact.getProps().keySet());
 
-        Event event = new Event(contact.getUser(), contact.getId(), EventState.CREATED);
+        Event event = new Event(username, contact.getId(), EventState.CREATED);
         eventsServices.addEvent(event, contact.getTenantUniqueName());
 
         log.log(Level.INFO, String.format("Contact created with id: %s %s %s ", contact.getId(), FOR_TENANT, contact.getTenantUniqueName()));
         return "Contact created successfully to " + contact.getTenantUniqueName() + "_main collection";
     }
 
-    public ContactDTO updateContact(ContactDTO contactDTO) {
+    public ContactDTO updateContact(ContactDTO contactDTO, String username) {
         Contact contact = convertToEntity(contactDTO);
         if (contact.getTenantUniqueName().isEmpty()) {
             throw new CustomHttpException(ExceptionMessage.TENANT_NAME_EMPTY.getExceptionMessage(), 400, ExceptionCause.USER_ERROR);
@@ -182,10 +182,10 @@ public class ContactServices {
             existingContact.setTitle(contact.getTitle());
             existingContact.setComments(contact.getComments());
 
-            eventsCheck.checkTags(existingContact, contact);
+            eventsCheck.checkTags(existingContact, contact, username);
             existingContact.setTags(contact.getTags());
 
-            eventsCheck.checkProps(existingContact, contact);
+            eventsCheck.checkProps(existingContact, contact, username);
             existingContact.setProps(contact.getProps());
             existingContact.setAttributesToString(existingContact.contactAttributesToString());
             tenantServices.addLabels(existingContact.getTenantUniqueName(), contact.getProps().keySet());
@@ -198,7 +198,7 @@ public class ContactServices {
         }
     }
 
-    public String revertContact (String tenantUniqueName, String contactId){
+    public String revertContact (String tenantUniqueName, String contactId, String username) {
         if (contactId.isEmpty() || tenantUniqueName.isEmpty()) {
             throw new CustomHttpException("ContactId or uniqueTenantName is empty", 400, ExceptionCause.USER_ERROR);
         }
@@ -214,7 +214,7 @@ public class ContactServices {
         mongoTemplate.save(contact, tenantUniqueName + CollectionType.MAIN.getCollectionType());
         log.log(Level.INFO, "Contact saved to {} _main collection", tenantUniqueName);
 
-        Event event = new Event(contact.getUser(), contact.getId(), EventState.REVERTED);
+        Event event = new Event(username, contact.getId(), EventState.REVERTED);
         eventsServices.addEvent(event, contact.getTenantUniqueName());
 
         tenantServices.addTags(tenantUniqueName, contact.getTags());
@@ -223,7 +223,7 @@ public class ContactServices {
     }
 
 
-    public String deleteContact(String tenantUniqueName, String contactId, boolean delete) {
+    public String deleteContact(String tenantUniqueName, String contactId, boolean delete, String username) {
         if (contactId.isEmpty() || tenantUniqueName.isEmpty()) {
             throw new CustomHttpException("ContactId or uniqueTenantName is empty", 400, ExceptionCause.USER_ERROR);
         }
@@ -248,7 +248,7 @@ public class ContactServices {
         mongoTemplate.save(contact, tenantUniqueName + CollectionType.DELETED.getCollectionType());
         log.log(Level.INFO, "Contact saved to {} _deleted collection", tenantUniqueName);
 
-        Event event = new Event(contact.getUser(), contact.getId(), EventState.DELETED);
+        Event event = new Event(username, contact.getId(), EventState.DELETED);
         eventsServices.addEvent(event, contact.getTenantUniqueName());
 
         tenantServices.removeTags(tenantUniqueName, contact.getTags());

@@ -135,13 +135,13 @@ class ContactControllerTests {
         when(mockToken.getEmail()).thenReturn("test@example.com");
         when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
         when(userAccessService.hasAccessToContact(mockToken.getEmail(), tenantUniqueName)).thenReturn(true);
-        when(contactServices.revertContact(tenantUniqueName, id)).thenReturn("Contact reverted successfully");
+        when(contactServices.revertContact(tenantUniqueName, id, "test@example.com")).thenReturn("Contact reverted successfully");
 
         ResponseEntity<String> response = contactController.revertContact(id, tenantUniqueName, userToken);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Contact reverted successfully", response.getBody());
-        verify(contactServices, times(1)).revertContact(tenantUniqueName, id);
+        verify(contactServices, times(1)).revertContact(tenantUniqueName, id, "test@example.com");
     }
 
     @Test

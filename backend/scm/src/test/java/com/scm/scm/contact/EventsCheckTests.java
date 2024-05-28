@@ -45,7 +45,9 @@ class EventsCheckTests {
         Contact newContact = new Contact();
         newContact.setProps(new HashMap<>(Collections.singletonMap("key1", "value2")));
 
-        eventsCheck.checkProps(existingContact, newContact);
+        String username = "username";
+
+        eventsCheck.checkProps(existingContact, newContact, username);
 
         verify(eventsServices).addEvent(eventCaptor.capture(), eq(existingContact.getTenantUniqueName()));
         Event capturedEvent = eventCaptor.getValue();
@@ -63,7 +65,9 @@ class EventsCheckTests {
         Contact newContact = new Contact();
         newContact.setTags(Collections.singletonList("tag2"));
 
-        eventsCheck.checkTags(existingContact, newContact);
+        String username = "username";
+
+        eventsCheck.checkTags(existingContact, newContact, username);
 
         verify(eventsServices, times(2)).addEvent(eventCaptor.capture(), eq(existingContact.getTenantUniqueName()));
         Event capturedEvent = eventCaptor.getAllValues().getFirst();

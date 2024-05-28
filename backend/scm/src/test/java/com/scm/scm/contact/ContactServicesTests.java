@@ -103,8 +103,9 @@ class ContactServicesTests {
     void testCreateContact() {
         when(mongoTemplateService.collectionExists(anyString())).thenReturn(true);
         when(mongoTemplate.findById(anyString(), eq(Contact.class), anyString())).thenReturn(null);
+        String username = "username";
 
-        String result = contactServices.createContact(contactDTO);
+        String result = contactServices.createContact(contactDTO, username);
 
         assertEquals("Contact created successfully to tenantUniqueName_main collection", result);
         verify(mongoTemplate, times(1)).save(any(Contact.class), anyString());
@@ -114,8 +115,9 @@ class ContactServicesTests {
     void testUpdateContact() {
         when(mongoTemplateService.collectionExists(anyString())).thenReturn(true);
         when(mongoTemplate.findById(anyString(), eq(Contact.class), anyString())).thenReturn(contact1);
+        String username = "username";
 
-        ContactDTO updatedContactDTO = contactServices.updateContact(contactDTO);
+        ContactDTO updatedContactDTO = contactServices.updateContact(contactDTO, username);
 
         assertEquals("Updated Title", updatedContactDTO.getTitle());
         assertEquals("Updated Comments", updatedContactDTO.getComments());
@@ -129,10 +131,11 @@ class ContactServicesTests {
     void testDeleteContact() {
         when(mongoTemplate.findById(anyString(), eq(Contact.class), anyString())).thenReturn(new Contact());
         when(mongoTemplateService.collectionExists(anyString())).thenReturn(true);
+        String username = "username";
 
         contact1.setId("contactId");
 
-        String result = contactServices.deleteContact("tenantUniqueName", "contactId", false);
+        String result = contactServices.deleteContact("tenantUniqueName", "contactId", false, username);
 
         assertEquals("Contact deleted successfully from tenantUniqueName_main collection", result);
         verify(mongoTemplate, times(1)).remove(any(Contact.class), anyString());
@@ -148,8 +151,9 @@ class ContactServicesTests {
         when(mongoTemplateService.collectionExists(anyString())).thenReturn(true);
         when(mongoTemplate.findById(id, Contact.class, tenantUniqueName + "_deleted")).thenReturn(contact);
         when(mongoTemplate.save(contact, tenantUniqueName + "_main")).thenReturn(contact);
+        String username = "username";
 
-        String result = contactServices.revertContact(tenantUniqueName, id);
+        String result = contactServices.revertContact(tenantUniqueName, id, username);
 
         assertEquals("Contact reverted successfully to tenant_main collection", result);
         verify(mongoTemplate, times(1)).findById(id, Contact.class, tenantUniqueName + "_deleted");

@@ -91,7 +91,7 @@ public class ContactController {
         if (!userAccessService.hasAccessToContact(sanitizedUserToken, contactDTO.getTenantUniqueName())) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
-        return ResponseEntity.ok(contactServices.createContact(contactDTO));
+        return ResponseEntity.ok(contactServices.createContact(contactDTO, sanitizedUserToken));
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -102,7 +102,7 @@ public class ContactController {
         if (!userAccessService.hasAccessToContact(sanitizedUserToken, contactDTO.getTenantUniqueName())) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
-        return ResponseEntity.ok(contactServices.updateContact(contactDTO));
+        return ResponseEntity.ok(contactServices.updateContact(contactDTO, sanitizedUserToken));
     }
 
     @DeleteMapping("/{contact_id}/{tenant_unique_name}")
@@ -116,7 +116,7 @@ public class ContactController {
         String cleanId = StringEscapeUtils.escapeHtml4(id);
         String cleanTenantUniqueName = StringEscapeUtils.escapeHtml4(tenantUniqueName);
 
-        return ResponseEntity.ok(contactServices.deleteContact(cleanTenantUniqueName, cleanId, false));
+        return ResponseEntity.ok(contactServices.deleteContact(cleanTenantUniqueName, cleanId, false, sanitizedUserToken));
     }
 
     @DeleteMapping("/delete/{contact_id}/{tenant_unique_name}")
@@ -130,7 +130,7 @@ public class ContactController {
         String cleanId = StringEscapeUtils.escapeHtml4(id);
         String cleanTenantUniqueName = StringEscapeUtils.escapeHtml4(tenantUniqueName);
 
-        return ResponseEntity.ok(contactServices.deleteContact(cleanTenantUniqueName, cleanId, true));
+        return ResponseEntity.ok(contactServices.deleteContact(cleanTenantUniqueName, cleanId, true, sanitizedUserToken));
     }
 
     @PutMapping(value = "/revert/{contact_id}/{tenant_unique_name}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -144,7 +144,7 @@ public class ContactController {
         String cleanId = StringEscapeUtils.escapeHtml4(id);
         String cleanTenantUniqueName = StringEscapeUtils.escapeHtml4(tenantUniqueName);
 
-        return ResponseEntity.ok(contactServices.revertContact(cleanTenantUniqueName, cleanId));
+        return ResponseEntity.ok(contactServices.revertContact(cleanTenantUniqueName, cleanId, sanitizedUserToken));
     }
 
     @PostMapping(value = "/export", consumes = MediaType.APPLICATION_JSON_VALUE , produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
