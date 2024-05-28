@@ -448,9 +448,9 @@ const Contacts: React.FC<ContactsProps> = ({
                             </thead>
                             <tbody>
                             {currentContacts.map(contact => (
-                                <tr key={contact.id} className={"hover:bg-gray-100"}>
+                                <tr key={contact.id} className={"hover:bg-gray-100 border-b border-gray-300"}>
                                     {!deleted && (
-                                    <td className="px-2 py-3 whitespace-no-wrap border-b border-gray-300">
+                                    <td className="px-2 py-3 whitespace-no-wrap ">
                                         <input
                                             type="checkbox"
                                             checked={selectedContacts.includes(contact.id)}
@@ -458,14 +458,14 @@ const Contacts: React.FC<ContactsProps> = ({
                                             className="form-checkbox h-4 w-4 hover:scale-105 text-primary-light transition duration-150 ease-in-out"
                                         />
                                     </td> )}
-                                    <td className={"px-2 py-3 whitespace-no-wrap border-b border-gray-300"}>
+                                    <td className={"px-2 py-3 whitespace-no-wrap "}>
                                         {contact.props.prefix && tenant.displayProps.includes('prefix') && (
                                             <span className="mr-2">{contact.props.prefix}</span>
                                         )}
                                         {contact.title}
                                     </td>
                                     {tenant.displayProps.filter(prop => prop !== 'prefix').map(prop => (
-                                        <td key={prop} className="px-2 py-3 whitespace-no-wrap border-b border-gray-300">
+                                        <td key={prop} className="px-2 py-3 whitespace-no-wrap ">
                                             <div className="text-sm leading-4 text-gray-800">
                                                 {prop === 'email' ? (
                                                     <a href={`mailto:${contact.props[prop]}`} className="text-primary-light hover:underline">
@@ -478,7 +478,7 @@ const Contacts: React.FC<ContactsProps> = ({
                                         </td>
                                     ))}
 
-                                <td className="px-2 py-3 whitespace-no-wrap border-b border-gray-300">
+                                <td className="px-2 py-3 whitespace-no-wrap">
                                     <div className="flex flex-wrap gap-1">
                                         {contact.tags && contact.tags.slice(0, showAllTags === contact.id ? contact.tags.length : 3).map((tag, index) => (
                                             <span key={index}
@@ -496,7 +496,7 @@ const Contacts: React.FC<ContactsProps> = ({
                                     </div>
                                 </td>
                                     {!deleted ? (
-                                        <td className="px-2 py-4 whitespace-no-wrap border-b border-gray-300 text-right flex items-center">
+                                        <td className="px-2 py-4 whitespace-no-wrap text-right flex items-center">
                                             <button
                                                 onClick={() => handleViewDetails(contact.id, contact.tenantUniqueName)}
                                                 className="text-primary-light hover:text-primary-dark transition relative group">
@@ -514,7 +514,7 @@ const Contacts: React.FC<ContactsProps> = ({
                                             </button>
                                         </td>
                                     ) : (
-                                        <td className="px-2 py-4 whitespace-no-wrap border-b border-gray-300 text-right flex items-center">
+                                        <td className="px-2 py-4 whitespace-no-wrap text-right flex items-center">
                                             <button
                                                 onClick={() => confirmDelete(contact.id, contact.title)}
                                                 className="text-red-600 hover:text-red-800 transition ml-4">
@@ -632,8 +632,9 @@ const Contacts: React.FC<ContactsProps> = ({
 
             {showTagConfirmation && (
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
-                    <div className="bg-white p-8 rounded-lg shadow-lg">
-                        <h2 className="text-xl mb-4">Add tags to selected contacts</h2>
+                    <div className="bg-white p-8 rounded-lg w-full max-w-3xl shadow-lg">
+                        <h2 className="text-xl font-semibold">Add new Tags</h2>
+                        <p className={"font-light text-sm mb-4"}>New Tags will be added to all the selected Contacts.</p>
                         <CreatableSelect
                             isMulti
                             options={Object.entries(tenant.contactTags).map(([key, value]) => ({
@@ -647,7 +648,7 @@ const Contacts: React.FC<ContactsProps> = ({
                         <div className="flex justify-end">
                             <button
                                 onClick={() => setShowTagConfirmation(false)}
-                                className="btn px-4 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 mr-5">
+                                className="btn px-4 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 mr-2">
                                 Close popup
                             </button>
                             <button
@@ -662,8 +663,9 @@ const Contacts: React.FC<ContactsProps> = ({
 
             {showRemoveTagConfirmation && (
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
-                    <div className="bg-white p-8 rounded-lg shadow-lg">
-                        <h2 className="text-xl mb-4">Remove tags from selected contacts</h2>
+                    <div className="bg-white p-8 rounded-lg w-full max-w-3xl shadow-lg">
+                        <h2 className="text-xl font-semibold">Remove Tags</h2>
+                        <p className={"font-light text-sm mb-4"}>All Tags will be removed from the selected Contacts, if they exist.</p>
                         <Select
                             isMulti
                             options={Object.entries(tenant.contactTags).map(([key, value]) => ({
@@ -677,7 +679,7 @@ const Contacts: React.FC<ContactsProps> = ({
                         <div className="flex justify-end">
                             <button
                                 onClick={() => setShowRemoveTagConfirmation(false)}
-                                className="btn px-4 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 mr-5">
+                                className="btn px-4 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 mr-2">
                                 Close popup
                             </button>
                             <button

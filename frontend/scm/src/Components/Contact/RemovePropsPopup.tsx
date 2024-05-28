@@ -57,8 +57,9 @@ const RemovePropsPopup: React.FC<RemovePropsPopupProps> = ({
 
     return (
         <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
-            <div className="bg-white p-8 rounded-lg shadow-lg">
-                <h2 className="text-xl mb-4">Remove props from selected contacts</h2>
+            <div className="bg-white p-8 rounded-lg w-full max-w-3xl shadow-lg">
+                <h2 className="text-xl font-semibold">Remove property</h2>
+                <p className={"font-light text-sm mb-4"}>Property will be removed from all the Tenants.</p>
                 <CreatableSelect
                     isMulti
                     options={availableProps}
@@ -69,7 +70,7 @@ const RemovePropsPopup: React.FC<RemovePropsPopupProps> = ({
                 <div className="flex justify-end">
                     <button
                         onClick={onClose}
-                        className="btn px-4 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 mr-5">
+                        className="btn px-4 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 mr-2">
                         Close popup
                     </button>
                     <button

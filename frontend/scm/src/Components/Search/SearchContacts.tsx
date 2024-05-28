@@ -267,10 +267,13 @@ const SearchContacts: React.FC<SearchContactsProps> = (props) => {
                 )}
             </div>
             <div className={"flex mt-0 mb-3 items-center"}>
-                <p className={"font-light text-xs"}>Use & and | hover for more info </p>
-                <div className="tooltip tooltip-right" data-tip="Use & for AND and | for OR when searching for multiple attributes at the same time. Use without spaces between attributes.">
+                <p className={"font-light text-xs"}>Use & or | hover for more info </p>
+                <div className="tooltip tooltip-right" data-tip="Use & for AND and | for OR when searching for multiple attributes at the same time. Use without spaces between attributes. You can search for Title, property keys, property values and tags.">
                     <FontAwesomeIcon className="ml-1 w-3.5 h-auto" style={{color: "#007BFF"}} icon={faCircleInfo}/>
                 </div>
+            </div>
+            <div className={"mb-2"}>
+                <p className={"text-sm"}>Contacts found: <span className={"font-semibold"}>{contacts.length}</span></p>
             </div>
             {contacts.length !== 0 ? (
                 <Contacts

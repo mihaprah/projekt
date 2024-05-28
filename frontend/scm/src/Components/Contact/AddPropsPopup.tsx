@@ -66,11 +66,11 @@ const AddPropsPopup: React.FC<AddPropsPopupProps> = ({
 
     return (
         <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
-            <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl">Add existing property</h2>
+            <div className="bg-white p-8 rounded-lg shadow-lg max-w-3xl w-full">
+                <div className="flex justify-between items-center">
+                    <h2 className="text-xl font-semibold">Add existing property</h2>
                 </div>
-                <p className={"mb-5"}>Property will be updated or added to all selected contacts.</p>
+                <p className={"font-light text-sm mb-4"}>Property will be updated or added to all selected contacts.</p>
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="prop">
                         Property
@@ -99,7 +99,7 @@ const AddPropsPopup: React.FC<AddPropsPopupProps> = ({
                 <div className="flex justify-end">
                     <button
                         onClick={onClose}
-                        className="btn px-4 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 mr-5">
+                        className="btn px-4 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 mr-2">
                         Close Popup
                     </button>
                     <button
