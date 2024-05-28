@@ -28,7 +28,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class ContactControllerTests {
@@ -123,6 +123,25 @@ class ContactControllerTests {
 
         ResponseEntity<ContactDTO> response = contactController.updateContact(userToken, contactDTO);
         assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void testRevertContact() {
+        String id = "1";
+        String tenantUniqueName = "tenant";
+        String userToken = "Bearer token";
+        FirebaseToken mockToken = Mockito.mock(FirebaseToken.class);
+
+        when(mockToken.getEmail()).thenReturn("test@example.com");
+        when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
+        when(userAccessService.hasAccessToContact(mockToken.getEmail(), tenantUniqueName)).thenReturn(true);
+        when(contactServices.revertContact(tenantUniqueName, id)).thenReturn("Contact reverted successfully");
+
+        ResponseEntity<String> response = contactController.revertContact(id, tenantUniqueName, userToken);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Contact reverted successfully", response.getBody());
+        verify(contactServices, times(1)).revertContact(tenantUniqueName, id);
     }
 
     @Test

@@ -139,6 +139,24 @@ class ContactServicesTests {
     }
 
     @Test
+    void testRevertContact() {
+        String tenantUniqueName = "tenant";
+        String id = "1";
+        Contact contact = new Contact();
+        contact.setId(id);
+
+        when(mongoTemplateService.collectionExists(anyString())).thenReturn(true);
+        when(mongoTemplate.findById(id, Contact.class, tenantUniqueName + "_deleted")).thenReturn(contact);
+        when(mongoTemplate.save(contact, tenantUniqueName + "_main")).thenReturn(contact);
+
+        String result = contactServices.revertContact(tenantUniqueName, id);
+
+        assertEquals("Contact reverted successfully to tenant_main collection", result);
+        verify(mongoTemplate, times(1)).findById(id, Contact.class, tenantUniqueName + "_deleted");
+        verify(mongoTemplate, times(1)).save(contact, tenantUniqueName + "_main");
+    }
+
+    @Test
     void testGetComparatorBasedOnOrientation() {
         SortOrientation sortOrientation = SortOrientation.ASC;
 
