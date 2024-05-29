@@ -143,95 +143,91 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
                         )}
                         {props.action === "edit" && (
                             <>
-                            <p className={"font-light text-md"}>Are you sure you want to delete this search? It
-                                will be deleted permanently!</p>
-                            <div className={"py-2 justify-between flex flex-col w-full"}>
-                        <div className={"my-2"}>
-                        <label className={"text-lg font-semibold mb-2"}>Title</label>
-                                    <input
-                                        className="rounded-8 text-gray-700 border-1px px-3 w-full mr-3 h-9"
-                                        type="text"
-                                        value={savedSearch.title}
-                                        onChange={(e) => handleInputChange("title", e.target.value)}
-                                    />
-                                </div>
-                                <div className={"mt-4"}>
-                                    <label className={"text-lg font-semibold mb-2"}>On Tenant</label>
-                                    <p className={"text-md font-normal"}>
-                                        {savedSearch.onTenant}
-                                    </p>
-                                </div>
-                                <div className={"mt-4"}>
-                                    <label className={"text-lg font-semibold mb-1"}>Search query</label>
-                                    <input
-                                        className="rounded-8 text-gray-700 border-1px px-3 w-full mr-3 h-9"
-                                        type="text"
-                                        value={savedSearch.searchQuery}
-                                        onChange={(e) => handleInputChange("searchQuery", e.target.value)}
-                                    />
-                                </div>
-                                <div className={"mt-4"}>
-                                    <label className={"text-lg font-semibold mb-1"}>Orientation</label>
-                                    <div className="flex items-center mt-2">
+                                <p className={"font-light text-md"}>Users can edit the title, update the search query, change the sort orientation (ascending or descending), and modify the saved filters from a list of available tags.</p>
+                                <div className={"py-2 justify-between flex flex-col w-full"}>
+                                    <div className={"my-2"}>
+                                        <label className={"text-lg font-semibold mb-2"}>Title</label>
                                         <input
-                                            type="radio"
-                                            id="asc"
-                                            name="orientation"
-                                            value="ASC"
-                                            checked={savedSearch.sortOrientation === 'ASC'}
-                                            onChange={(e) => handleInputChange("sortOrientation", e.target.value)}
+                                            className="rounded-8 text-gray-700 border-1px px-3 w-full mr-3 h-9"
+                                            type="text"
+                                            value={savedSearch.title}
+                                            onChange={(e) => handleInputChange("title", e.target.value)}
                                         />
-                                        <label className="ml-2" htmlFor="asc">Ascending <FontAwesomeIcon
-                                            className="ml-1 w-2.5 h-auto" icon={faArrowUp}/>
-                                        </label>
                                     </div>
-                                    <div className="flex items-center mt-2">
+                                    <div className={"mt-4"}>
+                                        <label className={"text-lg font-semibold mb-2"}>On Tenant</label>
+                                        <p className={"text-md font-normal"}>
+                                            {savedSearch.onTenant}
+                                        </p>
+                                    </div>
+                                    <div className={"mt-4"}>
+                                        <label className={"text-lg font-semibold mb-1"}>Search query</label>
                                         <input
-                                            type="radio"
-                                            id="desc"
-                                            name="orientation"
-                                            value="DESC"
-                                            checked={savedSearch.sortOrientation === 'DESC'}
-                                            onChange={(e) => handleInputChange("sortOrientation", e.target.value)}
+                                            className="rounded-8 text-gray-700 border-1px px-3 w-full mr-3 h-9"
+                                            type="text"
+                                            value={savedSearch.searchQuery}
+                                            onChange={(e) => handleInputChange("searchQuery", e.target.value)}
                                         />
-                                        <label className="ml-2" htmlFor="desc">Descending <FontAwesomeIcon
-                                            className="ml-1 w-2.5 h-auto" icon={faArrowDown}/>
-                                        </label>
+                                    </div>
+                                    <div className={"mt-4"}>
+                                        <label className={"text-lg font-semibold mb-1"}>Orientation</label>
+                                        <div className="flex items-center mt-2">
+                                            <input
+                                                type="radio"
+                                                id="asc"
+                                                name="orientation"
+                                                value="ASC"
+                                                checked={savedSearch.sortOrientation === 'ASC'}
+                                                onChange={(e) => handleInputChange("sortOrientation", e.target.value)}
+                                            />
+                                            <label className="ml-2" htmlFor="asc">Ascending <FontAwesomeIcon
+                                                className="ml-1 w-2.5 h-auto" icon={faArrowUp}/>
+                                            </label>
+                                        </div>
+                                        <div className="flex items-center mt-2">
+                                            <input
+                                                type="radio"
+                                                id="desc"
+                                                name="orientation"
+                                                value="DESC"
+                                                checked={savedSearch.sortOrientation === 'DESC'}
+                                                onChange={(e) => handleInputChange("sortOrientation", e.target.value)}
+                                            />
+                                            <label className="ml-2" htmlFor="desc">Descending <FontAwesomeIcon
+                                                className="ml-1 w-2.5 h-auto" icon={faArrowDown}/>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div className={"mt-4"}>
+                                        <label className={"text-lg font-semibold mb-1"}>Filter</label>
+                                        <Select
+                                            isMulti
+                                            value={savedSearch.filter.map(tag => ({label: tag, value: tag}))}
+                                            options={availableTags?.map(tag => ({label: tag, value: tag}))}
+                                            onChange={handleTagsChange}
+                                            className="appearance-none border-0 rounded w-full py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        />
                                     </div>
                                 </div>
-                                <div className={"mt-4"}>
-                                    <label className={"text-lg font-semibold mb-1"}>Filter</label>
-                                    <Select
-                                        isMulti
-                                        value={savedSearch.filter.map(tag => ({label: tag, value: tag}))}
-                                        options={availableTags?.map(tag => ({label: tag, value: tag}))}
-                                        onChange={handleTagsChange}
-                                        className="appearance-none border-0 rounded w-full py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    />
+                                <div className={"mt-4 justify-center items-center flex"}>
+                                    <button onClick={() => {
+                                        setShowPopup(false);
+                                    }}
+                                            className="btn mt-4 mx-1 px-4 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition"
+                                    >Close Popup
+                                    </button>
+                                    {requestLoading ? (
+                                        <span className="loading loading-spinner text-primary"></span>
+                                    ) : (
+                                        <button onClick={() => handleEdit(savedSearch, props.IdToken)}
+                                                className="btn mt-4 mx-1 px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
+                                            Save changes
+                                        </button>
+                                    )}
                                 </div>
-
-                            </div>
                             </>
                         )}
 
-                        {props.action !== "delete" &&
-                            <div className={"mt-4 justify-center items-center flex"}>
-                                <button onClick={() => {
-                                    setShowPopup(false);
-                                }}
-                                        className="btn mt-4 mx-1 px-4 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition"
-                                >Close Popup
-                                </button>
-                                {requestLoading ? (
-                                    <span className="loading loading-spinner text-primary"></span>
-                                ) : (
-                                    <button onClick={() => handleEdit(savedSearch, props.IdToken)}
-                                            className="btn mt-4 mx-1 px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
-                                        Save changes
-                                    </button>
-                                )}
-                            </div>
-                        }
 
                     </div>
                 </div>
