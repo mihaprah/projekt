@@ -20,10 +20,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -254,6 +251,37 @@ public class ContactServices {
         tenantServices.removeTags(tenantUniqueName, contact.getTags());
 
         return "Contact deleted successfully from " + tenantUniqueName + "_main collection";
+    }
+
+    public String deleteMultipleContacts(String tenantUniqueName, List<String> contactIds, String username) {
+        if (tenantUniqueName.isEmpty() || contactIds.isEmpty()) {
+            throw new CustomHttpException("TenantUniqueName or contactIds are empty", 400, ExceptionCause.USER_ERROR);
+        }
+        if (!mongoTemplateService.collectionExists(tenantUniqueName + CollectionType.MAIN.getCollectionType())) {
+            throw new CustomHttpException(ExceptionMessage.COLLECTION_NOT_EXIST.getExceptionMessage(), 500, ExceptionCause.SERVER_ERROR);
+        }
+
+        List<Contact> contacts = contactIds.stream()
+                .map(id -> mongoTemplate.findById(id, Contact.class, tenantUniqueName + CollectionType.MAIN.getCollectionType()))
+                .filter(Objects::nonNull)
+                .toList();
+
+        if (contacts.isEmpty()) {
+            throw new CustomHttpException("No contacts found for the provided IDs", 404, ExceptionCause.USER_ERROR);
+        }
+
+        for (Contact contact : contacts) {
+            mongoTemplate.remove(contact, tenantUniqueName + CollectionType.MAIN.getCollectionType());
+            mongoTemplate.save(contact, tenantUniqueName + CollectionType.DELETED.getCollectionType());
+
+            Event event = new Event(username, contact.getId(), EventState.DELETED);
+            eventsServices.addEvent(event, contact.getTenantUniqueName());
+
+            tenantServices.removeTags(tenantUniqueName, contact.getTags());
+        }
+
+        log.log(Level.INFO, "Contacts deleted and moved to deleted collection for tenant: {0}", tenantUniqueName);
+        return "Contacts deleted successfully from " + tenantUniqueName + "_main collection";
     }
 
     public List<ContactDTO> getContactsBySearch(PredefinedSearch search) {

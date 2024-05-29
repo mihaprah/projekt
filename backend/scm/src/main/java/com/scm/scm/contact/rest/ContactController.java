@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/contacts")
@@ -131,6 +132,22 @@ public class ContactController {
         String cleanTenantUniqueName = StringEscapeUtils.escapeHtml4(tenantUniqueName);
 
         return ResponseEntity.ok(contactServices.deleteContact(cleanTenantUniqueName, cleanId, true, sanitizedUserToken));
+    }
+
+    @DeleteMapping("/delete_selected/{tenant_unique_name}")
+    public ResponseEntity<String> deleteContacts(@PathVariable(name = "tenant_unique_name") String tenantUniqueName, @RequestBody List<String> contactIds, @RequestHeader("userToken") String userToken) {
+        FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
+        String sanitizedUserToken = StringEscapeUtils.escapeHtml4(decodedToken.getEmail());
+
+        if (!userAccessService.hasAccessToContact(sanitizedUserToken, tenantUniqueName)) {
+            throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
+        }
+        String cleanTenantUniqueName = StringEscapeUtils.escapeHtml4(tenantUniqueName);
+        List<String> sanitizedContactIds = contactIds.stream()
+                .map(StringEscapeUtils::escapeHtml4)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(contactServices.deleteMultipleContacts(cleanTenantUniqueName, sanitizedContactIds, sanitizedUserToken));
     }
 
     @PutMapping(value = "/revert/{contact_id}/{tenant_unique_name}", produces = MediaType.APPLICATION_JSON_VALUE)

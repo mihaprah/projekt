@@ -54,7 +54,7 @@ const Contacts: React.FC<ContactsProps> = ({
     const [contactToDelete, setContactToDelete] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [currentPage, setCurrentPage] = useState(1);
-    const [contactsPerPage, setContactsPerPage] = useState(50);
+    const [contactsPerPage, setContactsPerPage] = useState(25);
     const [showTagConfirmation, setShowTagConfirmation] = useState(false);
     const [showPropConfirmation, setShowPropConfirmation] = useState(false);
     const [selectedTags, setSelectedTags] = useState<TagOption[]>([]);
@@ -67,6 +67,8 @@ const Contacts: React.FC<ContactsProps> = ({
     const [showRemovePropConfirmation, setShowRemovePropConfirmation] = useState(false);
     const [showRevertConfirmation, setShowRevertConfirmation] = useState(false);
     const [revertContact, setRevertContact] = useState<string | null>(null);
+    const [showDeleteMultipleConfirmation, setShowDeleteMultipleConfirmation] = useState(false);
+
 
     const handleViewDetails = (contactId: string, tenantUniqueName: string) => {
         router.push(`/contacts/${tenantUniqueName}/${contactId}`);
@@ -152,6 +154,32 @@ const Contacts: React.FC<ContactsProps> = ({
             setContactTitle(title);
         }
     };
+
+    const handleDeleteMultiple = async () => {
+        setShowDeleteMultipleConfirmation(false);
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts/delete_selected/${tenantUniqueName}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'userToken': `Bearer ${IdToken}`,
+                },
+                body: JSON.stringify(selectedContacts)
+            });
+
+            if (!res.ok) {
+                toast.error(res.statusText || 'Failed to delete contacts');
+            } else {
+                toast.success('Contacts deleted successfully');
+                setSelectedContacts([]);
+                onChange();
+                router.refresh();
+            }
+        } catch (error: any) {
+            toast.error(error.message || 'Failed to delete contacts');
+        }
+    };
+
 
     const handleRevert = async (contactId: string) => {
         setShowRevertConfirmation(false);
@@ -306,6 +334,12 @@ const Contacts: React.FC<ContactsProps> = ({
                                 className="btn px-4 btn-sm bg-red-600 border-0 text-white dark:bg-red-700 dark:hover:bg-red-700 rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 ml-2">
                                 Remove Props <FontAwesomeIcon className="mr-1" icon={faMinus}/>
                             </button>
+                            <button
+                                onClick={() => setShowDeleteMultipleConfirmation(true)}
+                                className="btn px-4 btn-sm bg-red-600 border-0 text-white dark:bg-red-700 dark:hover:bg-red-700 rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 ml-5">
+                                Delete Selected <FontAwesomeIcon className="mr-1" icon={faTrash}/>
+                            </button>
+
 
                         </div>
                     )}
@@ -721,6 +755,27 @@ const Contacts: React.FC<ContactsProps> = ({
                     }}
                 />
             )}
+
+            {showDeleteMultipleConfirmation && (
+                <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
+                    <div className="bg-white p-8 rounded-lg shadow-lg">
+                        <h2 className="text-xl mb-4">Are you sure you want to delete the selected contacts?</h2>
+                        <div className="flex justify-end">
+                            <button
+                                onClick={() => setShowDeleteMultipleConfirmation(false)}
+                                className="px-4 py-1 rounded-8 hover:scale-105 transition font-semibold bg-gray-300 text-black mr-2">
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDeleteMultiple}
+                                className="px-4 py-1 font-semibold bg-danger hover:scale-105 transition rounded-8 text-white">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
 
             {duplicateContact && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-65">
