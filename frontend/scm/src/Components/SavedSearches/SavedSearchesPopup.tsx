@@ -227,8 +227,6 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
                                 </div>
                             </>
                         )}
-
-
                     </div>
                 </div>
             )}
