@@ -16,6 +16,7 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
     const router = useRouter();
     const [showPopup, setShowPopup] = useState(false);
     const [formData, setFormData] = useState(tenant);
+    const [requestLoading, setRequestLoading] = useState<boolean>(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -45,6 +46,7 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
             toast.error("Error! Description is too short. At least 10 characters required.");
             return
         }
+        setRequestLoading(true);
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants`, {
                 method: 'PUT',
@@ -59,11 +61,14 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
                 toast.error(res.statusText || "Failed to save tenant!");
             }
 
-            setShowPopup(false);
             toast.success("Tenant saved successfully!");
+            setShowPopup(false);
+            setRequestLoading(false);
             router.refresh();
         } catch (error: any) {
             toast.error(error.message || "Failed to save tenant.");
+            setShowPopup(false);
+            setRequestLoading(false);
         }
     };
 
@@ -151,10 +156,14 @@ const EditTenantPopup: React.FC<EditTenantPopupProps> = ({ tenant }) => {
                                         className="btn mt-4 mx-1 px-5 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition">
                                     Close Popup
                                 </button>
-                                <button type="button" onClick={handleUpdate}
-                                        className="btn mt-4 mx-1 px-5 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
-                                    Save Changes
-                                </button>
+                                {requestLoading ? (
+                                    <span className="loading loading-spinner text-primary"></span>
+                                ) : (
+                                    <button type="button" onClick={handleUpdate}
+                                            className="btn mt-4 mx-1 px-5 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
+                                        Save Changes
+                                    </button>
+                                )}
                             </div>
                         </form>
                     </div>

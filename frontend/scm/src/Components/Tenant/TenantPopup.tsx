@@ -29,6 +29,7 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
     const [user, setUser] = useState<any>(null);
     const router = useRouter();
     const [users, setUsers] = useState<string[]>([]);
+    const [requestLoading, setRequestLoading] = useState<boolean>(false);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -75,12 +76,14 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
             toast.success("Tenant saved successfully!");
             props.onTenantAdd();
             setShowPopup(false);
+            setRequestLoading(false);
             setInputValues(Array(props.labels.length).fill(''));
             setUsers([]);
         });
     }
 
     const saveTenant = async (tenant: TenantModel, IdToken: string): Promise<void> => {
+        setRequestLoading(true);
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants`, {
                 method: 'POST',
@@ -179,10 +182,14 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
                                     className="btn mt-4 mx-1 px-5 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition"
                             >Close Popup
                             </button>
-                            <button onClick={() => handleSave()}
-                                    className="btn mt-4 mx-1 px-5 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
-                                Add Tenant
-                            </button>
+                            {requestLoading ? (
+                                <span className="loading loading-spinner text-primary"></span>
+                            ) : (
+                                <button onClick={() => handleSave()}
+                                        className="btn mt-4 mx-1 px-5 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
+                                    Add Tenant
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

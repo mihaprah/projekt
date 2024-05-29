@@ -50,7 +50,7 @@ const DeletedContacts: React.FC<DeletedContactsProps> = (props) => {
             setContacts(contacts);
             setLoading(false);
         });
-    },[props.tenant.tenantUniqueName]);
+    },[props.tenant.tenantUniqueName, props.IdToken]);
 
     const handleContactChange = async () => {
         const fetchContacts = await fetchDeletedContacts(props.tenant.tenantUniqueName, props.IdToken);

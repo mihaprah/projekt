@@ -23,12 +23,18 @@ const RemovePropsPopup: React.FC<RemovePropsPopupProps> = ({
                                                                onSave,
                                                            }) => {
     const [selectedProps, setSelectedProps] = useState<MultiValue<{ label: string; value: string }>>([]);
+    const [requestLoading, setRequestLoading] = useState<boolean>(false);
 
     const handlePropsChange = (newValue: MultiValue<{ label: string; value: string }>) => {
         setSelectedProps(newValue);
     };
 
     const handleSave = async () => {
+        if (selectedProps.length === 0) {
+            toast.error('Please select a property and enter a value');
+            return;
+        }
+        setRequestLoading(true);
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/props/multiple/remove/${tenantUniqueName}`, {
                 method: 'PUT',
@@ -49,9 +55,11 @@ const RemovePropsPopup: React.FC<RemovePropsPopupProps> = ({
             }
 
             toast.success('Props removed successfully');
+            setRequestLoading(false);
             onSave();
         } catch (error: any) {
             toast.error(error.message || 'Failed to remove props');
+            setRequestLoading(false);
         }
     };
 
@@ -73,11 +81,15 @@ const RemovePropsPopup: React.FC<RemovePropsPopupProps> = ({
                         className="btn px-4 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 mr-2">
                         Close popup
                     </button>
-                    <button
-                        onClick={handleSave}
-                        className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                        Remove Props
-                    </button>
+                    {requestLoading ? (
+                        <span className="loading loading-spinner text-primary"></span>
+                    ) : (
+                        <button
+                            onClick={handleSave}
+                            className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                            Remove Property
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

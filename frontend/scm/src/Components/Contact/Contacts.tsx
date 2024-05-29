@@ -68,6 +68,7 @@ const Contacts: React.FC<ContactsProps> = ({
     const [showRevertConfirmation, setShowRevertConfirmation] = useState(false);
     const [revertContact, setRevertContact] = useState<string | null>(null);
     const [showDeleteMultipleConfirmation, setShowDeleteMultipleConfirmation] = useState(false);
+    const [requestLoading, setRequestLoading] = useState(false);
 
 
     const handleViewDetails = (contactId: string, tenantUniqueName: string) => {
@@ -83,7 +84,7 @@ const Contacts: React.FC<ContactsProps> = ({
             setViewMode('list');
         }
 
-    }, [view, contacts]);
+    }, [view, contacts, deleted]);
 
     const handleSelectContact = (contactId: string) => {
         setSelectedContacts(prevSelected => {
@@ -105,7 +106,7 @@ const Contacts: React.FC<ContactsProps> = ({
     };
 
     const handleDelete = async (contactId: string) => {
-        setShowConfirmation(false);
+        setRequestLoading(true);
         setContactToDelete(null);
         if(!deleted){
             try {
@@ -121,9 +122,13 @@ const Contacts: React.FC<ContactsProps> = ({
                 }
                 toast.success('Contact deleted successfully');
                 onChange();
+                setShowConfirmation(false);
+                setRequestLoading(false);
                 router.refresh();
             } catch (error: any) {
                 toast.error(error.message || 'Failed to delete contact');
+                setShowConfirmation(false);
+                setRequestLoading(false);
             }
         } else {
             try {
@@ -139,9 +144,13 @@ const Contacts: React.FC<ContactsProps> = ({
                 }
                 toast.success('Contact permanently deleted successfully');
                 onChange();
+                setShowConfirmation(false);
+                setRequestLoading(false);
                 router.refresh();
             } catch (error: any) {
                 toast.error(error.message || 'Failed to delete contact permanently');
+                setShowConfirmation(false);
+                setRequestLoading(false);
             }
         }
 
@@ -156,7 +165,7 @@ const Contacts: React.FC<ContactsProps> = ({
     };
 
     const handleDeleteMultiple = async () => {
-        setShowDeleteMultipleConfirmation(false);
+        setRequestLoading(true);
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts/delete_selected/${tenantUniqueName}`, {
                 method: 'DELETE',
@@ -173,16 +182,20 @@ const Contacts: React.FC<ContactsProps> = ({
                 toast.success('Contacts deleted successfully');
                 setSelectedContacts([]);
                 onChange();
+                setShowDeleteMultipleConfirmation(false);
+                setRequestLoading(false);
                 router.refresh();
             }
         } catch (error: any) {
             toast.error(error.message || 'Failed to delete contacts');
+            setShowDeleteMultipleConfirmation(false);
+            setRequestLoading(false);
         }
     };
 
 
     const handleRevert = async (contactId: string) => {
-        setShowRevertConfirmation(false);
+        setRequestLoading(true);
         setRevertContact(null);
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts/revert/${contactId}/${tenantUniqueName}`, {
@@ -198,9 +211,13 @@ const Contacts: React.FC<ContactsProps> = ({
             }
             toast.success('Contact reverted successfully');
             onChange();
+            setShowRevertConfirmation(false);
+            setRequestLoading(false);
             router.refresh();
         } catch (error: any) {
             toast.error(error.message || 'Failed to revert contact');
+            setShowRevertConfirmation(false);
+            setRequestLoading(false);
         }
 
     }
@@ -214,7 +231,11 @@ const Contacts: React.FC<ContactsProps> = ({
     }
 
     const handleAddTags = async () => {
-        setShowTagConfirmation(false);
+        if (selectedTags.length === 0) {
+            toast.error('Please select tags to add');
+            return;
+        }
+        setRequestLoading(true);
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/tags/multiple/add/${tenantUniqueName}/${selectedTags.map(tag => tag.value)}`, {
                 method: 'PUT',
@@ -233,14 +254,22 @@ const Contacts: React.FC<ContactsProps> = ({
             toast.success('Tags added successfully');
             setSelectedContacts([]);
             setSelectedTags([]);
+            setShowTagConfirmation(false);
+            setRequestLoading(false);
             router.refresh();
         } catch (error: any) {
             toast.error(error.message || 'Failed to add tags');
+            setShowTagConfirmation(false);
+            setRequestLoading(false);
         }
     };
 
     const handleRemoveTags = async () => {
-        setShowTagConfirmation(false);
+        if (selectedTags.length === 0) {
+            toast.error('Please select tags to remove');
+            return;
+        }
+        setRequestLoading(true);
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/tags/multiple/remove/${tenantUniqueName}/${selectedTags.map(tag => tag.value)}`, {
                 method: 'PUT',
@@ -259,9 +288,13 @@ const Contacts: React.FC<ContactsProps> = ({
             toast.success('Tags removed successfully');
             setSelectedContacts([]);
             setSelectedTags([]);
+            setShowRemoveTagConfirmation(false);
+            setRequestLoading(false);
             router.refresh();
         } catch (error: any) {
             toast.error(error.message || 'Failed to remove tags');
+            setShowRemoveTagConfirmation(false);
+            setRequestLoading(false);
         }
     };
 
@@ -339,8 +372,6 @@ const Contacts: React.FC<ContactsProps> = ({
                                 className="btn px-4 btn-sm bg-red-600 border-0 text-white dark:bg-red-700 dark:hover:bg-red-700 rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 ml-5">
                                 Delete Selected <FontAwesomeIcon className="mr-1" icon={faTrash}/>
                             </button>
-
-
                         </div>
                     )}
                 </div>
@@ -591,7 +622,7 @@ const Contacts: React.FC<ContactsProps> = ({
 
             {showConfirmation && deleted && (
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
-                    <div className="bg-white p-8 rounded-lg shadow-lg relative z-50">
+                    <div className="bg-white p-8 rounded-lg w-full max-w-3xl shadow-lg relative z-50">
                         <h2 className="text-xl mb-4 font-semibold flex items-center">
                             Are you sure you want to delete this contact?
                             <FontAwesomeIcon className="ml-2 w-5 h-5 text-red-600" icon={faExclamationTriangle}/>
@@ -613,12 +644,16 @@ const Contacts: React.FC<ContactsProps> = ({
                                 className="px-4 py-1 rounded-8 bg-gray-300 font-semibold text-black mr-2 disabled:opacity-50 hover:scale-105 transition">
                                 Cancel
                             </button>
-                            <button
-                                onClick={() => handleDelete(contactToDelete!)}
-                                className="btn px-4 py-1 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-danger"
-                                disabled={isDeleteDisabled}>
-                                Delete
-                            </button>
+                            {requestLoading ? (
+                                <span className="loading loading-spinner text-primary"></span>
+                            ) : (
+                                <button
+                                    onClick={() => handleDelete(contactToDelete!)}
+                                    className="btn px-4 py-1 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-danger"
+                                    disabled={isDeleteDisabled}>
+                                    Delete
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -626,19 +661,24 @@ const Contacts: React.FC<ContactsProps> = ({
 
             {showConfirmation && !deleted && (
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
-                    <div className="bg-white p-8 rounded-lg shadow-lg">
-                        <h2 className="text-xl mb-4">Are you sure you want to delete this contact?</h2>
+                    <div className="bg-white p-8 rounded-lg w-full max-w-3xl shadow-lg">
+                    <h2 className="text-xl font-semibold">Delete Contact</h2>
+                        <p className={"font-light text-md mb-4"}>Are you sure you want to delete this contact? It will be moved to deleted contacts where it can be deleted permanently.</p>
                         <div className="flex justify-end">
                             <button
                                 onClick={() => setShowConfirmation(false)}
                                 className="px-4 py-1 rounded-8 hover:scale-105 transition font-semibold bg-gray-300 text-black mr-2">
                                 Cancel
                             </button>
-                            <button
-                                onClick={() => handleDelete(contactToDelete!)}
-                                className="px-4 py-1 font-semibold bg-danger hover:scale-105 transition rounded-8 text-white">
-                                Delete
-                            </button>
+                            {requestLoading ? (
+                                <span className="loading loading-spinner text-primary"></span>
+                            ) : (
+                                <button
+                                    onClick={() => handleDelete(contactToDelete!)}
+                                    className="px-4 py-1 font-semibold bg-danger hover:scale-105 transition rounded-8 text-white">
+                                    Delete
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -646,19 +686,24 @@ const Contacts: React.FC<ContactsProps> = ({
 
             {showRevertConfirmation && (
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
-                    <div className="bg-white p-8 rounded-lg shadow-lg">
-                        <h2 className="text-xl mb-4">Are you sure you want to revert contact <b>{contactTitle}</b>?</h2>
+                    <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-3xl">
+                        <h2 className="text-xl font-semibold">Revert Contact</h2>
+                        <p className={"font-light text-md mb-4"}>Are you sure you want to revert contact <b>{contactTitle}</b>? The contact will be added back to the group view.</p>
                         <div className="flex justify-end">
                             <button
                                 onClick={() => setShowRevertConfirmation(false)}
                                 className="px-4 py-1 rounded-8 hover:scale-105 transition font-semibold bg-gray-300 text-black mr-2">
                                 Cancel
                             </button>
-                            <button
-                                onClick={() => handleRevert(revertContact!)}
-                                className="px-4 py-1 font-semibold bg-primary-light hover:scale-105 transition rounded-8 text-white">
-                                Revert
-                            </button>
+                            {requestLoading ? (
+                                <span className="loading loading-spinner text-primary"></span>
+                            ) : (
+                                <button
+                                    onClick={() => handleRevert(revertContact!)}
+                                    className="px-4 py-1 font-semibold bg-primary-light hover:scale-105 transition rounded-8 text-white">
+                                    Revert
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -666,7 +711,7 @@ const Contacts: React.FC<ContactsProps> = ({
 
             {showTagConfirmation && (
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
-                    <div className="bg-white p-8 rounded-lg w-full max-w-3xl shadow-lg">
+                <div className="bg-white p-8 rounded-lg w-full max-w-3xl shadow-lg">
                         <h2 className="text-xl font-semibold">Add new Tags</h2>
                         <p className={"font-light text-sm mb-4"}>New Tags will be added to all the selected Contacts.</p>
                         <CreatableSelect
@@ -685,13 +730,17 @@ const Contacts: React.FC<ContactsProps> = ({
                                 className="btn px-4 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 mr-2">
                                 Close popup
                             </button>
-                            <button
-                                onClick={handleAddTags}
-                                className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                                Add Tags
-                            </button>
+                            {requestLoading ? (
+                                <span className="loading loading-spinner text-primary"></span>
+                            ) : (
+                                <button
+                                    onClick={handleAddTags}
+                                    className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                                    Add Tags
+                                </button>
+                            )}
                         </div>
-                    </div>
+                </div>
                 </div>
             )}
 
@@ -716,11 +765,15 @@ const Contacts: React.FC<ContactsProps> = ({
                                 className="btn px-4 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 mr-2">
                                 Close popup
                             </button>
-                            <button
-                                onClick={handleRemoveTags}
-                                className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                                Remove Tags
-                            </button>
+                            {requestLoading ? (
+                                <span className="loading loading-spinner text-primary"></span>
+                            ) : (
+                                <button
+                                    onClick={handleRemoveTags}
+                                    className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                                    Remove Tags
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -758,19 +811,24 @@ const Contacts: React.FC<ContactsProps> = ({
 
             {showDeleteMultipleConfirmation && (
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
-                    <div className="bg-white p-8 rounded-lg shadow-lg">
-                        <h2 className="text-xl mb-4">Are you sure you want to delete the selected contacts?</h2>
+                    <div className="bg-white p-8 w-full max-w-3xl rounded-lg shadow-lg">
+                        <h2 className="text-xl font-semibold">Delete selected Contacts</h2>
+                        <p className={"font-light text-sm mb-4"}>Are you sure you want to delete the selected contacts? They will be moved to deleted contacts, where they can be deleted permanently.</p>
                         <div className="flex justify-end">
                             <button
                                 onClick={() => setShowDeleteMultipleConfirmation(false)}
                                 className="px-4 py-1 rounded-8 hover:scale-105 transition font-semibold bg-gray-300 text-black mr-2">
                                 Cancel
                             </button>
-                            <button
-                                onClick={handleDeleteMultiple}
-                                className="px-4 py-1 font-semibold bg-danger hover:scale-105 transition rounded-8 text-white">
-                                Delete
-                            </button>
+                            {requestLoading ? (
+                                <span className="loading loading-spinner text-primary"></span>
+                                ) : (
+                                <button
+                                    onClick={handleDeleteMultiple}
+                                    className="px-4 py-1 font-semibold bg-danger hover:scale-105 transition rounded-8 text-white">
+                                    Delete
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

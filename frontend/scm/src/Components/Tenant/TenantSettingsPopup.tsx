@@ -64,6 +64,7 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
         ...tenant,
         displayProps: tenant.displayProps ? tenant.displayProps : ['fullName', 'phoneNumber', 'email']
     });
+    const [requestLoading, setRequestLoading] = useState<boolean>(false);
 
     useEffect(() => {
         if (!tenant.id) {
@@ -84,13 +85,17 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
 
     const handleSave = async () => {
         try {
+            setRequestLoading(true);
             await updateLabels(formData.labels, tenant.id, IdToken);
             await updateDisplayProps(formData.displayProps, tenant.id, IdToken);
             setShowPopup(false);
+            setRequestLoading(false);
             toast.success("Tenant settings saved successfully!");
             router.refresh();
         } catch (error) {
             toast.error("Failed to save tenant settings.");
+            setShowPopup(false);
+            setRequestLoading(false);
         }
     };
 
@@ -176,10 +181,14 @@ const TenantSettingsPopup: React.FC<TenantSettingsPopupProps> = ({ tenant, IdTok
                                         className="mt-4 mx-1 px-4 py-1 bg-danger text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition">
                                     Close Popup
                                 </button>
-                                <button type="button" onClick={handleSave}
-                                        className="mt-4 mx-1 px-4 py-1 bg-primary-light text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
-                                    Save Settings
-                                </button>
+                                {requestLoading ? (
+                                    <span className="loading loading-spinner text-primary"></span>
+                                ) : (
+                                    <button type="button" onClick={handleSave}
+                                            className="mt-4 mx-1 px-4 py-1 bg-primary-light text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
+                                        Save Settings
+                                    </button>
+                                )}
                             </div>
                         </form>
                     </div>

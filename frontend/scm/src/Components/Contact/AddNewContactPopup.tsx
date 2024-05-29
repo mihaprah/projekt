@@ -34,6 +34,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
     const [availableTags, setAvailableTags] = useState<{ label: string, value: string }[]>([]);
     const [availablePropsKeys, setAvailablePropsKeys] = useState<string[]>([]);
     const [newProps, setNewProps] = useState<{ key: string, value: string }[]>([{ key: '', value: '' }]);
+    const [requestLoading, setRequestLoading] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchTags = async () => {
@@ -129,6 +130,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
 
         const updatedFormData = { ...formData, props: finalProps };
 
+        setRequestLoading(true);
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts`, {
                 method: 'POST',
@@ -143,13 +145,16 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                 toast.error(res.statusText || "Failed to add contact.");
             }
 
-            setShowPopup(false);
-            if (onClose) onClose(); // Call onClose prop
+            if (onClose) onClose();
             toast.success("Contact added successfully!");
             onSave();
+            setShowPopup(false);
+            setRequestLoading(false);
             router.refresh();
         } catch (error: any) {
             toast.error(error.message || "Failed to add contact.");
+            setShowPopup(false);
+            setRequestLoading(false);
         }
     };
 
@@ -302,10 +307,14 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                                         className="mt-4 mx-1 px-4 py-1 bg-danger text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition">
                                     Close Popup
                                 </button>
-                                <button type="button" onClick={handleSave}
-                                        className="mt-4 mx-1 px-4 py-1 bg-primary-light text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
-                                    Add Contact
-                                </button>
+                                {requestLoading ? (
+                                    <span className="loading loading-spinner text-primary"></span>
+                                ) : (
+                                    <button type="button" onClick={handleSave}
+                                            className="mt-4 mx-1 px-4 py-1 bg-primary-light text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
+                                        Add Contact
+                                    </button>
+                                )}
                             </div>
                         </form>
                     </div>

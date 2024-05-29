@@ -57,7 +57,7 @@ const TenantsDashboard: React.FC<TenantDashboardProps> = (props) => {
             }
             setLoading(false);
         });
-    }, [props.IdToken]);
+    }, [props.IdToken, router]);
 
     const handleTenantAdd = async (IdToken: string) => {
         setTenants(await fetchTenants(IdToken));

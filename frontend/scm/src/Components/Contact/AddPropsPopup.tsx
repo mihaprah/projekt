@@ -25,6 +25,7 @@ const AddPropsPopup: React.FC<AddPropsPopupProps> = ({
                                                      }) => {
     const [selectedProp, setSelectedProp] = useState<{ label: string, value: string } | null>(null);
     const [propValue, setPropValue] = useState<string>("");
+    const [requestLoading, setRequestLoading] = useState<boolean>(false);
     const router = useRouter();
 
     const handlePropChange = (newValue: any) => {
@@ -40,7 +41,7 @@ const AddPropsPopup: React.FC<AddPropsPopupProps> = ({
         const propData = {
             [selectedProp.value]: propValue
         };
-
+        setRequestLoading(true);
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/props/multiple/add/${tenantUniqueName}`, {
                 method: 'PUT',
@@ -58,9 +59,11 @@ const AddPropsPopup: React.FC<AddPropsPopupProps> = ({
 
             toast.success('Property added successfully');
             onSave();
+            setRequestLoading(false);
             router.refresh();
         } catch (error: any) {
             toast.error(error.message || 'Failed to add property');
+            setRequestLoading(false);
         }
     };
 
@@ -102,11 +105,15 @@ const AddPropsPopup: React.FC<AddPropsPopupProps> = ({
                         className="btn px-4 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-red-700 mr-2">
                         Close Popup
                     </button>
-                    <button
-                        onClick={handleSaveProps}
-                        className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
-                        Add Property
-                    </button>
+                    {requestLoading ? (
+                        <span className="loading loading-spinner text-primary"></span>
+                    ) : (
+                        <button
+                            onClick={handleSaveProps}
+                            className="btn px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:scale-105 transition hover:bg-primary-dark">
+                            Add Property
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

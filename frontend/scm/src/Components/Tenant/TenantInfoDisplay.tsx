@@ -33,8 +33,10 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [confirmationText, setConfirmationText] = useState("");
     const [isDeleteDisabled, setIsDeleteDisabled] = useState(true);
+    const [requestLoading, setRequestLoading] = useState<boolean>(false);
 
     const handleDeleteTenant = async () => {
+        setRequestLoading(true);
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tenants/deactivate/${props.tenant.id}`, {
                 method: 'PUT',
@@ -49,9 +51,11 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
             }
 
             toast.success("Tenant deactivated successfully!");
-            router.push('/'); //Redirect to home or any other page after deletion
+            setRequestLoading(false);
+            router.push('/');
         } catch (error: any) {
             toast.error(error.message || "Failed to deactivate tenant.");
+            setRequestLoading(false);
         }
     };
 
@@ -145,12 +149,16 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
                                 className="px-4 py-1 rounded-8 bg-gray-300 text-black mr-2 font-semibold disabled:opacity-50 hover:scale-105 transition">
                                 Cancel
                             </button>
-                            <button
-                                onClick={handleDeleteTenant}
-                                className="btn px-4 py-1 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-danger"
-                                disabled={isDeleteDisabled}>
-                                Delete
-                            </button>
+                            {requestLoading ? (
+                                <span className="loading loading-spinner text-primary"></span>
+                            ) : (
+                                <button
+                                    onClick={handleDeleteTenant}
+                                    className="btn px-4 py-1 btn-sm bg-red-600 border-0 text-white rounded-8 font-semibold hover:scale-105 transition hover:bg-danger"
+                                    disabled={isDeleteDisabled}>
+                                    Delete
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

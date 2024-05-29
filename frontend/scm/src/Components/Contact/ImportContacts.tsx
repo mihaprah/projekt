@@ -16,6 +16,7 @@ const ImportContacts: React.FC<ImportContactsProps> = ({ tenantUniqueName, IdTok
     const router = useRouter();
     const [showPopup, setShowPopup] = useState(false);
     const [file, setFile] = useState<File | null>(null);
+    const [requestLoading, setRequestLoading] = useState<boolean>(false);
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -33,6 +34,8 @@ const ImportContacts: React.FC<ImportContactsProps> = ({ tenantUniqueName, IdTok
         formData.append('file', file);
         formData.append('tenantUniqueName', tenantUniqueName);
 
+        setRequestLoading(true);
+
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts/import`, {
                 method: 'POST',
@@ -46,12 +49,15 @@ const ImportContacts: React.FC<ImportContactsProps> = ({ tenantUniqueName, IdTok
                 toast.error(res.statusText || 'Failed to import contacts');
             }
 
-            setShowPopup(false);
             if (onClose) onClose();
             toast.success('Contacts imported successfully');
+            setShowPopup(false);
+            setRequestLoading(false);
             router.refresh();
         } catch (error: any) {
             toast.error(error.message || 'Failed to import contacts');
+            setShowPopup(false);
+            setRequestLoading(false);
         }
     };
 
@@ -93,10 +99,14 @@ const ImportContacts: React.FC<ImportContactsProps> = ({ tenantUniqueName, IdTok
                                         className="mt-4 mx-1 px-4 py-1 bg-danger text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition">
                                     Close Popup
                                 </button>
-                                <button type="button" onClick={handleImport}
-                                        className="mt-4 mx-1 px-4 py-1 bg-primary-light text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
-                                    Import Contacts
-                                </button>
+                                {requestLoading ? (
+                                    <span className="loading loading-spinner text-primary"></span>
+                                ) : (
+                                    <button type="button" onClick={handleImport}
+                                            className="mt-4 mx-1 px-4 py-1 bg-primary-light text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
+                                        Import Contacts
+                                    </button>
+                                )}
                             </div>
                         </form>
                     </div>

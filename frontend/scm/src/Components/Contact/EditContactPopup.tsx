@@ -23,6 +23,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
     const [availableTags, setAvailableTags] = useState<{ label: string, value: string }[]>([]);
     const [availablePropsKeys, setAvailablePropsKeys] = useState<string[]>([]);
     const [newProps, setNewProps] = useState<{ key: string, value: string }[]>([{ key: '', value: '' }]);
+    const [requestLoading, setRequestLoading] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchTags = async () => {
@@ -123,7 +124,7 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
         }, {} as { [key: string]: string });
 
         setFormData(prevState => ({ ...prevState, props: finalProps }));
-
+        setRequestLoading(true);
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts`, {
                 method: 'PUT',
@@ -138,16 +139,19 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                 toast.error(res.statusText || "Failed to save contact.");
             }
 
-            setShowPopup(false);
             toast.success("Contact saved successfully!");
+            setShowPopup(false);
+            setRequestLoading(false);
             router.refresh();
         } catch (error: any) {
             toast.error(error.message || "Failed to save contact.");
+            setShowPopup(false);
+            setRequestLoading(false);
         }
     };
 
     const handleDelete = async () => {
-        setShowConfirmation(false);
+        setRequestLoading(true);
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts/${contact.id}/${tenantUniqueName}`, {
                 method: 'DELETE',
@@ -160,10 +164,14 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                 toast.error(res.statusText || "Failed to delete contact.");
             }
             toast.success('Contact deleted successfully');
+            setShowConfirmation(false);
+            setRequestLoading(false);
             router.push(`/contacts/${tenantUniqueName}`);
             router.refresh();
         } catch (error: any) {
             toast.error(error.message ||'Failed to delete contact');
+            setShowConfirmation(false);
+            setRequestLoading(false);
         }
     };
 
@@ -276,13 +284,17 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
                             </div>
                             <div className="mt-4 flex justify-center items-center">
                                 <button onClick={() => setShowPopup(false)}
-                                        className="btn mt-4 mx-1 px-5 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition">
+                                        className="btn mt-4 mx-1 px-4 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition">
                                     Close Popup
                                 </button>
-                                <button type="button" onClick={handleUpdate}
-                                        className="btn mt-4 mx-1 px-5 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
-                                    Save Changes
-                                </button>
+                                {requestLoading ? (
+                                    <span className="loading loading-spinner text-primary"></span>
+                                ) : (
+                                    <button type="button" onClick={handleUpdate}
+                                            className="btn mt-4 mx-1 px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
+                                        Save Changes
+                                    </button>
+                                )}
                             </div>
                         </form>
                     </div>
@@ -291,19 +303,24 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
 
             {showConfirmation && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-                <div className="bg-white p-8 rounded-lg shadow-lg">
-                        <h2 className="text-xl mb-4">Are you sure you want to delete this contact?</h2>
+                    <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-3xl">
+                        <h2 className="text-xl font-semibold">Delete Contact</h2>
+                        <p className={"font-light text-md mb-4"}>Are you sure you want to delete this contact? It will be moved to deleted contacts where it can be deleted permanently.</p>
                         <div className="flex justify-end">
                             <button
                                 onClick={() => setShowConfirmation(false)}
                                 className="rounded-8 px-4 py-1 font-semibold bg-gray-300 text-black mr-2 hover:scale-105 transition">
                                 Cancel
                             </button>
-                            <button
-                                onClick={handleDelete}
-                                className="px-4 bg-danger font-semibold rounded-8 py-1 text-white hover:scale-105 transition">
-                                Delete
-                            </button>
+                            {requestLoading ? (
+                                <span className="loading loading-spinner text-primary"></span>
+                            ) : (
+                                <button
+                                    onClick={handleDelete}
+                                    className="px-4 bg-danger font-semibold rounded-8 py-1 text-white hover:scale-105 transition">
+                                    Delete
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
