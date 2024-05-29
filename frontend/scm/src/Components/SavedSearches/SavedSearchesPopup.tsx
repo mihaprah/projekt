@@ -20,6 +20,7 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
     const [showPopup, setShowPopup] = useState(false);
     const [savedSearch, setSavedSearch] = useState(props.savedSearch);
     const [availableTags, setAvailableTags] = useState<string[]>();
+    const [requestLoading, setRequestLoading] = useState(false);
 
     useEffect(() => {
         const fetchTags = async () => {
@@ -41,7 +42,7 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
                 toast.error(error.message || 'Failed to fetch tags');
             }
         };
-            fetchTags();
+        fetchTags();
     }, [props.savedSearch.onTenant, props.IdToken]);
 
     const handleTagsChange = (selectedOption: any) => {
@@ -56,7 +57,8 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
         });
     };
 
-    const handleDelete = async (savedSearchID: string, IdToken:  string) => {
+    const handleDelete = async (savedSearchID: string, IdToken: string) => {
+        setRequestLoading(true);
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/predefined_searches/${savedSearchID}`, {
                 method: 'DELETE',
@@ -70,13 +72,17 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
             toast.success("Search deleted successfully!");
             props.onSavedSearchAction();
             setShowPopup(false);
+            setRequestLoading(false);
         } catch (error: any) {
             toast.error(error.message || "Failed to delete search!");
+            setShowPopup(false);
+            setRequestLoading(false);
         }
 
     }
 
     const handleEdit = async (savedSearch: PredefinedSearch, IdToken: string) => {
+        setRequestLoading(true);
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/predefined_searches`, {
                 method: 'PUT',
@@ -93,9 +99,11 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
             toast.success("Search edited successfully!");
             props.onSavedSearchAction();
             setShowPopup(false);
-
+            setRequestLoading(false);
         } catch (error: any) {
             toast.error(error.message || "Failed to edit search!");
+            setRequestLoading(false);
+            setShowPopup(false);
         }
     }
 
@@ -103,21 +111,45 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
     return (
         <div>
             <button onClick={() => setShowPopup(true)}
-                    className={`btn px-4 btn-sm ${props.action === "delete" ? "bg-danger hover:bg-danger dark:bg-danger dark:hover:bg-danger" : "bg-primary-light hover:bg-primary-light"} text-white rounded-8 font-semibold hover:scale-105 transition`}
+                    className={`btn px-4 btn-sm ${props.action === "delete" ? "bg-danger hover:bg-danger dark:bg-danger dark:hover:bg-danger" : "bg-primary-light hover:bg-primary-light dark:bg-primary-dark dark:hover:bg-primary-dark"} border-0 text-white rounded-8 font-semibold hover:scale-105 transition ml-3`}
             >
                 <FontAwesomeIcon className={"w-3.5 h-auto"} icon={props.icon}/>
             </button>
             {showPopup && (
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
-                    <div className="bg-white p-10 rounded-8 shadow-lg">
-                        <h2 className={"font-semibold mb-4 text-2xl"}>{props.title}</h2>
-                        {props.action === "delete" && (<p>Are you sure you want to delete this search?</p>)}
+                    <div className="bg-white p-8 rounded-lg w-full max-w-3xl shadow-lg">
+                        <h2 className={"text-xl font-semibold"}>{props.title}</h2>
+                        {props.action === "delete" && (
+                            <>
+                                <p className={"font-light text-md mb-4"}>Are you sure you want to delete this search? It
+                                    will be deleted permanently!</p>
+                                <div className="flex justify-end">
+                                    <button
+                                        onClick={() => setShowPopup(false)}
+                                        className="px-4 py-1 rounded-8 hover:scale-105 transition font-semibold bg-gray-300 text-black mr-2">
+                                        Cancel
+                                    </button>
+                                    {requestLoading ? (
+                                        <span className="loading loading-spinner text-primary"></span>
+                                    ) : (
+                                        <button
+                                            onClick={() => handleDelete(savedSearch.id, props.IdToken)}
+                                            className="px-4 py-1 font-semibold bg-danger hover:scale-105 transition rounded-8 text-white">
+                                            Delete
+                                        </button>
+                                    )}
+                                </div>
+                            </>
+                        )}
                         {props.action === "edit" && (
-                            <div className={"p-2 justify-between flex flex-col w-400px"}>
-                                <div className={"my-2"}>
-                                    <label className={"text-lg font-semibold mb-2"}>Title</label>
+                            <>
+                            <p className={"font-light text-md"}>Are you sure you want to delete this search? It
+                                will be deleted permanently!</p>
+                            <div className={"py-2 justify-between flex flex-col w-full"}>
+                        <div className={"my-2"}>
+                        <label className={"text-lg font-semibold mb-2"}>Title</label>
                                     <input
-                                        className="rounded-8 text-gray-700 border-1px px-3 w-96 mr-3 h-9"
+                                        className="rounded-8 text-gray-700 border-1px px-3 w-full mr-3 h-9"
                                         type="text"
                                         value={savedSearch.title}
                                         onChange={(e) => handleInputChange("title", e.target.value)}
@@ -130,9 +162,9 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
                                     </p>
                                 </div>
                                 <div className={"mt-4"}>
-                                    <label className={"font-semibold my-3"}>Search query</label>
+                                    <label className={"text-lg font-semibold mb-1"}>Search query</label>
                                     <input
-                                        className="rounded-8 text-gray-700 border-1px px-3 w-96 mr-3 h-9"
+                                        className="rounded-8 text-gray-700 border-1px px-3 w-full mr-3 h-9"
                                         type="text"
                                         value={savedSearch.searchQuery}
                                         onChange={(e) => handleInputChange("searchQuery", e.target.value)}
@@ -174,29 +206,33 @@ const SavedSearchesPopup: React.FC<SavedSearchesPopupProps> = (props) => {
                                         value={savedSearch.filter.map(tag => ({label: tag, value: tag}))}
                                         options={availableTags?.map(tag => ({label: tag, value: tag}))}
                                         onChange={handleTagsChange}
-                                        className="appearance-none border-0 mb-10 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        className="appearance-none border-0 rounded w-full py-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     />
                                 </div>
 
                             </div>
+                            </>
                         )}
-                        <div className={"mt-4 justify-center items-center flex"}>
-                            <button onClick={() => {
-                                setShowPopup(false);
-                            }}
-                                    className="btn mt-4 mx-1 px-4 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition"
-                            >Close Popup
-                            </button>
-                            {props.action === "delete" ?
-                                <button onClick={() => handleDelete(savedSearch.id, props.IdToken)}
-                                        className="btn mt-4 mx-1 px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
-                                    Delete Search
-                                </button> :
-                                <button onClick={() => handleEdit(savedSearch, props.IdToken)}
-                                        className="btn mt-4 mx-1 px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
-                                    Save changes
-                                </button>}
-                        </div>
+
+                        {props.action !== "delete" &&
+                            <div className={"mt-4 justify-center items-center flex"}>
+                                <button onClick={() => {
+                                    setShowPopup(false);
+                                }}
+                                        className="btn mt-4 mx-1 px-4 btn-sm bg-danger border-0 text-white rounded-8 font-semibold hover:bg-danger hover:scale-105 transition"
+                                >Close Popup
+                                </button>
+                                {requestLoading ? (
+                                    <span className="loading loading-spinner text-primary"></span>
+                                ) : (
+                                    <button onClick={() => handleEdit(savedSearch, props.IdToken)}
+                                            className="btn mt-4 mx-1 px-4 btn-sm bg-primary-light border-0 text-white dark:bg-primary-dark dark:hover:bg-primary-dark rounded-8 font-semibold hover:bg-primary-light hover:scale-105 transition">
+                                        Save changes
+                                    </button>
+                                )}
+                            </div>
+                        }
+
                     </div>
                 </div>
             )}
