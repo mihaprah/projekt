@@ -29,7 +29,7 @@ const Login = () => {
                 toast.error("Please verify your email before logging in.");
                 return;
             }
-            Cookies.set('IdToken', await user.getIdToken());
+            Cookies.set('IdToken', await user.getIdToken(), { expires: 2 / 24 });
             router.push('/');
         } catch (error: any) {
             const firebaseError = error as FirebaseError;
