@@ -11,7 +11,7 @@ Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplik
 - [Matija Krsnik](https://github.com/Matija334)
 - [Anže Golob](https://github.com/anzo26)
 
-## Kazalo vsebine
+## Kazalo vsebine projekta
 1. [Predstavitev projekt](#1-predstavitev-projekta)
     - [Podroben opis projekta](#podroben-opis-projekta)
 2. [Dokumentacija](#2-dokumentacija)
@@ -25,6 +25,8 @@ Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplik
     - [Testiranje](#testiranje)
     - [GitHub Actions](#github-actions)
     - [Optimizacija kode](#optimizacija-kode)
+    - [Uporabniške zgodbe](#uporabniške-zgodbe)
+    - [Testni scenariji](#testni-scenariji)
 3. [Navodila za namestitev lokalno](#3-navodila-za-namestitev-lokalno)
     - [Testno lokalno okolje](#testno-lokalno-okolje)
 4. [Uporaba aplikacije](#4-uporaba-aplikacije)
@@ -141,7 +143,7 @@ Priložena sta dva grafa ki prikazujeta postopek registracije novega uporabnika 
 
 
 ### Wireframe aplikacije (prototip izgleda)
-S pomočjo orodja [Figma](https://www.figma.com), ki omogoča enostavno in hitro izdelavo vizualnih prototipov, smo izdelali prototip, kako bi naj aplikacija izgledala. Prototip nam je nato služil, kot navodilo za izgradnjo spletne aplikacije v nadaljevanju projekta. Spodaj je na voljo nekaj zaslonskih posnetkov prototipa, vse slike so na dostopne v mapi **documentation/documentation-photos**
+S pomočjo orodja [Figma](https://www.figma.com), ki omogoča enostavno in hitro izdelavo vizualnih prototipov, smo izdelali prototip, kako bi naj aplikacija izgledala. Prototip nam je nato služil, kot navodilo za izgradnjo spletne aplikacije v nadaljevanju projekta. Spodaj je na voljo nekaj zaslonskih posnetkov prototipa, vse slike so na dostopne v mapi [**documentation/documentation-photos**](https://github.com/mihaprah/projekt/tree/main/documentation/documentation-photos)
 
 <p align="center">
   <img alt="dashboard" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/52fce584-1c14-4b32-81b3-1ceb4bac6364">
@@ -212,10 +214,28 @@ Za optimizacijo kode in pregled kode, smo uporabili orodje [SonarCloud](), ki na
   Pregled nadzorne plošče v orodju SonarCloud
 </p>
 
+
+### Uporabniške zgodbe
+Osnova za pisanje testnih scenarijev so bile uporabniške zgodbe, ki so nam povedale, kdo bi rad v aplikaciji naredil kaj. Uporabiške zgodbe so bile:
+1. 
+
+### Testni scenariji
+Za boljše zagotavljanje kakovosti, večjo zanesljivost in lažje vzdrževanje programske opreme, smo napisali 10 testnih scenarijev. To nam je omogočalo, da smo hitreje zaznali morebitne napake v kodi in jih hitro lahko popravili. Kodo je bilo tako tudi dosti lažje vzdrževati. Testni scenariji so bili sledeči:
+1. Registracija novega uporabnika
+2. Prijava uporabnika
+3. Dodajanje nove skupine (Tenant)
+4. Dodajanje novega kontakta
+5. Posodabljanje kontakta
+6. Nastavljanje nastavitev za skupino (Tenant)
+7. Brisanje kontakta
+8. Revertanje kontakta
+9. Dodajanje značk večim kontaktom
+10. Izvoz določenih kontaktov
+
 ## 3. Navodila za namestitev lokalno
 
 ### Testno lokalno okolje
-Za namistitev aplikacije lokalno na vašem računalniku, smo naredili testno verzijo, ki je dostopna na [tej povezavi](https://github.com/Matija334/projekt_local/tree/main).
+Za namistitev aplikacije lokalno na vašem računalniku, smo naredili testno verzijo v posebnem repozitoriju, ki je dostopna na [tej povezavi](https://github.com/Matija334/projekt_local/tree/main).
 
 #### Koraki za zagon
 
@@ -269,4 +289,15 @@ npm run start
 ```
 
 ## 4. Uporaba aplikacije
-Aplikacije je dostopna na tej [povezavi](https://scm-frontend-seven.vercel.app/login). Uporabnik se mora pred uporabo aplikacije na njej registrirati. Po registraciji bo na mail dobil povezavo za potrditev računa. Ko je opravil vse to, se lahko prijavi v aplikacijo in ob uspešni prijavi dobi dostop do aplikacije.
+Aplikacije je dostopna na tej [povezavi](https://scm-frontend-seven.vercel.app/login). Uporabnik se mora pred uporabo aplikacije na njej registrirati. Po registraciji bo na mail dobil povezavo za potrditev računa. Ko je opravil vse registracijo in potrdil svoj račun, se lahko prijavi v aplikacijo in ob uspešni prijavi dobi dostop do aplikacije.
+
+### Uporabniški priročnik
+Uporabniški priročnik, je namenjen novim uporabnikom, da se seznanijo s delovanjem program. V njem so v 6. kategorijah zajete vse funkcionalnosti aplikacije, ki jih lahko uporablja uporabnik. Kategorije so sledeče:
+1. Prijava/Registracija
+2. Skupina (Tenant)
+3. Kontakt
+4. Uvoz/Izvod kontaktov
+5. Delo s večimi kontakti hkrati
+6. Filtririranje
+
+Kategorije imajo tudi podakategorije, ki podrobno razložijo, kaj mora uporabnik storiti in kakšni so pogoji, da bo akcija uspešna. Uporabniški priročnik se nahaja v mapi [**dokumentacija/user-manual.pdf**]().
