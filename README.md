@@ -31,6 +31,7 @@ Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplik
     - [Testno lokalno okolje](#testno-lokalno-okolje)
 4. [Uporaba aplikacije](#4-uporaba-aplikacije)
     - [Uporabniški priročnik](#uporabniški-priročnik)
+    - [Končni izgled aplikacije](#končni-izgled-aplikacije)
 
 ## 1. Predstavitev projekta
 ### Podroben opis projekta
@@ -305,3 +306,20 @@ Uporabniški priročnik, je namenjen novim uporabnikom, da se seznanijo s delova
 6. Filtririranje
 
 Kategorije imajo tudi podakategorije, ki podrobno razložijo, kaj mora uporabnik storiti in kakšni so pogoji, da bo akcija uspešna. Uporabniški priročnik se nahaja v mapi [**dokumentacija/user-manual.pdf**]().
+
+### Končni izgled aplikacije
+Spodaj so prikazani nekateri končni zaslonski posnetki aplikacije. Vsi posnetki so na voljo v mapi [**dokumentacija/app-photos**]().
+
+<p align="center">
+  <img alt="dashboard" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/426e42cd-262a-48b8-9736-cc49a610ba96">
+  <br/>
+  Nadzorna plošča, kjer so vidne vse skupine (Tenanti), ki jih je uporabnik naredil oziroma je v njih vključen.
+
+</p>
+<p align="center">
+  <img alt="tenant-list-view" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/f3cfe9df-a34f-4881-a3a4-50ccd233498a">
+  <br/>
+  <img alt="tenant-grid-view" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/fd93ee5f-5593-452f-ab60-813052a1d14f">
+  <br/>
+  Pregled vseh kontaktov za ene skupine (Tenant). Pogled je nastavljen na <b>seznam</b> ali na <b>mrežo</b>.
+</p>
