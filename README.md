@@ -219,6 +219,8 @@ Za optimizacijo kode in pregled kode, smo uporabili orodje [SonarCloud](), ki na
 Osnova za pisanje testnih scenarijev so bile uporabniške zgodbe, ki so nam povedale, kdo bi rad v aplikaciji naredil kaj. Uporabiške zgodbe so bile:
 1. 
 
+Uporabniške zgodbe so na voljo v mapi [**dokumentacija/test-cases-and-user-stories.pdf**]().
+
 ### Testni scenariji
 Za boljše zagotavljanje kakovosti, večjo zanesljivost in lažje vzdrževanje programske opreme, smo napisali 10 testnih scenarijev. To nam je omogočalo, da smo hitreje zaznali morebitne napake v kodi in jih hitro lahko popravili. Kodo je bilo tako tudi dosti lažje vzdrževati. Testni scenariji so bili sledeči:
 1. Registracija novega uporabnika
@@ -231,6 +233,8 @@ Za boljše zagotavljanje kakovosti, večjo zanesljivost in lažje vzdrževanje p
 8. Revertanje kontakta
 9. Dodajanje značk večim kontaktom
 10. Izvoz določenih kontaktov
+
+Testni scenariji so na voljo v mapi [**dokumentacija/test-cases-and-user-stories.pdf**]().
 
 ## 3. Navodila za namestitev lokalno
 
