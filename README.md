@@ -48,10 +48,12 @@ V dokumentaciji projekta je predstavljen celoten proces dela od začetka do konc
 ### Funkcionalnosti
 - Ustvarjanje skupin kontaktov
 - Filtriranje in iskanje po kontaktih
+- Shranjevanje filtrov
+- Pregled izbrisanih kontaktov
 - Dodajanje poljubnih značk kontaktom
 - Ustvarjanje lastnih atributov za posamezen kontakt
-- Združevanje podvojenih kontaktov
 - Revizijska sled kontaktov
+- Nastavljanje poljubnih iemn atributov za skupine
 - Izvoz kontaktov v format MS Excel (*.xslx*)
 - Uzvoz kontaktov v formatu MS Excel (*.xslx*)
 
