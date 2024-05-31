@@ -54,6 +54,8 @@ public class ImportContactExcel {
                 contact.setUser(userToken);
                 contact.setTenantUniqueName(tenantUniqueName);
 
+                String prefix = getCellValueAsString(row.getCell(getColumnIndex(headerMap, "Predpona", true)));
+
                 // Extract comments if the column exists
                 Integer commentColumnIndex = getColumnIndex(headerMap, "Komentar", true);
                 if (commentColumnIndex != null) {
@@ -65,10 +67,14 @@ public class ImportContactExcel {
                 Map<String, String> props = new HashMap<>();
                 List<String> tags = new ArrayList<>();
 
+                if (prefix != null && !prefix.isEmpty()) {
+                    props.put("prefix", prefix);
+                }
+
                 // Process all other columns
                 for (Map.Entry<Integer, String> entry : headerMap.entrySet()) {
                     String columnName = entry.getValue();
-                    if (columnName.equals("Ime") || columnName.equals("Priimek") || columnName.equals("Komentar")) {
+                    if (columnName.equals("Ime") || columnName.equals("Priimek") || columnName.equals("Komentar") || columnName.equals("Predpona")) {
                         continue;
                     }
 

@@ -47,20 +47,27 @@ public class ContactServices {
         this.mongoTemplate = mongoTemplate;
         this.mongoTemplateService = mongoTemplateService;
     }
+    private String decodeHtmlEntities(String input) {
+        return StringEscapeUtils.unescapeHtml4(input);
+    }
 
     private ContactDTO convertToDTO(Contact contact) {
         return ContactDTO.builder()
-                .id(contact.getId())
-                .title(contact.getTitle())
-                .user(contact.getUser())
-                .tenantUniqueName(contact.getTenantUniqueName())
-                .comments(contact.getComments())
-                .createdAt(contact.getCreatedAt().toString())
-                .tags(contact.getTags())
-                .props(contact.getProps())
-                .attributesToString(contact.getAttributesToString())
+                .id(decodeHtmlEntities(contact.getId()))
+                .title(decodeHtmlEntities(contact.getTitle()))
+                .user(decodeHtmlEntities(contact.getUser()))
+                .tenantUniqueName(decodeHtmlEntities(contact.getTenantUniqueName()))
+                .comments(decodeHtmlEntities(contact.getComments()))
+                .createdAt(decodeHtmlEntities(contact.getCreatedAt().toString()))
+                .tags(contact.getTags().stream().map(this::decodeHtmlEntities).collect(Collectors.toList()))
+                .props(contact.getProps().entrySet().stream().collect(Collectors.toMap(
+                        entry -> decodeHtmlEntities(entry.getKey()),
+                        entry -> decodeHtmlEntities(entry.getValue())
+                )))
+                .attributesToString(decodeHtmlEntities(contact.getAttributesToString()))
                 .build();
     }
+
 
     private Contact convertToEntity(ContactDTO contactDTO) {
         return new Contact(
