@@ -7,7 +7,7 @@ import {
     faArrowLeft,
     faPlus,
     faExclamationTriangle,
-    faDumpster
+    faDumpster, faHouse, faAddressBook
 } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import EditTenantPopup from "@/Components/Tenant/EditTenantPopup";
@@ -87,8 +87,8 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
                         )}
                         <div className="text-sm breadcrumbs mx-2">
                             <ul className={"text-gray-500"}>
-                                <li><Link href={"/"}>Home</Link></li>
-                                <li><Link href={"#"}>{props.tenant.title}</Link></li>
+                                <li><Link href={"/"}><FontAwesomeIcon icon={faHouse} className={"mr-1"}/>Home</Link></li>
+                                <li><Link href={"#"}><FontAwesomeIcon icon={faAddressBook} className={"mr-1"}/>{props.tenant.title}</Link></li>
                             </ul>
                         </div>
                         <div className="ml-5">

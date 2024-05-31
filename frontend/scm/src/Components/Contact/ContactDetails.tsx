@@ -13,7 +13,7 @@ import {
     faTag,
     faComment,
     faArrowLeft,
-    faBuilding
+    faBuilding, faAddressBook, faHouse, faAddressCard
 } from "@fortawesome/free-solid-svg-icons";
 import EventList from "@/Components/Event/EventDisplay";
 import {toast} from "react-toastify";
@@ -80,11 +80,11 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({contact, activityLog, te
                 <div className="text-sm breadcrumbs mx-2">
                     <ul className={"text-gray-500"}>
                         <li><Link
-                            href={"/"}>Home</Link></li>
+                            href={"/"}><FontAwesomeIcon icon={faHouse} className={"mr-1"}/>Home</Link></li>
                         <li><Link
-                            href={`/contacts/${tenantUniqueName}`}>{tenantTitle}</Link></li>
+                            href={`/contacts/${tenantUniqueName}`}><FontAwesomeIcon icon={faAddressBook} className={"mr-1"}/>{tenantTitle}</Link></li>
                         <li><Link
-                            href={"#"}>{contact.title}</Link></li>
+                            href={"#"}><FontAwesomeIcon icon={faAddressCard} className={"mr-1"}/>{contact.title}</Link></li>
                     </ul>
                 </div>
             </div>

@@ -3,7 +3,7 @@ import { Contact as ContactModel } from '../../models/Contact';
 import { Tenant as TenantModel } from '../../models/Tenant';
 import React, {useEffect} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faArrowLeft, faCircleInfo} from "@fortawesome/free-solid-svg-icons";
+import {faAddressBook, faArrowLeft, faCircleInfo, faHouse, faTrash} from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import Contacts from "@/Components/Contact/Contacts";
@@ -72,11 +72,11 @@ const DeletedContacts: React.FC<DeletedContactsProps> = (props) => {
                         <div className="text-sm breadcrumbs mx-2">
                             <ul className={"text-gray-500"}>
                                 <li><Link
-                                    href={"/"}>Home</Link></li>
+                                    href={"/"}><FontAwesomeIcon icon={faHouse} className={"mr-1"}/>Home</Link></li>
                                 <li><Link
-                                    href={`/contacts/${props.tenant.tenantUniqueName}`}>{props.tenant.title}</Link></li>
+                                    href={`/contacts/${props.tenant.tenantUniqueName}`}><FontAwesomeIcon icon={faAddressBook} className={"mr-1"}/>{props.tenant.title}</Link></li>
                                 <li><Link
-                                    href={"#"}>Deleted contacts</Link></li>
+                                    href={"#"}><FontAwesomeIcon icon={faTrash} className={"mr-1"}/>Deleted contacts</Link></li>
                             </ul>
                         </div>
                     </div>
