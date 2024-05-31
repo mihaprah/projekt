@@ -136,15 +136,15 @@ const EditContactPopup: React.FC<EditContactPopupProps> = ({ contact, tenantUniq
             });
 
             if (!res.ok) {
-                toast.error(res.statusText || "Failed to save contact.");
+                toast.error(res.statusText || "Failed to update contact.");
             }
 
-            toast.success("Contact saved successfully!");
+            toast.success("Contact updated successfully!");
             setShowPopup(false);
             setRequestLoading(false);
             router.refresh();
         } catch (error: any) {
-            toast.error(error.message || "Failed to save contact.");
+            toast.error(error.message || "Failed to update contact.");
             setShowPopup(false);
             setRequestLoading(false);
         }
