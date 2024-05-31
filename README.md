@@ -4,8 +4,8 @@
   <img alt="SCM Logo" width="400" src="https://github.com/mihaprah/projekt/assets/116807398/1d171956-57b7-49b9-93d9-3525148c70d7" >
 </p>
 
-SCM oziroma Simple Contact Manager, je spletna aplikacija namenjena upravljanju s kontakti. Njegova glavna prednost pred ostalimi CRM (Customer Relations Manager) programi, je njegova preposta uporaba, saj je namenjen izključno delu s kontakti.
-Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplikacije in dokumentacija za aplikacijo SCM.
+SCM oziroma Simple Contact Manager, je spletna aplikacija namenjena upravljanju s kontakti. Njena glavna prednost pred ostalimi CRM (Customer Relations Manager) programi, je njena preposta uporaba, saj je namenjena izključno delu s kontakti.
+Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplikacije lokalno, uporaba aplikacije na spletu in dokumentacija za aplikacijo SCM.
 ### Člani ekipe MMA
 - [Miha Prah](https://github.com/mihaprah)
 - [Matija Krsnik](https://github.com/Matija334)
@@ -52,7 +52,8 @@ V dokumentaciji projekta je predstavljen celoten proces dela od začetka do konc
 - Ustvarjanje lastnih atributov za posamezen kontakt
 - Združevanje podvojenih kontaktov
 - Revizijska sled kontaktov
-- Izvod kontaktov v format MS Excel
+- Izvoz kontaktov v format MS Excel (*.xslx*)
+- Uzvoz kontaktov v formatu MS Excel (*.xslx*)
 
 ### Tehnološki nabor
 #### Backend (zaledje)
@@ -142,6 +143,8 @@ Priložena sta dva grafa ki prikazujeta postopek registracije novega uporabnika 
   <img alt="user-registration" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/fa242c66-13bd-46b7-ac83-9849c2e6dbb0">
 </p>
 
+Vsi zgornji grafi so na voljo v mapi [**documentation/charts**](https://github.com/mihaprah/projekt/tree/main/documentation/charts).
+
 
 ### Wireframe aplikacije (prototip izgleda)
 S pomočjo orodja [Figma](https://www.figma.com), ki omogoča enostavno in hitro izdelavo vizualnih prototipov, smo izdelali prototip, kako bi naj aplikacija izgledala. Prototip nam je nato služil, kot navodilo za izgradnjo spletne aplikacije v nadaljevanju projekta. Spodaj je na voljo nekaj zaslonskih posnetkov prototipa, vse slike so na dostopne v mapi [**documentation/documentation-photos**](https://github.com/mihaprah/projekt/tree/main/documentation/documentation-photos)
@@ -203,7 +206,7 @@ V projektu smo tudi vspostavili workflow, ki se je zaganjal ob vsakem pushu spre
 
 
 ### Optimizacija kode
-Za optimizacijo kode in pregled kode, smo uporabili orodje [SonarCloud](), ki nam je omogočalo, da smo v **GitHub Actions** Workflow vključili neprestan pregled kode. Repotizorij smo povezali s SonrCloudom in tako dobili dostop do nadzorne plošče projekta. Na njej smo lahko gledali kakša je koda glede na:
+Za optimizacijo kode in pregled kode, smo uporabili orodje [SonarCloud](https://sonarcloud.io/), ki nam je omogočalo, da smo v **GitHub Actions** Workflow vključili neprestan pregled kode. Repotizorij smo povezali s SonarCloudom in tako dobili dostop do nadzorne plošče projekta. Na njej smo lahko gledali kakša je koda glede na:
 - Vzdrževanost
 - Zanesljivost
 - Varnost
@@ -220,7 +223,7 @@ Za optimizacijo kode in pregled kode, smo uporabili orodje [SonarCloud](), ki na
 Osnova za pisanje testnih scenarijev so bile uporabniške zgodbe, ki so nam povedale, kdo bi rad v aplikaciji naredil kaj. Uporabiške zgodbe so bile:
 1. 
 
-Uporabniške zgodbe so na voljo v mapi [**dokumentacija/test-cases-and-user-stories.pdf**]().
+Uporabniške zgodbe so na voljo v mapi [**documentation/test-cases-and-user-stories.pdf**]().
 
 ### Testni scenariji
 Za boljše zagotavljanje kakovosti, večjo zanesljivost in lažje vzdrževanje programske opreme, smo napisali 10 testnih scenarijev. To nam je omogočalo, da smo hitreje zaznali morebitne napake v kodi in jih hitro lahko popravili. Kodo je bilo tako tudi dosti lažje vzdrževati. Testni scenariji so bili sledeči:
@@ -235,7 +238,7 @@ Za boljše zagotavljanje kakovosti, večjo zanesljivost in lažje vzdrževanje p
 9. Dodajanje značk večim kontaktom
 10. Izvoz določenih kontaktov
 
-Testni scenariji so na voljo v mapi [**dokumentacija/test-cases-and-user-stories.pdf**]().
+Testni scenariji so na voljo v mapi [**documentation/test-cases-and-user-stories.pdf**]().
 
 ## 3. Navodila za namestitev lokalno
 
@@ -305,10 +308,10 @@ Uporabniški priročnik, je namenjen novim uporabnikom, da se seznanijo s delova
 5. Delo s večimi kontakti hkrati
 6. Filtririranje
 
-Kategorije imajo tudi podakategorije, ki podrobno razložijo, kaj mora uporabnik storiti in kakšni so pogoji, da bo akcija uspešna. Uporabniški priročnik se nahaja v mapi [**dokumentacija/user-manual.pdf**]().
+Kategorije imajo tudi podakategorije, ki podrobno razložijo, kaj mora uporabnik storiti in kakšni so pogoji, da bo akcija uspešna. Uporabniški priročnik se nahaja v mapi [**documentation/user-manual.pdf**](https://github.com/mihaprah/projekt/blob/main/documentation/user-manual.pdf).
 
 ### Končni izgled aplikacije
-Spodaj so prikazani nekateri končni zaslonski posnetki aplikacije. Vsi posnetki so na voljo v mapi [**dokumentacija/app-photos**]().
+Spodaj so prikazani nekateri končni zaslonski posnetki aplikacije. Vsi posnetki so na voljo v mapi [**documentation/app-photos**](https://github.com/mihaprah/projekt/tree/main/documentation/app-photos).
 
 <p align="center">
   <img alt="dashboard" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/426e42cd-262a-48b8-9736-cc49a610ba96">
