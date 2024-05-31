@@ -82,6 +82,15 @@ Med izvedbo samega projekta smo izvedli tudi številne sestanke s profesorjem v 
   <img width="309" alt="discord-photo" src="https://github.com/mihaprah/projekt/assets/116807398/48f1979e-aaf7-4581-89ef-e99392d073d9">
 </p>
 
+<p align="center">
+  <img width="800" alt="work-process" src="https://github.com/mihaprah/projekt/assets/116807398/5b997bcc-0bc9-4205-a845-9d587091d61e">
+</p>
+<p align="center">
+  <img width="800" alt="work-process" src="https://github.com/mihaprah/projekt/assets/116807398/c1ae27e6-68f3-44ed-a823-80070bbf6a6d">
+</p>
+
+
+
 #### Vodenje in deljenje dela
 Za vodenja dela na projektu smo izbrali principe metode [SCRUM](https://www.scrum.org/resources/what-scrum-module), ki temelji na delu v sprintih. Vsak sprint je trajal 2 tedna in v njem smo opravili delo, ki smo si ga zastavili za ta sprint. Celoten projekt je bil sestavljen iz 5ih sprintov, pri čemer se je prvi začel 01.04.2024 in zadji 27.05.2024. Projekt je tako trajal **od 01.04.2024 do 03.06.2024**. Pred začetkom novega sprinta, smo ustvarili nova opravila, tako imenovane taske (ang. Task), ki jih moramo v naslednjem sprintu narediti. Za beleženje dela in pisanje novih opravil smo uporabili program [Notion](https://www.notion.so/Opis-8b1b88ecec974c03add9e5615c7a1f16), ki nam je omogočal pregled dela in uporabo scrum tabel za lepšo preglednost. Vsak task je imel naslednje atribute:
 
