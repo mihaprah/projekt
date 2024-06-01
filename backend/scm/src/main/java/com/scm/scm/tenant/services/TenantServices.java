@@ -156,9 +156,12 @@ public class TenantServices {
         if (tenant != null) {
             Map<String, Integer> oldTags = tenant.getContactTags();
             for (String tag : tags) {
-                oldTags.put(tag, oldTags.get(tag) - 1);
-                if (oldTags.get(tag) == 0) {
-                    oldTags.remove(tag);
+                Integer tagCount = oldTags.get(tag);
+                if (tagCount != null) {
+                    oldTags.put(tag, tagCount - 1);
+                    if (oldTags.get(tag) == 0) {
+                        oldTags.remove(tag);
+                    }
                 }
             }
             tenant.setContactTags(oldTags);
@@ -168,6 +171,7 @@ public class TenantServices {
             throw new CustomHttpException(ExceptionMessage.TENANT_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.USER_ERROR);
         }
     }
+
 
     public String addUsers(String id, List<String> users) {
         Tenant tenant = tenantRepository.findById(id).orElseThrow(() -> new CustomHttpException(ExceptionMessage.TENANT_NOT_FOUND.getExceptionMessage(), 404, ExceptionCause.SERVER_ERROR));
