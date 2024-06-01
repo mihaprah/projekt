@@ -46,7 +46,7 @@ const EventDisplay: React.FC<EventDisplayProps> = ({ event }) => {
     const getEventDescription = () => {
         switch (event.eventState) {
             case EventState.UPDATED:
-                return `UPDATED ${event.propKey} from "${event.prevState}" to "${event.currentState}"`;
+                return `UPDATED "${event.propKey}" from "${event.prevState}" to "${event.currentState}"`;
             case EventState.TAG_ADD:
                 return `ADDED TAG "${event.currentState}"`;
             case EventState.TAG_REMOVED:

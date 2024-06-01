@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { MultiValue } from 'react-select';
-import CreatableSelect from 'react-select/creatable';
+import Select, { MultiValue } from 'react-select';
 import { toast } from 'react-toastify';
 
 interface RemovePropsPopupProps {
@@ -68,7 +67,7 @@ const RemovePropsPopup: React.FC<RemovePropsPopupProps> = ({
             <div className="bg-white p-8 rounded-lg w-full max-w-3xl shadow-lg">
                 <h2 className="text-xl font-semibold">Remove property</h2>
                 <p className={"font-light text-sm mb-4"}>Property will be removed from all the Tenants.</p>
-                <CreatableSelect
+                <Select
                     isMulti
                     options={availableProps}
                     value={selectedProps}

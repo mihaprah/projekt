@@ -836,7 +836,7 @@ const Contacts: React.FC<ContactsProps> = ({
 
 
             {duplicateContact && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-65">
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-65">
                 <AddNewContactPopup
                     tenantUniqueName={tenantUniqueName}
                     onSave={() => {
