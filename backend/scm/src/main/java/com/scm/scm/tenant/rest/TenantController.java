@@ -145,7 +145,7 @@ public class TenantController {
         if (!userAccessService.hasAccessToTenant(decodedToken.getEmail(), tenantId)) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
-        return ResponseEntity.ok(tenantServices.addTagsToMultipleContacts(tenantUniqueName, contactIds, tags));
+        return ResponseEntity.ok(tenantServices.addTagsToMultipleContacts(tenantUniqueName, contactIds, tags, decodedToken.getEmail()));
     }
 
     @PutMapping(value = "/tags/multiple/remove/{tenant_unique_name}/{tag}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -162,7 +162,7 @@ public class TenantController {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
 
-        return ResponseEntity.ok(tenantServices.removeTagsFromMultipleContacts(tenantUniqueName, contactIds, tag));
+        return ResponseEntity.ok(tenantServices.removeTagsFromMultipleContacts(tenantUniqueName, contactIds, tag, decodedToken.getEmail()));
     }
 
 
@@ -182,7 +182,7 @@ public class TenantController {
         List<String> contactIds = (List<String>) requestBody.get("contactIds");
         Map<String, String> propData = (Map<String, String>) requestBody.get("propData");
 
-        return ResponseEntity.ok(tenantServices.addPropsToMultipleContacts(tenantUniqueName, contactIds, propData));
+        return ResponseEntity.ok(tenantServices.addPropsToMultipleContacts(tenantUniqueName, contactIds, propData, decodedToken.getEmail()));
     }
 
     @PutMapping(value = "/props/multiple/remove/{tenant_unique_name}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -201,7 +201,7 @@ public class TenantController {
         List<String> contactIds = (List<String>) requestBody.get("contactIds");
         List<String> propsToRemove = (List<String>) requestBody.get("propsToRemove");
 
-        return ResponseEntity.ok(tenantServices.removePropsFromMultipleContacts(tenantUniqueName, contactIds, propsToRemove));
+        return ResponseEntity.ok(tenantServices.removePropsFromMultipleContacts(tenantUniqueName, contactIds, propsToRemove, decodedToken.getEmail()));
     }
 
 

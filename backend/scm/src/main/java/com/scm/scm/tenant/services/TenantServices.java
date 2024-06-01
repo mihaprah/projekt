@@ -1,6 +1,9 @@
 package com.scm.scm.tenant.services;
 
 import com.scm.scm.contact.vao.Contact;
+import com.scm.scm.events.services.EventsServices;
+import com.scm.scm.events.vao.Event;
+import com.scm.scm.events.vao.EventState;
 import com.scm.scm.predefinedSearch.dao.PredefinedSearchRepository;
 import com.scm.scm.predefinedSearch.vao.PredefinedSearch;
 import com.scm.scm.support.exceptions.CustomHttpException;
@@ -26,7 +29,7 @@ public class TenantServices {
     private PredefinedSearchRepository predefinedSearchRepository;
     private MongoTemplateService mongoTemplateService;
     private MongoTemplate mongoTemplate;
-
+    private EventsServices eventsServices;
     private static final Logger log = Logger.getLogger(TenantServices.class.toString());
 
     private TenantDTO convertToDTO(Tenant tenant) {
@@ -226,7 +229,7 @@ public class TenantServices {
         return tenants.stream().map(this::convertToDTO).toList();
     }
 
-    public String addTagsToMultipleContacts(String tenantUniqueName, List<String> contactIds, String[] tags) {
+    public String addTagsToMultipleContacts(String tenantUniqueName, List<String> contactIds, String[] tags, String username) {
         if (contactIds.isEmpty()) {
             throw new CustomHttpException("Contact ids cannot be empty", 400, ExceptionCause.USER_ERROR);
         }
@@ -242,6 +245,11 @@ public class TenantServices {
                 List<String> oldTags = c.getTags();
                 for (String tag : tags) {
                     if (!oldTags.contains(tag)) {
+                        Event event = new Event(username, c.getId(), EventState.TAG_ADD);
+                        event.setCurrentState(tag);
+                        event.setPropKey("TAG");
+                        event.setPrevState("");
+                        eventsServices.addEvent(event, tenantUniqueName);
                         oldTags.add(tag);
                     }
                 }
@@ -253,7 +261,7 @@ public class TenantServices {
         return "Tags added to contacts successfully";
     }
 
-    public String removeTagsFromMultipleContacts(String tenantUniqueName, List<String> contactIds, String tag) {
+    public String removeTagsFromMultipleContacts(String tenantUniqueName, List<String> contactIds, String tag, String username) {
         if (contactIds.isEmpty()) {
             throw new CustomHttpException("Contact ids cannot be empty", 400, ExceptionCause.USER_ERROR);
         }
@@ -270,6 +278,11 @@ public class TenantServices {
             if (contactIds.contains(c.getId())) {
                 List<String> oldTags = c.getTags();
                 if (oldTags.contains(tag)) {
+                    Event event = new Event(username, c.getId(), EventState.TAG_REMOVED);
+                    event.setCurrentState("");
+                    event.setPropKey("TAG");
+                    event.setPrevState(tag);
+                    eventsServices.addEvent(event, tenantUniqueName);
                     oldTags.remove(tag);
                     c.setTags(oldTags);
                     mongoTemplate.save(c, tenantUniqueName + CollectionType.MAIN.getCollectionType());
@@ -281,7 +294,7 @@ public class TenantServices {
         return "Tags removed from contacts successfully";
     }
 
-    public String addPropsToMultipleContacts(String tenantUniqueName, List<String> contactIds, Map<String, String> propData) {
+    public String addPropsToMultipleContacts(String tenantUniqueName, List<String> contactIds, Map<String, String> propData, String username) {
         if (contactIds.isEmpty()) {
             throw new CustomHttpException("Contact ids cannot be empty", 400, ExceptionCause.USER_ERROR);
         }
@@ -297,6 +310,19 @@ public class TenantServices {
         for (Contact c : contacts) {
             if (contactIds.contains(c.getId())) {
                 Map<String, String> oldProps = c.getProps();
+                if (oldProps.containsKey(propData.keySet().iterator().next())) {
+                    Event event = new Event(username, c.getId(), EventState.UPDATED);
+                    event.setPropKey(propData.keySet().iterator().next());
+                    event.setPrevState(oldProps.get(propData.keySet().iterator().next()));
+                    event.setCurrentState(propData.get(propData.keySet().iterator().next()));
+                    eventsServices.addEvent(event, tenantUniqueName);
+                } else {
+                    Event event = new Event(username, c.getId(), EventState.PROP_ADD);
+                    event.setPropKey(propData.keySet().iterator().next());
+                    event.setPrevState("");
+                    event.setCurrentState(propData.get(propData.keySet().iterator().next()));
+                    eventsServices.addEvent(event, tenantUniqueName);
+                }
                 oldProps.putAll(propData);
                 c.setProps(oldProps);
                 mongoTemplate.save(c, tenantUniqueName + CollectionType.MAIN.getCollectionType());
@@ -306,7 +332,7 @@ public class TenantServices {
         return "Props added to contacts successfully";
     }
 
-    public String removePropsFromMultipleContacts(String tenantUniqueName, List<String> contactIds, List<String> propsToRemove) {
+    public String removePropsFromMultipleContacts(String tenantUniqueName, List<String> contactIds, List<String> propsToRemove, String username) {
         if (contactIds.isEmpty()) {
             throw new CustomHttpException("Contact ids cannot be empty", 400, ExceptionCause.USER_ERROR);
         }
@@ -323,7 +349,14 @@ public class TenantServices {
             if (contactIds.contains(c.getId())) {
                 Map<String, String> oldProps = c.getProps();
                 for (String prop : propsToRemove) {
-                    oldProps.remove(prop);
+                    if (oldProps.containsKey(prop)) {
+                        Event event = new Event(username, c.getId(), EventState.PROP_REMOVED);
+                        event.setPropKey(prop);
+                        event.setCurrentState("");
+                        event.setPrevState(oldProps.get(prop));
+                        eventsServices.addEvent(event, tenantUniqueName);
+                        oldProps.remove(prop);
+                    }
                 }
                 c.setProps(oldProps);
                 mongoTemplate.save(c, tenantUniqueName + CollectionType.MAIN.getCollectionType());
