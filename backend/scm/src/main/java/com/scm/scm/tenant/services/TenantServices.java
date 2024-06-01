@@ -261,12 +261,12 @@ public class TenantServices {
         return "Tags added to contacts successfully";
     }
 
-    public String removeTagsFromMultipleContacts(String tenantUniqueName, List<String> contactIds, String tag, String username) {
+    public String removeTagsFromMultipleContacts(String tenantUniqueName, List<String> contactIds, String[] tags, String username) {
         if (contactIds.isEmpty()) {
             throw new CustomHttpException("Contact ids cannot be empty", 400, ExceptionCause.USER_ERROR);
         }
-        if (tag.isEmpty()) {
-            throw new CustomHttpException("Tag cannot be empty", 400, ExceptionCause.USER_ERROR);
+        if (tags.length == 0) {
+            throw new CustomHttpException("Tags cannot be empty", 400, ExceptionCause.USER_ERROR);
         }
         if (tenantUniqueName.isEmpty()) {
             throw new CustomHttpException("Tenant unique name cannot be empty", 400, ExceptionCause.USER_ERROR);
@@ -277,17 +277,19 @@ public class TenantServices {
         for (Contact c : contacts) {
             if (contactIds.contains(c.getId())) {
                 List<String> oldTags = c.getTags();
-                if (oldTags.contains(tag)) {
-                    Event event = new Event(username, c.getId(), EventState.TAG_REMOVED);
-                    event.setCurrentState("");
-                    event.setPropKey("TAG");
-                    event.setPrevState(tag);
-                    eventsServices.addEvent(event, tenantUniqueName);
-                    oldTags.remove(tag);
-                    c.setTags(oldTags);
-                    mongoTemplate.save(c, tenantUniqueName + CollectionType.MAIN.getCollectionType());
-                    removeTags(tenantUniqueName, List.of(tag));
+                for (String tag : tags) {
+                    if (oldTags.contains(tag)) {
+                        Event event = new Event(username, c.getId(), EventState.TAG_REMOVED);
+                        event.setCurrentState("");
+                        event.setPropKey("TAG");
+                        event.setPrevState(tag);
+                        eventsServices.addEvent(event, tenantUniqueName);
+                        oldTags.remove(tag);
+                    }
                 }
+                c.setTags(oldTags);
+                mongoTemplate.save(c, tenantUniqueName + CollectionType.MAIN.getCollectionType());
+                removeTags(tenantUniqueName, Arrays.asList(tags));
             }
         }
 

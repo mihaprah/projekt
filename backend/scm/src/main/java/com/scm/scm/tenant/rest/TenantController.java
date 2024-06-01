@@ -151,7 +151,7 @@ public class TenantController {
     @PutMapping(value = "/tags/multiple/remove/{tenant_unique_name}/{tag}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> removeMultipleTags(
             @PathVariable("tenant_unique_name") String tenantUniqueName,
-            @PathVariable("tag") String tag,
+            @PathVariable("tag") String[] tags,
             @RequestHeader("userToken") String userToken,
             @RequestHeader("tenantId") String tenantId,
             @RequestBody List<String> contactIds) {
@@ -162,7 +162,7 @@ public class TenantController {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
 
-        return ResponseEntity.ok(tenantServices.removeTagsFromMultipleContacts(tenantUniqueName, contactIds, tag, decodedToken.getEmail()));
+        return ResponseEntity.ok(tenantServices.removeTagsFromMultipleContacts(tenantUniqueName, contactIds, tags, decodedToken.getEmail()));
     }
 
 
