@@ -36,9 +36,9 @@ Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplik
 ## 1. Predstavitev projekta
 ### Podroben opis projekta
 Načrtovati, nadgraditi, implementirati in namestiti bo potrebno sistem, ki bo uporabnikom omogočal vodenje kontaktov na nekem projektu ali v nekem podjetju. Skupino kontaktov lahko uporabniki kreirajo sami, kontakti naj bodo vidni le znotraj te skupine; poskrbeti bo torej treba za izolacijo podatkov med različnimi uporabniki in njihovimi projekti.
-Podatki o uporabnikih naj bodo do določene mere predefinirani, omogočeno pa naj bo tudi poljubno definiranje kontaktov v smislu kluč-vrednost. Pričakuje se označevanje kontaktov s poljubnimi značkami, ki bodo služile kot kategorije kontaktov. Voditi bo potrebno tudi vse spremembe kontaktov (revizijska sled) in jih tudi primerno verzionirati. Dostop do zalednega sistema naj bo mogoč preko ustrezno zavarovanega REST vmesnika.
+Podatki o uporabnikih naj bodo do določene mere predefinirani, omogočeno pa naj bo tudi poljubno definiranje kontaktov v smislu ključ-vrednost. Pričakuje se označevanje kontaktov s poljubnimi značkami, ki bodo služile kot kategorije kontaktov. Voditi bo potrebno tudi vse spremembe kontaktov (revizijska sled) in jih tudi primerno verzionirati. Dostop do zalednega sistema naj bo mogoč preko ustrezno zavarovanega REST vmesnika.
 Uporabniški vmesnik naj nudi prijazen pregled, iskanje, filtriranje ter izvoz označenih kontaktov v
-format MS Excel. Konkurenčna prednost izdelka prek konkurenčnimi CRM sistemi bo torej ravno
+format MS Excel. Konkurenčna prednost izdelka pred konkurenčnimi CRM sistemi bo torej ravno
 enostavnost uporabe.
 
 ## 2. Dokumentacija
@@ -52,29 +52,29 @@ V dokumentaciji projekta je predstavljen celoten proces dela od začetka do konc
 - Dodajanje poljubnih značk kontaktom
 - Ustvarjanje lastnih atributov za posamezen kontakt
 - Revizijska sled kontaktov
-- Nastavljanje poljubnih iemn atributov za skupine
+- Nastavljanje poljubnih imen atributov za skupine
 - Izvoz kontaktov v format MS Excel (*.xslx*)
 - Uzvoz kontaktov v formatu MS Excel (*.xslx*)
 
 ### Tehnološki nabor
 #### Backend (zaledje)
-Zaledje aplikacije smo izdelali v programskem jeziku [Java](https://www.java.com/en/). Uporabili smo ogrodje [SpringBoot](https://spring.io/projects/spring-boot), ki nam je pomagalo izgraditi REST vmesnik in komunicirati s podatkovno bazo. Za podatkovno bazo smo izbrali NoSQL dokumentno bazo [MongoDB](https://www.mongodb.com), ki nam je omogočila shranjevanje fleksibilnih, JSON podobnih dokumentov. Ta je bila potrebna, saj imajo lahko posamezni kontakti na sebi poljubno število različnih atributov in značk. Bazo smo poganli v dockerju in za prikaz uporabili [Atlas Compass](https://www.mongodb.com/products/tools/compass), ki nam je omogočal vizualizacijo podatkovne baze. V njem je bilo tudi možno kolekcije in podatke spreminjati in brisati. Za testiranje API-jev smo uporabili orodje [Postman](https://www.postman.com), ki nam je omogočilo kreacijo map v katerih smo imeli vse posamezne requeste za vse objekte. Te mape smo lahko med seboj tudi delili in tako zagotovili enako okolje za testiranje API-ja. Postman omogoča tudi pisanje skript, ki smo jih uporabili pri generiranju naključnih podatkov za namena polnjenja baze za testiranje. Za lažje dokumentiranje APIja smo tudi uporabili orodje [Swagger](https://swagger.io), ki nam je lepo vizualno prikazalo, katere vse končne točke ima aplikacija, kaj sprejmejo, kje so dostopne in kaj vračajo. Omogoča tudi pregled vseh shem, ki se uporabljajo za pošiljanje podatkov preko http protokola.
+Zaledje aplikacije smo izdelali v programskem jeziku [Java](https://www.java.com/en/). Uporabili smo ogrodje [SpringBoot](https://spring.io/projects/spring-boot), ki nam je pomagalo izgraditi REST vmesnik in komunicirati s podatkovno bazo. Za podatkovno bazo smo izbrali NoSQL dokumentno bazo [MongoDB](https://www.mongodb.com), ki nam je omogočila shranjevanje fleksibilnih, JSON podobnih dokumentov. Ta je bila potrebna, saj lahko imajo posamezni kontakti na sebi poljubno število različnih atributov in značk. Bazo smo pognali v dockerju in za prikaz uporabili [Atlas Compass](https://www.mongodb.com/products/tools/compass), ki nam je omogočal vizualizacijo podatkovne baze. V njem je bilo tudi možno kolekcije in podatke spreminjati in brisati. Za testiranje API-jev smo uporabili orodje [Postman](https://www.postman.com), ki nam je omogočilo kreacijo map v katerih smo imeli vse posamezne requeste za vse objekte. Te mape smo lahko med seboj tudi delili in tako zagotovili enako okolje za testiranje API-ja. Postman omogoča tudi pisanje skript, ki smo jih uporabili pri generiranju naključnih podatkov za namena polnjenja baze za testiranje. Za lažje dokumentiranje APIja smo tudi uporabili orodje [Swagger](https://swagger.io), ki nam je lepo vizualno prikazalo, katere vse končne točke ima aplikacija, kaj sprejmejo, kje so dostopne in kaj vračajo. Omogoča tudi pregled vseh shem, ki se uporabljajo za pošiljanje podatkov preko http protokola.
 
 #### Frontend (pročelje)
 Spletno aplikacijo smo izdelali s pomočjo programske knjižnice [React](https://react.dev) v programskem jeziku [Typescript](https://www.typescriptlang.org). Za ogrodje smo uporabili [Next.js](https://nextjs.org), ki ima številne prednosti:
-- komponente smo lahko označili kot "server komponente", kaj izboljša samo delovanje aplikacije
-- v osnovni obliki omogoča navigacijo s pomočjo app routerja, kaj je pomenilo, da ga ni potrebno lastno implementirati
+- komponente smo lahko označili kot "server komponente", kar izboljša samo delovanje aplikacije
+- v osnovni obliki omogoča navigacijo s pomočjo app routerja, kar je pomenilo, da ga ni potrebno lastno implementirati
 
-Za vizulani izgled aplikacije smo uporabili nizko nivojski okvir za CSS [Tailwind CSS](https://tailwindcss.com), ki nam je omočil enostvano izgradnjo komponent s uporabo pripomočkov. Komponente so tako hitro postale odzivne in se držale enakega stila, saj smo glavne CSS atribute nastavili v **tailwind.config.ts** datoteki (border-radius, margin, padding, width, primary-color, background-color,...).
+Za vizulani izgled aplikacije smo uporabili nizko nivojski okvir za CSS [Tailwind CSS](https://tailwindcss.com), ki nam je omočil enostvano izgradnjo komponent z uporabo pripomočkov. Komponente so tako hitro postale odzivne in se držale enakega stila, saj smo glavne CSS atribute nastavili v **tailwind.config.ts** datoteki (border-radius, margin, padding, width, primary-color, background-color,...).
 
-Za prijavo in registracijo uporabnikov smo uporabili [Firebase](https://firebase.google.com), ki omogoča možnost prijave s emailom in geslom. Prav tako omogoča avtentikacijo uporabnikov tako na frontendu, kot na backendu.
+Za prijavo in registracijo uporabnikov smo uporabili [Firebase](https://firebase.google.com), ki omogoča možnost prijave z emailom in geslom. Prav tako omogoča avtentikacijo uporabnikov tako na frontendu, kot na backendu.
 
 #### Gostovanje
-Za namene predstavitve smo projekt naložili na splet. Za gostovanje backenda in Mongo podatkovne baze smo uporabili ponudnika [Railway](https://railway.app), ki nam je omogočil enostavno nalaganje iz GitHub repozitorija in tudi enostavno dodajanje okoljskih spremenljivk, ki so potrebne za povezavo na bazo in avtentikacijo. Za gostovanje frontenda smo izbrali ponudnika [Vercel](https://vercel.com), ki je oblačna platforma za gostovanje JavaScript storitev in podpira Next.js. Omogoča hitro gostovanje s pomočji GitHub repozitorija in okoljskih spremenljivk, ki so potrebne za avtentikacijo.
+Za namene predstavitve smo projekt naložili na splet. Za gostovanje backenda in Mongo podatkovne baze smo uporabili ponudnika [Railway](https://railway.app), ki nam je omogočil enostavno nalaganje iz GitHub repozitorija in tudi enostavno dodajanje okoljskih spremenljivk, ki so potrebne za povezavo na bazo in avtentikacijo. Za gostovanje frontenda smo izbrali ponudnika [Vercel](https://vercel.com), ki je oblačna platforma za gostovanje JavaScript storitev in podpira Next.js. Omogoča hitro gostovanje s pomočjo GitHub repozitorija in okoljskih spremenljivk, ki so potrebne za avtentikacijo.
 
 ### Organizacija in način dela
 #### Komunikacija
-Vsa komunikacija znotraj projekta je bila speljana preko [Discord](https://discord.com) strežnika, razen komuniciranje s profersorjem, ki je bilo preko maila. Naredili smo ločene kanale za posamezne dele projekta. Tako smo uspeli ločit komunikacijo, da smo lahko reševali probleme ločeno in se zadeve niso izgubile oziroma se niso problemi spregledali. Prav tako smo preko Discord strežnika izvedli vse skupinske sestanke in vso delo na daljavo, kjer smo si pomagali s funkcijo deljenja zaslona.
+Vsa komunikacija znotraj projekta je bila speljana preko [Discord](https://discord.com) strežnika, razen komuniciranje s profersorjem, ki je bila preko maila. Naredili smo ločene kanale za posamezne dele projekta. Tako smo uspeli ločit komunikacijo, da smo lahko reševali probleme ločeno in se zadeve niso izgubile oziroma se niso problemi spregledali. Prav tako smo preko Discord strežnika izvedli vse skupinske sestanke in vso delo na daljavo, kjer smo si pomagali s funkcijo deljenja zaslona.
 
 Med izvedbo samega projekta smo izvedli tudi številne sestanke s profesorjem v živo. Namen teh je bil prikazati dosedanje delo, dobiti povratne informacije in morebitne napotke za nadaljne delo.
 <p align="center">
@@ -96,7 +96,7 @@ Za vodenja dela na projektu smo izbrali principe metode [SCRUM](https://www.scru
 <p align="center">
   <img width="430" alt="task-example" src="https://github.com/mihaprah/projekt/assets/116807398/d2f0b728-0fd1-432e-a094-ef09c9df7327">
 </p>
-Task je nato šel v skupino vseh taskov imenovano "Backlog", kjer so bili vidno vsi taski na projektu in pa število ur dela, ki jih potrebujemo za končanje vseh taskov. Tako smo lahko vodili napredek na projektu in videli ali smo s delom na tekočem ali v zaostanku.
+Task je nato šel v skupino vseh taskov imenovano "Backlog", kjer so bili vidni vsi taski na projektu in število ur dela, ki jih potrebujemo za končanje vseh taskov. Tako smo lahko vodili napredek na projektu in videli ali smo z delom na tekočem ali v zaostanku.
 
 <p align="center">
   <img width="1272" alt="tasks-backlog" src="https://github.com/mihaprah/projekt/assets/116807398/08ec3001-ed98-42be-a5b0-2c65a20e12d0">
@@ -114,11 +114,11 @@ Za shranjevanje podatkov smo uporabili MongoDB, kjer smo uporabljali različne k
 - Tenant deleted -> kolekcija, ki beleži vse izbrisane kontakte znotraj ene skupine
 - Tenant activity -> kolekcija, ki beleži vse aktivnosti, ki jih izvede uporabnik znotraj eneke skupine, kot so recimo ustvarjanje, posodabljanje ali brisanje kontaktov. Ta kolekcija nam omogoča usvarjanje revizijske sledi.
 
-Posamezen kontakt ima kot privzeto nastavljena title oziroma naziv, ostale atribute lahko poljubno dodaja uporabnik, kot pare ključ in vredost. Kontaktu se lahko dodajo tudi značke in komentarji. Vse spremembe na posamznem kontaktu se beležijo in hranijo v kolekcijo activity.
+Posamezen kontakt ima kot privzeto nastavljena title oziroma naziv, ostale atribute lahko poljubno dodaja uporabnik, kot pare ključ in vredost. Kontaktu se lahko dodajo tudi značke in komentarji. Vse spremembe na posameznem kontaktu se beležijo in hranijo v kolekcijo activity.
 
-Obstaja tudi glavna kolekcija "Tenants", kjer so zabeleženi dodatni podatki o vsaki kolekciji, kot so njeno celo ime, opis, barva, ime uporabnikov, ki imajo do nje dostop, shranjeni atributi za prikaz in pa tako imenovai label, ki omogočajo mapiranje poljubno mapiranje ključ vrednosti za vsako skupino uporabnikov posebaj.
+Obstaja tudi glavna kolekcija "Tenants", kjer so zabeleženi dodatni podatki o vsaki kolekciji, kot so njeno celo ime, opis, barva, ime uporabnikov, ki imajo do nje dostop, shranjeni atributi za prikaz in pa tako imenovani label, ki omogočajo poljubno mapiranje ključ vrednosti za vsako skupino uporabnikov posebaj.
 
-Kolekcija "Predefined searches", je namenjena shranjevanju iskalnih podatkov posameznih uporabnikov, če se ti uporabljajo recimo zelo pogosto. Uporabniik lahko ob filtriranju shrani nastavitve filtriranja za prihodnjo upšorabo.
+Kolekcija "Predefined searches", je namenjena shranjevanju iskalnih podatkov posameznih uporabnikov, če se ti uporabljajo recimo zelo pogosto. Uporabniik lahko ob filtriranju shrani nastavitve filtriranja za prihodnjo uporabo.
 
 Spodaj je skica, ki prikazuje strukturo naše podatkovne baze.
 <p align="center">
@@ -131,20 +131,20 @@ Spodaj je skica, ki prikazuje strukturo naše podatkovne baze.
 </p>
 
 ### Graf registracije novega uporabnika in graf avtentikacije
-Priložena sta dva grafa ki prikazujeta postopek registracije novega uporabnika in postopek avtentikacije uporabniki pri pridobivanju podatkov.
+Priložena sta dva grafa, ki prikazujeta postopek registracije novega uporabnika in postopek avtentikacije uporabnika pri pridobivanju podatkov.
 #### Registracija novega uporabnika
 1. Uporabnik se najprej registrira v aplikaciji SCM preko emaila in gesla
 2. V ozadju se pošlje registracija na Firebase, kjer se doda novi uporabnik
 3. Firebase pošlje uporabniku mail s povezavo za potrditev novega računa
 4. Ko uporabnik potrdi svoj račun, se lahko prijavi v aplikaciji SCM
 5. Preko Firebase se izvede avtentikacija uporabnika
-6. Če je avtentikacija uspešna, se uporabnika spusti v aplikacijo, drugače mu dostop zavrne
+6. Če je avtentikacija uspešna, se uporabnika spusti v aplikacijo, drugače se mu dostop zavrne
 <p align="center">
   <img alt="user-registration" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/594fa78c-8be2-4c74-8e94-3da261984a42">
 </p>
 
 #### Avtentikacija uporabnika
-1. Uporabnik pošlje zahtevek na backend, kjer se v "Request Heafer" vključi njegov **IdToken**
+1. Uporabnik pošlje zahtevek na backend, kjer se v "Request Header" vključi njegov **IdToken**
 2. Najprej se preveri ali je token veljaven, torej če je uporabnik registriran preko Firebase v aplikacijo SCM
 3. Če je avtentikacija zavrnjena, se potopek zaključi, drugače se preveri ali ima uporabnik dostop do Tenanta, za kateraga želi pridobiti podatke
 4. Če je avtentikacija uspešna pridobi podatke, ki jih je želel, drugače se postopek zaključi
@@ -157,7 +157,7 @@ Vsi zgornji grafi so na voljo v mapi [**documentation/charts**](https://github.c
 
 
 ### Wireframe aplikacije (prototip izgleda)
-S pomočjo orodja [Figma](https://www.figma.com), ki omogoča enostavno in hitro izdelavo vizualnih prototipov, smo izdelali prototip, kako bi naj aplikacija izgledala. Prototip nam je nato služil, kot navodilo za izgradnjo spletne aplikacije v nadaljevanju projekta. Spodaj je na voljo nekaj zaslonskih posnetkov prototipa, vse slike so na dostopne v mapi [**documentation/documentation-photos**](https://github.com/mihaprah/projekt/tree/main/documentation/documentation-photos)
+S pomočjo orodja [Figma](https://www.figma.com), ki omogoča enostavno in hitro izdelavo vizualnih prototipov, smo izdelali prototip, kako bi naj aplikacija izgledala. Prototip nam je nato služil, kot navodilo za izgradnjo spletne aplikacije v nadaljevanju projekta. Spodaj je na voljo nekaj zaslonskih posnetkov prototipa, vse slike so dostopne v mapi [**documentation/documentation-photos**](https://github.com/mihaprah/projekt/tree/main/documentation/documentation-photos)
 
 <p align="center">
   <img alt="dashboard" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/52fce584-1c14-4b32-81b3-1ceb4bac6364">
@@ -186,13 +186,13 @@ Unit teste smo pisali tudi za vse Service razrede:
 - TenantsServices
 - ContactServices
 
-To nam je omogočalo, da smo z uporabo **GitHub Actions** naredili Workflow, ki nam je pognal vse teste, ki smo jih imeli v projektu z vsakim commitom na repozitorij. S tem smo lahko videli ali je nova koda, ki smo jo naložili na repozitorij pokvarila, katerega izmed testov in tako na napako tudi ustrezno reagirali s popravkom nove kode.
+To nam je omogočalo, da smo z uporabo **GitHub Actions** naredili Workflow, ki nam je pognal vse teste, ki smo jih imeli v projektu z vsakim commitom na repozitorij. S tem smo lahko videli ali je nova koda, ki smo jo naložili na repozitorij pokvarila, katerega izmed testov in tako na napako tudi ustrezno reagirali s popravkom kode.
 
-Ob pisanju REST vmesnika (Controller razredov) smo tudi testirali vse **API končne točke**, da smo preverili ali še vedno delujejo pravilno. Torej ali sprejmejo in vrnejo podatke, kot jih morajo in hkrati kako reagirajo ob prejemu napačnih podatkov. Za to smo si pomagali z orodjem Swagger, ki nam je omogočalo pregled vseh API točk in podatkov s katerimi te delujejo. Swagger smo vključili v projekt, ta je dostopen na tem *[linku](https://projekt-test-environment.up.railway.app/swagger-ui/index.html)*.
+Ob pisanju REST vmesnika (Controller razredov) smo testirali tudi vse **API končne točke**, da smo preverili ali še vedno delujejo pravilno. Torej ali sprejmejo in vrnejo podatke, kot jih morajo in hkrati kako reagirajo ob prejemu napačnih podatkov. Za to smo si pomagali z orodjem Swagger, ki nam je omogočalo pregled vseh API točk in podatkov s katerimi te delujejo. Swagger smo vključili v projekt, ta je dostopen na tem *[linku](https://projekt-test-environment.up.railway.app/swagger-ui/index.html)*.
 <p align="center">
   <img alt="swagger-api" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/a1983b6e-c604-4745-95c8-826ea1b2605f">
   <br/>
-  Pregled APIja s orodjem Swagger
+  Pregled APIja z orodjem Swagger
 </p>
 
 Orodje nam je omogočalo tudi pregled vseh shem, ki se uporabljajo v API klicih.
@@ -200,11 +200,11 @@ Orodje nam je omogočalo tudi pregled vseh shem, ki se uporabljajo v API klicih.
 <p align="center">
   <img alt="swagger-sheme" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/ae72425e-5976-4813-aaac-d4de057d352a">
   <br/>
-  Pregled shem, ki jih uporablja API s orodjem Swagger
+  Pregled shem, ki jih uporablja API z orodjem Swagger
 </p>
 
 ### GitHub Actions
-V projektu smo tudi vspostavili workflow, ki se je zaganjal ob vsakem pushu sprememb. Ta workflow je bil sestavljen iz 3. korakov
+V projektu smo tudi vzpostavili workflow, ki se je zaganjal ob vsakem pushu sprememb. Ta workflow je bil sestavljen iz 3. korakov
 1. Najprej se je pognal **build** za frontend in **build** za backend
 2. V drugem koraku se poženejo **Unit testi** za backend
 3. Na koncu se izvede **SonarCloud** pregled kode
@@ -216,12 +216,12 @@ V projektu smo tudi vspostavili workflow, ki se je zaganjal ob vsakem pushu spre
 
 
 ### Optimizacija kode
-Za optimizacijo kode in pregled kode, smo uporabili orodje [SonarCloud](https://sonarcloud.io/), ki nam je omogočalo, da smo v **GitHub Actions** Workflow vključili neprestan pregled kode. Repotizorij smo povezali s SonarCloudom in tako dobili dostop do nadzorne plošče projekta. Na njej smo lahko gledali kakša je koda glede na:
+Za optimizacijo kode in pregled kode, smo uporabili orodje [SonarCloud](https://sonarcloud.io/), ki nam je omogočalo, da smo v **GitHub Actions** Workflow vključili neprestan pregled kode. Repozitorij smo povezali s SonarCloudom in tako dobili dostop do nadzorne plošče projekta. Na njej smo lahko gledali kakšna je koda glede na:
 - Vzdrževanost
 - Zanesljivost
 - Varnost
 
-Če smo opazili velika odstopanje, ali pa je padel **Quality Gate**, smo kodo nemudoma popravili po pravilih in s predlogi orodja SonarCloud. To nam je omogočalo, da se problemi s kodo niso sropnjevali, saj smo jih rešili pravočasno.
+Če smo opazili velika odstopanje, ali pa je padel **Quality Gate**, smo kodo nemudoma popravili po pravilih in s predlogi orodja SonarCloud. To nam je omogočalo, da se problemi s kodo niso stopnjevali, saj smo jih rešili pravočasno.
 <p align="center">
   <img alt="sonarcloud-dashborad" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/d98155bc-dbc0-4a8a-942b-a2df574b499a">
   <br/>
@@ -230,7 +230,7 @@ Za optimizacijo kode in pregled kode, smo uporabili orodje [SonarCloud](https://
 
 
 ### Uporabniške zgodbe
-Osnova za pisanje testnih scenarijev so bile uporabniške zgodbe, ki so nam povedale, kdo bi rad v aplikaciji naredil kaj. Uporabiške zgodbe so bile:
+Osnova za pisanje testnih scenarijev so bile uporabniške zgodbe, ki so nam povedale, kdo bi rad v aplikaciji kaj naredil. Uporabniške zgodbe so bile:
 1. 
 
 Uporabniške zgodbe so na voljo v mapi [**documentation/test-cases-and-user-stories.pdf**](https://github.com/mihaprah/projekt/blob/main/documentation/test-cases-and-user-stories.pdf).
@@ -253,7 +253,7 @@ Testni scenariji so na voljo v mapi [**documentation/test-cases-and-user-stories
 ## 3. Navodila za namestitev lokalno
 
 ### Testno lokalno okolje
-Za namistitev aplikacije lokalno na vašem računalniku, smo naredili testno verzijo v posebnem repozitoriju, ki je dostopna na [tej povezavi](https://github.com/Matija334/projekt_local/tree/main).
+Za namestitev aplikacije lokalno na vašem računalniku, smo naredili testno verzijo v posebnem repozitoriju, ki je dostopna na [tej povezavi](https://github.com/Matija334/projekt_local/tree/main).
 
 #### Koraki za zagon
 
@@ -307,18 +307,18 @@ npm run start
 ```
 
 ## 4. Uporaba aplikacije
-Aplikacije je dostopna na tej [povezavi](https://scm-frontend-seven.vercel.app/login). Uporabnik se mora pred uporabo aplikacije na njej registrirati. Po registraciji bo na mail dobil povezavo za potrditev računa. Ko je opravil vse registracijo in potrdil svoj račun, se lahko prijavi v aplikacijo in ob uspešni prijavi dobi dostop do aplikacije.
+Aplikacije je dostopna na tej [povezavi](https://scm-frontend-seven.vercel.app/login). Uporabnik se mora pred uporabo aplikacije na njej registrirati. Po registraciji bo na mail dobil povezavo za potrditev računa. Ko je opravil vse korake registracije in potrdil svoj račun, se lahko prijavi v aplikacijo in ob uspešni prijavi dobi dostop do aplikacije.
 
 ### Uporabniški priročnik
-Uporabniški priročnik, je namenjen novim uporabnikom, da se seznanijo s delovanjem program. V njem so v 6. kategorijah zajete vse funkcionalnosti aplikacije, ki jih lahko uporablja uporabnik. Kategorije so sledeče:
+Uporabniški priročnik, je namenjen novim uporabnikom, da se seznanijo z delovanjem aplikacije. V njem so v 6. kategorijah zajete vse funkcionalnosti aplikacije, ki jih lahko uporablja uporabnik. Kategorije so sledeče:
 1. Prijava/Registracija
 2. Skupina (Tenant)
 3. Kontakt
 4. Uvoz/Izvod kontaktov
-5. Delo s večimi kontakti hkrati
+5. Delo z večimi kontakti hkrati
 6. Filtririranje
 
-Kategorije imajo tudi podakategorije, ki podrobno razložijo, kaj mora uporabnik storiti in kakšni so pogoji, da bo akcija uspešna. Uporabniški priročnik se nahaja v mapi [**documentation/user-manual.pdf**](https://github.com/mihaprah/projekt/blob/main/documentation/user-manual.pdf).
+Kategorije imajo tudi podkategorije, ki podrobno razložijo, kaj mora uporabnik storiti in kakšni so pogoji, da bo akcija uspešna. Uporabniški priročnik se nahaja v mapi [**documentation/user-manual.pdf**](https://github.com/mihaprah/projekt/blob/main/documentation/user-manual.pdf).
 
 ### Končni izgled aplikacije
 Spodaj so prikazani nekateri končni zaslonski posnetki aplikacije. Vsi posnetki so na voljo v mapi [**documentation/app-photos**](https://github.com/mihaprah/projekt/tree/main/documentation/app-photos).
