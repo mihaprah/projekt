@@ -171,7 +171,7 @@ const TenantPopup: React.FC<TenantAddPopupProps> = (props) => {
                                             onChange={(e) => handleInputChange(index, e.target.value)}
                                         />
                                     )}
-                                {label === 'Description' && <p className={"font-light text-xs mt-1"}>Max 50 words</p>}
+                                {label === 'Description' && <p className={"font-light text-xs mt-1"}>Min 10 letters required. Max 50 words!</p>}
                                 {label === 'Title' && <p className={"font-light text-xs mt-1"}>Min 3 letters required.</p>}
                                 {label === 'Other users' &&
                                     <p className={"font-light text-xs mt-1"}>You are already added</p>}
