@@ -47,38 +47,41 @@ public class ImportContactExcel {
                 contact.setId(UUID.randomUUID().toString());
 
                 // Extract title from name and surname
-                String name = getCellValueAsString(row.getCell(getColumnIndex(headerMap, "Ime", false)));
-                String surname = getCellValueAsString(row.getCell(getColumnIndex(headerMap, "Priimek", false)));
+                String name = getCellValueAsString(row.getCell(getColumnIndex(headerMap, "name", false)));
+                String surname = getCellValueAsString(row.getCell(getColumnIndex(headerMap, "lastname", false)));
                 contact.setTitle(name + " " + surname);
 
                 contact.setUser(userToken);
                 contact.setTenantUniqueName(tenantUniqueName);
 
-                String prefix = getCellValueAsString(row.getCell(getColumnIndex(headerMap, "Predpona", true)));
+                Map<String, String> props = new HashMap<>();
+                List<String> tags = new ArrayList<>();
+                List<String> predefinedProps = Arrays.asList("prefix", "company", "email", "phoneNumber", "houseNumber", "address", "postNumber", "city", "country", "comment");
 
-                // Extract comments if the column exists
-                Integer commentColumnIndex = getColumnIndex(headerMap, "Komentar", true);
-                if (commentColumnIndex != null) {
-                    contact.setComments(getCellValueAsString(row.getCell(commentColumnIndex)));
+                for (String prop : predefinedProps) {
+                    try {
+                        String value = getCellValueAsString(row.getCell(getColumnIndex(headerMap, prop, true)));
+                        if (value != null && !value.isEmpty()) {
+                            props.put(prop, value);
+                        }
+                    } catch (Exception ignored) {
+                    }
                 }
 
                 contact.setCreatedAt(LocalDateTime.now().toString());
 
-                Map<String, String> props = new HashMap<>();
-                List<String> tags = new ArrayList<>();
-
-                if (prefix != null && !prefix.isEmpty()) {
-                    props.put("prefix", prefix);
-                }
 
                 // Process all other columns
                 for (Map.Entry<Integer, String> entry : headerMap.entrySet()) {
                     String columnName = entry.getValue();
-                    if (columnName.equals("Ime") || columnName.equals("Priimek") || columnName.equals("Komentar") || columnName.equals("Predpona")) {
+                    if (columnName.equals("name") || columnName.equals("lastname") || predefinedProps.contains(columnName)) {
                         continue;
                     }
 
                     String value = getCellValueAsString(row.getCell(entry.getKey()));
+                    if (Objects.equals(value, "")) {
+                        continue;
+                    }
                     if (columnName.equalsIgnoreCase(value)) {
                         tags.add(columnName); // Add as tag if value matches column name
                     } else if (!value.isEmpty()) {
@@ -105,7 +108,7 @@ public class ImportContactExcel {
                 .filter(entry -> entry.getValue().equalsIgnoreCase(columnName))
                 .map(Map.Entry::getKey)
                 .findFirst()
-                .orElse(returnNullIfNotFound ? null : -1);
+                .orElse(null);
     }
 
     private String getCellValueAsString(Cell cell) {
@@ -125,8 +128,6 @@ public class ImportContactExcel {
                 return String.valueOf(cell.getBooleanCellValue());
             case FORMULA:
                 return cell.getCellFormula();
-            case BLANK:
-                return "";
             default:
                 return "";
         }
