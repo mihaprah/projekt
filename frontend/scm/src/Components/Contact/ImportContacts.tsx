@@ -77,7 +77,19 @@ const ImportContacts: React.FC<ImportContactsProps> = ({ tenantUniqueName, IdTok
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
                     <div className="bg-white p-10 rounded-8 shadow-lg max-w-3xl w-full my-10 overflow-auto">
                         <h2 className="font-semibold text-2xl">Import Contacts</h2>
-                        <p className="font-light text-sm mb-2">Select a file to import contacts. Only .xlsx and .xls files are supported.</p>
+                        <p className="font-light text-md mb-2">Select a file to import contacts. Only .xlsx and .xls
+                            files are supported.</p>
+                        <p className="font-light text-sm mb-2">File should follow this structure and rules:</p>
+                        <ul className="list-disc list-inside text-gray-700 text-sm mb-10">
+                            <li className="mb-2">This columns are optional, but they are presets for all tenants: 
+                                <b> prefix, name, lastname, phoneNumber, email, address, houseNumber, company, city, postNumber, country, comment</b>
+                            </li>
+                            <li className="mb-2">Other column names will be <b>added as new properties</b> for the contact</li>
+                            <li className="mb-2">If the column value matches the column name, the value will be <b>set as a
+                                contact tag</b>
+                            </li>
+                            <li className="mb-2">If the column value <b>is empty it will be ignored</b> and skipped</li>
+                        </ul>
                         <form>
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="file">
