@@ -126,7 +126,7 @@ public class ExportContactExcel {
 
             for (String tag : sortedTags) {
                 Cell cell = row.createCell(cellIdx++);
-                cell.setCellValue(contact.getTags().contains(tag) ? "true" : "false");
+                cell.setCellValue(contact.getTags().contains(tag) ? tag : "");
                 cell.setCellStyle((i % 2 == 0) ? evenRowStyle : defaultCellStyle);
             }
 
