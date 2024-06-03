@@ -434,4 +434,4 @@ Spodaj so prikazani nekateri končni zaslonski posnetki aplikacije. Vsi posnetki
 </p>
 
 ## 5. Predstavitev
-Prredstavite se nahaja v datoteki [**documentation/project-presentation.pdf**]().
+Predstavitev se nahaja v datoteki [**documentation/project-presentation.pptx**](https://github.com/mihaprah/projekt/blob/main/documentation/projekt-presentation.pptx).
