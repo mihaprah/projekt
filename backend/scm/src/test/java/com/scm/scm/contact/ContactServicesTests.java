@@ -105,7 +105,7 @@ class ContactServicesTests {
         when(mongoTemplate.findById(anyString(), eq(Contact.class), anyString())).thenReturn(null);
         String username = "username";
 
-        String result = contactServices.createContact(contactDTO, username);
+        String result = contactServices.createContact(contactDTO, username, false);
 
         assertEquals("Contact created successfully to tenantUniqueName_main collection", result);
         verify(mongoTemplate, times(1)).save(any(Contact.class), anyString());

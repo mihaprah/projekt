@@ -118,7 +118,7 @@ public class ContactServices {
         return contacts.stream().map(this::convertToDTO).toList();
     }
 
-    public String createContact(ContactDTO contactDTO, String username) {
+    public String createContact(ContactDTO contactDTO, String username, Boolean duplicateCheck) {
         ContactDTO sanitizedContactDTO = new ContactDTO();
         sanitizedContactDTO.setId(StringEscapeUtils.escapeHtml4(contactDTO.getId()));
         sanitizedContactDTO.setTitle(StringEscapeUtils.escapeHtml4(contactDTO.getTitle()));
@@ -152,8 +152,14 @@ public class ContactServices {
         tenantServices.addTags(contact.getTenantUniqueName(), contact.getTags());
         tenantServices.addLabels(contact.getTenantUniqueName(), contact.getProps().keySet());
 
-        Event event = new Event(username, contact.getId(), EventState.CREATED);
+        Event event;
+        if (duplicateCheck){
+            event = new Event(username, contact.getId(), EventState.DUPLICATED);
+        } else {
+            event = new Event(username, contact.getId(), EventState.CREATED);
+        }
         eventsServices.addEvent(event, contact.getTenantUniqueName());
+
 
         log.log(Level.INFO, String.format("Contact created with id: %s %s %s ", contact.getId(), FOR_TENANT, contact.getTenantUniqueName()));
         return "Contact created successfully to " + contact.getTenantUniqueName() + "_main collection";

@@ -8,7 +8,8 @@ public enum EventState {
     TAG_REMOVED,
     PROP_ADD,
     PROP_REMOVED,
-    REVERTED
+    REVERTED,
+    DUPLICATED
 
 
 }

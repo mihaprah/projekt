@@ -84,15 +84,15 @@ public class ContactController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addContact(@RequestHeader("userToken") String userToken, @RequestBody ContactDTO contactDTO) {
+    public ResponseEntity<String> addContact(@RequestHeader("userToken") String userToken,@RequestHeader("duplicate") String duplicate, @RequestBody ContactDTO contactDTO) {
         FirebaseToken decodedToken = userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""));
         String sanitizedUserToken = StringEscapeUtils.escapeHtml4(decodedToken.getEmail());
         contactDTO.setUser(sanitizedUserToken);
-
+        Boolean duplicateContact = Boolean.parseBoolean(duplicate);
         if (!userAccessService.hasAccessToContact(sanitizedUserToken, contactDTO.getTenantUniqueName())) {
             throw new CustomHttpException(ExceptionMessage.USER_ACCESS_TENANT.getExceptionMessage(), 403, ExceptionCause.USER_ERROR);
         }
-        return ResponseEntity.ok(contactServices.createContact(contactDTO, sanitizedUserToken));
+        return ResponseEntity.ok(contactServices.createContact(contactDTO, sanitizedUserToken, duplicateContact));
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

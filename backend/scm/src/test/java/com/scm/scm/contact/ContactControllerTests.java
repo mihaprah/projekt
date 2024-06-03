@@ -107,7 +107,7 @@ class ContactControllerTests {
         when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
         when(userAccessService.hasAccessToContact(mockToken.getEmail(), contactDTO.getTenantUniqueName())).thenReturn(true);
 
-        ResponseEntity<String> response = contactController.addContact(userToken, contactDTO);
+        ResponseEntity<String> response = contactController.addContact(userToken,"false", contactDTO);
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -235,7 +235,7 @@ class ContactControllerTests {
         when(mockToken.getEmail()).thenReturn("test@example.com");
         when(userVerifyService.verifyUserToken(userToken.replace("Bearer ", ""))).thenReturn(mockToken);
         when(userAccessService.hasAccessToContact(mockToken.getEmail(), contactDTO.getTenantUniqueName())).thenReturn(false);
-        assertThrows(CustomHttpException.class, () -> contactController.addContact(userToken, contactDTO));
+        assertThrows(CustomHttpException.class, () -> contactController.addContact(userToken, "false", contactDTO));
     }
 
     @Test
