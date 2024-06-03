@@ -77,6 +77,7 @@ Za namene predstavitve smo projekt naložili na splet. Za gostovanje backenda in
 Vsa komunikacija znotraj projekta je bila speljana preko [Discord](https://discord.com) strežnika, razen komuniciranje s profersorjem, ki je bila preko maila. Naredili smo ločene kanale za posamezne dele projekta. Tako smo uspeli ločit komunikacijo, da smo lahko reševali probleme ločeno in se zadeve niso izgubile oziroma se niso problemi spregledali. Prav tako smo preko Discord strežnika izvedli vse skupinske sestanke in vso delo na daljavo, kjer smo si pomagali s funkcijo deljenja zaslona.
 
 Med izvedbo samega projekta smo izvedli tudi številne sestanke s profesorjem v živo. Namen teh je bil prikazati dosedanje delo, dobiti povratne informacije in morebitne napotke za nadaljne delo.
+
 <p align="center">
   <img width="309" alt="discord-photo" src="https://github.com/mihaprah/projekt/assets/116807398/48f1979e-aaf7-4581-89ef-e99392d073d9">
 </p>
@@ -96,6 +97,7 @@ Za vodenja dela na projektu smo izbrali principe metode [SCRUM](https://www.scru
 <p align="center">
   <img width="430" alt="task-example" src="https://github.com/mihaprah/projekt/assets/116807398/d2f0b728-0fd1-432e-a094-ef09c9df7327">
 </p>
+
 Task je nato šel v skupino vseh taskov imenovano "Backlog", kjer so bili vidni vsi taski na projektu in število ur dela, ki jih potrebujemo za končanje vseh taskov. Tako smo lahko vodili napredek na projektu in videli ali smo z delom na tekočem ali v zaostanku.
 
 <p align="center">
@@ -120,10 +122,91 @@ Obstaja tudi glavna kolekcija "Tenants", kjer so zabeleženi dodatni podatki o v
 
 Kolekcija "Predefined searches", je namenjena shranjevanju iskalnih podatkov posameznih uporabnikov, če se ti uporabljajo recimo zelo pogosto. Uporabniik lahko ob filtriranju shrani nastavitve filtriranja za prihodnjo uporabo.
 
-Spodaj je skica, ki prikazuje strukturo naše podatkovne baze.
 <p align="center">
   <img width="700" alt="diagram-primerov-uporabe" src="https://github.com/mihaprah/projekt/assets/116807398/019d51c9-4768-4c75-9b1c-fb396446de90">
+  <br />
+  Skica, ki prikazuje strukturo naše podatkovne baze.
 </p>
+
+#### Sheme podatkov v bazi
+1. Tenant
+```JSON
+{
+  "id": "string",
+  "title": "string",
+  "tenantUniqueName": "string",
+  "description": "string",
+  "colorCode": "string",
+  "active": true,
+  "users": [
+    "string"
+  ],
+  "contactTags": {
+    "additionalProp1": 0,
+    "additionalProp2": 0,
+    "additionalProp3": 0
+  },
+  "labels": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  },
+  "displayProps": [
+    "string"
+  ]
+}
+```
+
+2. Contact
+```JSON
+{
+  "id": "string",
+  "title": "string",
+  "user": "string",
+  "tenantUniqueName": "string",
+  "comments": "string",
+  "createdAt": "string",
+  "tags": [
+    "string"
+  ],
+  "props": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  },
+  "attributesToString": "string"
+}
+```
+
+3. Event
+```JSON
+{
+    "id": "string",
+    "user": "string",
+    "contact": "string",
+    "eventState": "CREATED",
+    "propKey": "string",
+    "prevState": "string",
+    "currentState": "string",
+    "eventTime": "2024-06-03T17:09:49.479Z"
+  }
+```
+
+4. PredefinedSearch
+```JSON
+{
+  "id": "string",
+  "searchQuery": "string",
+  "user": "string",
+  "onTenant": "string",
+  "title": "string",
+  "filter": [
+    "string"
+  ],
+  "sortOrientation": "ASC"
+}
+```
+
 
 ### Diagram primerov uporabe
 <p align="center">
@@ -186,6 +269,12 @@ Unit teste smo pisali tudi za vse Service razrede:
 - TenantsServices
 - ContactServices
 
+<p align="center">
+  <img alt="unit-test" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/a26b626f-a6b4-4996-808c-674972f7e3c4">
+  <br/>
+  Vsi pognani Unit testi
+</p>
+
 To nam je omogočalo, da smo z uporabo **GitHub Actions** naredili Workflow, ki nam je pognal vse teste, ki smo jih imeli v projektu z vsakim commitom na repozitorij. S tem smo lahko videli ali je nova koda, ki smo jo naložili na repozitorij pokvarila, katerega izmed testov in tako na napako tudi ustrezno reagirali s popravkom kode.
 
 Ob pisanju REST vmesnika (Controller razredov) smo testirali tudi vse **API končne točke**, da smo preverili ali še vedno delujejo pravilno. Torej ali sprejmejo in vrnejo podatke, kot jih morajo in hkrati kako reagirajo ob prejemu napačnih podatkov. Za to smo si pomagali z orodjem Swagger, ki nam je omogočalo pregled vseh API točk in podatkov s katerimi te delujejo. Swagger smo vključili v projekt, ta je dostopen na tem *[linku](https://projekt-test-environment.up.railway.app/swagger-ui/index.html)*.
@@ -222,8 +311,9 @@ Za optimizacijo kode in pregled kode, smo uporabili orodje [SonarCloud](https://
 - Varnost
 
 Če smo opazili velika odstopanje, ali pa je padel **Quality Gate**, smo kodo nemudoma popravili po pravilih in s predlogi orodja SonarCloud. To nam je omogočalo, da se problemi s kodo niso stopnjevali, saj smo jih rešili pravočasno.
+
 <p align="center">
-  <img alt="sonarcloud-dashborad" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/d98155bc-dbc0-4a8a-942b-a2df574b499a">
+  <img alt="sonarcloud-dashborad" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/7ccceb9b-14f8-428c-afcf-53a19cf8de10">
   <br/>
   Pregled nadzorne plošče v orodju SonarCloud
 </p>
