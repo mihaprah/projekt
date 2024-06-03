@@ -4,8 +4,8 @@
   <img alt="SCM Logo" width="400" src="https://github.com/mihaprah/projekt/assets/116807398/1d171956-57b7-49b9-93d9-3525148c70d7" >
 </p>
 
-SCM oziroma Simple Contact Manager, je spletna aplikacija namenjena upravljanju s kontakti. Njena glavna prednost pred ostalimi CRM (Customer Relations Manager) programi, je njena preposta uporaba, saj je namenjena izključno delu s kontakti.
-Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplikacije lokalno, uporaba aplikacije na spletu in dokumentacija za aplikacijo SCM.
+SCM oziroma Simple Contact Manager, je spletna aplikacija namenjena upravljanju s kontakti. Njena glavna prednost pred ostalimi CRM (Customer Relation Management) programi, je njena preposta uporaba, saj je namenjena izključno delu s kontakti.
+Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplikacije lokalno, uporaba aplikacije na spletu (za namene predstavitve) in dokumentacija za aplikacijo SCM.
 ### Člani ekipe MMA
 - [Miha Prah](https://github.com/mihaprah)
 - [Matija Krsnik](https://github.com/Matija334)
@@ -32,6 +32,7 @@ Ta datoteka, bo služila kot predstavitev projekta, navodila za namestitev aplik
 4. [Uporaba aplikacije](#4-uporaba-aplikacije)
     - [Uporabniški priročnik](#uporabniški-priročnik)
     - [Končni izgled aplikacije](#končni-izgled-aplikacije)
+5. [Predstavite](#5-predstavitev)
 
 ## 1. Predstavitev projekta
 ### Podroben opis projekta
@@ -49,10 +50,15 @@ V dokumentaciji projekta je predstavljen celoten proces dela od začetka do konc
 - Filtriranje in iskanje po kontaktih
 - Shranjevanje filtrov
 - Pregled izbrisanih kontaktov
+- Obnovitev kontakta iz izbrisanih
+- Trajno brisanje kontaktov iz baze
 - Dodajanje poljubnih značk kontaktom
 - Ustvarjanje lastnih atributov za posamezen kontakt
 - Revizijska sled kontaktov
 - Nastavljanje poljubnih imen atributov za skupine
+- Podvajanje kontaktov
+- Urejanje večih kontaktov hkrati
+- Prikaz kontakov v pogledu seznama ali mreže ter paginacija
 - Izvoz kontaktov v format MS Excel (*.xslx*)
 - Uzvoz kontaktov v formatu MS Excel (*.xslx*)
 
@@ -123,7 +129,7 @@ Obstaja tudi glavna kolekcija "Tenants", kjer so zabeleženi dodatni podatki o v
 Kolekcija "Predefined searches", je namenjena shranjevanju iskalnih podatkov posameznih uporabnikov, če se ti uporabljajo recimo zelo pogosto. Uporabniik lahko ob filtriranju shrani nastavitve filtriranja za prihodnjo uporabo.
 
 <p align="center">
-  <img width="700" alt="diagram-primerov-uporabe" src="https://github.com/mihaprah/projekt/assets/116807398/019d51c9-4768-4c75-9b1c-fb396446de90">
+  <img width="900" alt="diagram-primerov-uporabe" src="https://github.com/mihaprah/projekt/assets/116807398/019d51c9-4768-4c75-9b1c-fb396446de90">
   <br />
   Skica, ki prikazuje strukturo naše podatkovne baze.
 </p>
@@ -270,7 +276,7 @@ Unit teste smo pisali tudi za vse Service razrede:
 - ContactServices
 
 <p align="center">
-  <img alt="unit-test" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/a26b626f-a6b4-4996-808c-674972f7e3c4">
+  <img alt="unit-test" width="1000" src="https://github.com/mihaprah/projekt/assets/116807398/a26b626f-a6b4-4996-808c-674972f7e3c4">
   <br/>
   Vsi pognani Unit testi
 </p>
@@ -426,3 +432,6 @@ Spodaj so prikazani nekateri končni zaslonski posnetki aplikacije. Vsi posnetki
   <br/>
   Pregled vseh kontaktov za ene skupine (Tenant). Pogled je nastavljen na <b>seznam</b> ali na <b>mrežo</b>.
 </p>
+
+## 5. Predstavitev
+Prredstavite se nahaja v datoteki [**documentation/project-presentation.pdf**]().
