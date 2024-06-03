@@ -51,7 +51,7 @@ const Register = () => {
                 }
             } else {
                 setLoading(false);
-                toast.error("Something went wrong. Please try again.");
+                toast.error("Something went wrong. Wrong credentials.");
             }
         }
     };
@@ -126,8 +126,8 @@ const Register = () => {
                                 placeholder="Confirm Password"
                             />
                         </label>
-                        <p className={"text-xs text-gray-400 break-words"}>Password must be at least 6 characters
-                            long.</p>
+                        <p className={"text-xs text-gray-400 break-words mt-3 max-w-xl text-center mb-3"}>Password must be at least 8 characters
+                            long. It should contain at least one uppercase letter, one lowercase letter, one number and one special character.</p>
                         {password.length > 5 && password === confirmPassword ? (
                             <p className={"text-xs text-success"}>Passwords match!</p>
                         ) : (

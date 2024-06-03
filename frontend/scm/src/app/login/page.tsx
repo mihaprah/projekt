@@ -20,7 +20,6 @@ const Login = () => {
         e.preventDefault();
         if (!checkIfEmpty(email, password)) return;
         if (!checkEmail(email)) return;
-        if (!checkPassword(password)) return;
 
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
