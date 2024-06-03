@@ -57,7 +57,7 @@ const AddSavedSearchPopup: React.FC<AddSavedSearchPopupProps> = (props) => {
 
 
     useEffect(() => {
-        if (props.search?.title) {
+        if (props.search?.title && props.search?.id) {
             setTitle(props.search.title);
         }
     }, [props.search?.title]);
@@ -68,12 +68,13 @@ const AddSavedSearchPopup: React.FC<AddSavedSearchPopupProps> = (props) => {
             return;
         }
         props.search!.title = title;
-        if(props.search?.id) {
+        if (props.search?.id) {
             updateSavedSearch(props.search!, props.IdToken).then(() => {
                 setShowPopup(false);
             });
-        }else {
+        } else {
             addSavedSearch(props.search!, props.IdToken).then(() => {
+                setTitle("");
                 setShowPopup(false);
             });
         }
@@ -94,7 +95,7 @@ const AddSavedSearchPopup: React.FC<AddSavedSearchPopupProps> = (props) => {
 
             {showPopup && (
                 <div className="fixed z-20 flex flex-col justify-center items-center bg-gray-500 bg-opacity-65 inset-0">
-                    <div className="bg-white p-10 rounded-8 shadow-lg w-600px">
+                    <div className="bg-white p-10 rounded-8 shadow-lg w-full max-w-3xl">
                         <h2 className={"font-semibold mb-4 text-2xl"}> {props.search?.id ? 'Update Search' : 'Save Search'}</h2>
                         <div className={"flex flex-col"}>
                             <div className={"my-3"}>
