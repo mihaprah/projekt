@@ -77,6 +77,8 @@ public class ExportContactExcel {
         Row headerRow = sheet.createRow(0);
         int colIdx = 0;
 
+        headerRow.createCell(colIdx++).setCellValue("Title");
+
         for (String prop : sortedProps) {
             headerRow.createCell(colIdx++).setCellValue(prop);
         }
@@ -116,6 +118,10 @@ public class ExportContactExcel {
             ContactDTO contact = contacts.get(i);
             Row row = sheet.createRow(i + 1);
             int cellIdx = 0;
+
+            Cell cellTitle = row.createCell(cellIdx++);
+            cellTitle.setCellValue(contact.getTitle());
+            cellTitle.setCellStyle((i % 2 == 0) ? evenRowStyle : defaultCellStyle);
 
             for (String prop : sortedProps) {
                 String propValue = contact.getProps().getOrDefault(prop, "");

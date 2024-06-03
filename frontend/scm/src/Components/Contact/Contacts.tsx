@@ -376,7 +376,7 @@ const Contacts: React.FC<ContactsProps> = ({
                     )}
                 </div>
                 <div className="flex items-center">
-                    {!deleted && (
+                    {!deleted && selectedContacts.length > 0 && (
                         <ContactExportPopup IdToken={IdToken} tenantUniqueName={tenantUniqueName} tenantId={tenantId}
                                             contactIds={selectedContacts}/>)}
                 </div>

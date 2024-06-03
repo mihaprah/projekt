@@ -46,10 +46,40 @@ public class ImportContactExcel {
                 ContactDTO contact = new ContactDTO();
                 contact.setId(UUID.randomUUID().toString());
 
+
+                String name = "";
+                String lastname = "";
+                String title = "";
                 // Extract title from name and surname
-                String name = getCellValueAsString(row.getCell(getColumnIndex(headerMap, "name", false)));
-                String surname = getCellValueAsString(row.getCell(getColumnIndex(headerMap, "lastname", false)));
-                contact.setTitle(name + " " + surname);
+                try{
+                    name = getCellValueAsString(row.getCell(getColumnIndex(headerMap, "name", false)));
+                } catch (Exception ignored) {
+                }
+
+                try{
+                    lastname = getCellValueAsString(row.getCell(getColumnIndex(headerMap, "lastname", false)));
+                } catch (Exception ignored) {
+                }
+
+                try{
+                    title = getCellValueAsString(row.getCell(getColumnIndex(headerMap, "Title", false)));
+                } catch (Exception ignored) {
+                }
+
+                if(!title.isEmpty()){
+                    contact.setTitle(title);
+                } else {
+                    if(!name.isEmpty() && !lastname.isEmpty()){
+                        contact.setTitle(name + " " + lastname);
+                    } else if(!name.isEmpty()){
+                        contact.setTitle(name);
+                    } else if(!lastname.isEmpty()){
+                        contact.setTitle(lastname);
+                    } else {
+                        contact.setTitle("Contact");
+                    }
+                }
+
 
                 contact.setUser(userToken);
                 contact.setTenantUniqueName(tenantUniqueName);

@@ -21,7 +21,7 @@ const fetchTenants = async (IdToken: string): Promise<TenantModel[]> => {
         });
 
         if (!res.ok) {
-            toast.error(res.statusText || 'Failed to fetch tenants');
+            toast.info(res.statusText || 'No tenants created yet');
             return [];
         }
 
@@ -34,7 +34,7 @@ const fetchTenants = async (IdToken: string): Promise<TenantModel[]> => {
 
         return tenants;
     } catch (error: any) {
-        toast.error(error.message || 'Failed to fetch tenants');
+        toast.info(error.message || 'No tenants created yet');
         return [];
     }
 }

@@ -22,6 +22,7 @@ const ContactExportPopup: React.FC<ContactExportPopupProps> = (props) => {
             if (props.contactIds.length === 0) {
                 toast.error("No contacts selected to export.");
                 setShowPopup(false);
+                setRequestLoading(false);
                 return;
             }
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contacts/export`, {
