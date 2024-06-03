@@ -120,7 +120,7 @@ const TenantInfoDisplay: React.FC<TenantInfoDisplayProps> = (props) => {
                             Deleted Contacts
                             <FontAwesomeIcon className={"ml-1 w-3 h-auto"} icon={faDumpster} />
                         </Link>
-                        <AddNewContactPopup tenantUniqueName={props.tenant.tenantUniqueName} onSave={props.onSave} />
+                        <AddNewContactPopup tenantUniqueName={props.tenant.tenantUniqueName} onSave={props.onSave} duplicate={false}/>
                         <ImportContacts tenantUniqueName={props.tenant.tenantUniqueName} IdToken={props.IdToken} />
                     </div>
                 </div>

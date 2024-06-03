@@ -105,9 +105,16 @@ const ContactsPage = async (props: { params: { tenant_unique_name: string, searc
     const tenants = await fetchNumberOfTenantsOnUser(IdToken);
 
     return (
-        <div className="container mx-auto p-4">
-            <SearchContacts contacts={contacts} tenant={tenant} contactsNumber={contactsNumber} tenantUniqueName={tenant_unique_name} IdToken={IdToken} numberOfTenants={tenants.length} searchId={search_id}/>
-        </div>
+        <>
+            <head>
+                <title>SCM - Contacts</title>
+            </head>
+            <div className="container mx-auto p-4">
+                <SearchContacts contacts={contacts} tenant={tenant} contactsNumber={contactsNumber}
+                                tenantUniqueName={tenant_unique_name} IdToken={IdToken} numberOfTenants={tenants.length}
+                                searchId={search_id}/>
+            </div>
+        </>
     );
 };
 

@@ -13,7 +13,13 @@ const SavedSearchesPage: React.FC = async () => {
 
 
     return (
+        <>
+            <head>
+                <title>SCM - Saved Searches</title>
+            </head>
             <SavedSearchesTable IdToken={IdToken}></SavedSearchesTable>
+        </>
+
     );
 }
 

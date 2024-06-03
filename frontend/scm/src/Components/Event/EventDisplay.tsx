@@ -10,7 +10,7 @@ import {
     faMinus,
     faCalendarAlt,
     faClock,
-    faTrash, faRotateLeft
+    faTrash, faRotateLeft, faCopy
 } from "@fortawesome/free-solid-svg-icons";
 
 interface EventDisplayProps {
@@ -38,6 +38,8 @@ const EventDisplay: React.FC<EventDisplayProps> = ({ event }) => {
                 return faTrash;
             case EventState.REVERTED:
                 return faRotateLeft;
+            case EventState.DUPLICATED:
+                return faCopy;
             default:
                 return faCircle;
         }
@@ -59,8 +61,10 @@ const EventDisplay: React.FC<EventDisplayProps> = ({ event }) => {
                 return `CONTACT DELETED`;
             case EventState.REVERTED:
                 return `CONTACT REVERTED`;
+            case EventState.DUPLICATED:
+                return `CONTACT DUPLICATED`;
             default:
-                return 'CREATED CONTACT';
+                return 'CONTACT CREATED';
         }
     };
 

@@ -7,6 +7,7 @@ export enum EventState {
     PROP_ADD = 'PROP_ADD',
     PROP_REMOVED = 'PROP_REMOVED',
     REVERTED = 'REVERTED',
+    DUPLICATED = 'DUPLICATED',
 }
 
 export interface Event {

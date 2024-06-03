@@ -30,11 +30,16 @@ const Home = () => {
     }, [router]);
 
     return (
+        <>
+        <head>
+            <title>SCM - Home</title>
+        </head>
         <div className="container mx-auto p-4">
             {IdToken !== undefined && (
                 <TenantsDashboard IdToken={IdToken}/>
             )}
         </div>
+        </>
     );
 };
 

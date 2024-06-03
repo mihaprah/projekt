@@ -78,7 +78,13 @@ const ContactPage = async ({ params }: { params: { tenant_unique_name: string, c
     }
 
     return (
-        <ContactDetails contact={contact} activityLog={activityLog} tenantUniqueName={tenant_unique_name} IdToken={IdToken} tenantTitle={tenant.title}/>
+        <>
+            <head>
+                <title>SCM - Contact</title>
+            </head>
+            <ContactDetails contact={contact} activityLog={activityLog} tenantUniqueName={tenant_unique_name}
+                            IdToken={IdToken} tenantTitle={tenant.title}/>
+        </>
     );
 };
 

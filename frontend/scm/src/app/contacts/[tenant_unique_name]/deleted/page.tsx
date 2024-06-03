@@ -2,6 +2,7 @@ import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
 import {Tenant as TenantModel} from "@/models/Tenant";
 import DeletedContacts from "@/Components/Contact/DeletedContacts";
+import React from "react";
 
 const fetchTenant = async (tenant_unique_name: string, IdToken: string): Promise<TenantModel> => {
     try {
@@ -35,10 +36,16 @@ const DeletedContactsPage = async (props: { params: {tenant_unique_name: string}
 
 
     return (
-        <div className="container mx-auto p-4">
-            <DeletedContacts IdToken={IdToken} tenant={tenant} />
-        </div>
-  );
+        <>
+            <head>
+                <title>SCM - Deleted Contacts</title>
+            </head>
+            <div className="container mx-auto p-4">
+                <DeletedContacts IdToken={IdToken} tenant={tenant}/>
+            </div>
+        </>
+
+    );
 }
 
 export default DeletedContactsPage;

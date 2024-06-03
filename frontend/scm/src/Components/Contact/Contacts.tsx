@@ -845,7 +845,7 @@ const Contacts: React.FC<ContactsProps> = ({
                     }}
                     initialContactData={duplicateContact}
                     onClose={() => setDuplicateContact(null)}
-
+                    duplicate={true}
                 /></div>
             )}
         </div>

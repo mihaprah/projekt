@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase";
 import Cookies from "js-cookie";
@@ -43,13 +43,18 @@ const Login = () => {
 
     return (
         <>
-            <ToastContainer />
+            <head>
+                <title>SCM - Login</title>
+            </head>
+            <ToastContainer/>
             <div className={"flex flex-col items-center justify-center min-h-screen"}>
                 <div className={"flex flex-col items-center justify-center rounded-8 p-10"}>
-                    <Image width={700} height={700} className={"w-48 h-auto rounded-8"} src={"/logo-scm.png"} alt={"Logo"}/>
+                    <Image width={700} height={700} className={"w-48 h-auto rounded-8"} src={"/logo-scm.png"}
+                           alt={"Logo"}/>
                     <h3 className={"text-xl font-semibold mb-5 dark:text-white dark:pt-6"}>Log in with Email</h3>
                     <form onSubmit={handleLogin} className={"flex flex-col items-center justify-center"}>
-                        <label className="input input-bordered flex items-center gap-2 mb-2 text-secondary-dark dark:bg-white">
+                        <label
+                            className="input input-bordered flex items-center gap-2 mb-2 text-secondary-dark dark:bg-white">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
                                  className="w-4 h-4 opacity-70">
                                 <path
@@ -64,7 +69,8 @@ const Login = () => {
                                 placeholder="Email"
                             />
                         </label>
-                        <label className="input input-bordered flex items-center gap-2 mb-4 text-secondary-dark dark:bg-white">
+                        <label
+                            className="input input-bordered flex items-center gap-2 mb-4 text-secondary-dark dark:bg-white">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
                                  className="w-4 h-4 opacity-70">
                                 <path fillRule="evenodd"
@@ -83,7 +89,8 @@ const Login = () => {
                             in
                         </button>
                     </form>
-                    <Link href={"/register"} className={"mt-5 link text-primary-light dark:text-white text-xs"}>Do not have an account?
+                    <Link href={"/register"} className={"mt-5 link text-primary-light dark:text-white text-xs"}>Do not
+                        have an account?
                         Register here!</Link>
                 </div>
             </div>

@@ -14,9 +14,10 @@ interface AddNewContactPopupProps {
     onSave: () => void;
     initialContactData?: ContactModel; // Optional prop for initial contact data
     onClose?: () => void; // Optional prop for closing the popup
+    duplicate: boolean;
 }
 
-const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueName, onSave, initialContactData, onClose }) => {
+const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueName, onSave, initialContactData, onClose, duplicate }) => {
     const router = useRouter();
     const [showPopup, setShowPopup] = useState(false);
     const [formData, setFormData] = useState<ContactModel>({
@@ -137,6 +138,7 @@ const AddNewContactPopup: React.FC<AddNewContactPopupProps> = ({ tenantUniqueNam
                 headers: {
                     'Content-Type': 'application/json',
                     'userToken': `Bearer ${document.cookie.split('IdToken=')[1]}`,
+                    'duplicate': String(duplicate),
                 },
                 body: JSON.stringify(updatedFormData),
             });

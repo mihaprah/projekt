@@ -2,7 +2,7 @@
 import {createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword} from "firebase/auth";
 import {auth} from "@/firebase";
 import {useRouter} from "next/navigation";
-import {useState} from "react";
+import React, {useState} from "react";
 import Link from "next/link";
 import {toast, ToastContainer} from "react-toastify";
 import {checkConfirmPassword, checkEmail, checkIfEmpty, checkPassword} from "@/utils/UserValidation";
@@ -64,15 +64,20 @@ const Register = () => {
 
     return (
         <>
+            <head>
+                <title>SCM - Register</title>
+            </head>
             {loading && (
-                <div className={"fixed top-0 left-0 w-full h-full bg-white bg-opacity-50 z-50 flex items-center justify-center"}>
+                <div
+                    className={"fixed top-0 left-0 w-full h-full bg-white bg-opacity-50 z-50 flex items-center justify-center"}>
                     <Loading/>
                 </div>
             )}
-            <ToastContainer />
+            <ToastContainer/>
             <div className={"flex flex-col items-center justify-center min-h-screen"}>
                 <div className={"flex flex-col items-center justify-center rounded-8 p-10"}>
-                    <Image width={700} height={700} className={"w-48 h-auto rounded-8"} src={"/logo-scm.png"} alt={"Logo"}/>
+                    <Image width={700} height={700} className={"w-48 h-auto rounded-8"} src={"/logo-scm.png"}
+                           alt={"Logo"}/>
                     <h3 className={"text-xl font-semibold mb-5 dark:text-white dark:pt-6"}>Register for new Account</h3>
                     <form onSubmit={handleRegister} className={"flex flex-col items-center justify-center"}>
                         <label

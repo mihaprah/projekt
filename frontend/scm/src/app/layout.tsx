@@ -19,13 +19,16 @@ export default function RootLayout({
 }) {
     return (
         <html data-theme="winter" lang="en">
+        <head>
+            <title>SCM</title>
+        </head>
         <body className={inter.className}>
         <ClientOnly>
-            <Suspense fallback={<Loading />}>
-                <Navbar />
-                <ToastContainer />
+            <Suspense fallback={<Loading/>}>
+                <Navbar/>
+                <ToastContainer/>
                 <AuthCheck>
-                    <Suspense fallback={<Loading />}>
+                    <Suspense fallback={<Loading/>}>
                         {children}
                     </Suspense>Ï
                 </AuthCheck>
