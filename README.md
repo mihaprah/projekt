@@ -324,15 +324,15 @@ Kategorije imajo tudi podkategorije, ki podrobno razložijo, kaj mora uporabnik 
 Spodaj so prikazani nekateri končni zaslonski posnetki aplikacije. Vsi posnetki so na voljo v mapi [**documentation/app-photos**](https://github.com/mihaprah/projekt/tree/main/documentation/app-photos).
 
 <p align="center">
-  <img alt="dashboard" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/426e42cd-262a-48b8-9736-cc49a610ba96">
+  <img alt="dashboard" width="800" src="https://github.com/mihaprah/projekt/assets/111431985/66186e0e-8c1b-4564-8fc5-c88f944df5c5">
   <br/>
   Nadzorna plošča, kjer so vidne vse skupine (Tenanti), ki jih je uporabnik naredil oziroma je v njih vključen.
-
+  
 </p>
 <p align="center">
-  <img alt="tenant-list-view" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/f3cfe9df-a34f-4881-a3a4-50ccd233498a">
+  <img alt="tenant-list-view" width="800" src="https://github.com/mihaprah/projekt/assets/111431985/3c0065ec-61af-4a70-9538-9bdb0ffc5904">
   <br/>
-  <img alt="tenant-grid-view" width="800" src="https://github.com/mihaprah/projekt/assets/116807398/fd93ee5f-5593-452f-ab60-813052a1d14f">
+  <img alt="tenant-grid-view" width="800" src="https://github.com/mihaprah/projekt/assets/111431985/0e9adb36-6701-4a02-9741-ebbca9a24b98">
   <br/>
   Pregled vseh kontaktov za ene skupine (Tenant). Pogled je nastavljen na <b>seznam</b> ali na <b>mrežo</b>.
 </p>
